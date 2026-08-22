@@ -1,0 +1,284 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Common Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Common
+  m_TableCollectionNameGuidString: 48463fff53969e746801490c8ce13097
+  m_Entries:
+  - m_Id: 4611240722432
+    m_Key: authentication.google_sign_in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5949001400320
+    m_Key: authentication.apple_sign_in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6239750553600
+    m_Key: authentication.email_sign_in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6453391622144
+    m_Key: authentication.create_new_account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6694048202752
+    m_Key: authentication.recover_account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28362808328192
+    m_Key: authentication.enter_email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28525614432256
+    m_Key: authentication.password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28617998172160
+    m_Key: authentication.re_enter_password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28764958195712
+    m_Key: authentication.submit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29900402425856
+    m_Key: authentication.body_type
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30105608749056
+    m_Key: authentication.create_profile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30353638916096
+    m_Key: authentication.profile_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30471377223680
+    m_Key: authentication.enter_profile_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30525685071872
+    m_Key: authentication.next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31032851922944
+    m_Key: authentication.loading
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31877752520704
+    m_Key: authentication.recover_email_sent
+    m_Metadata:
+      m_Items: []
+  - m_Id: 730460986376192
+    m_Key: main_menu.multiplayer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 730987862261760
+    m_Key: main_menu.singleplayer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 731382965698560
+    m_Key: main_menu.my_room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 731498766237696
+    m_Key: main_menu.store
+    m_Metadata:
+      m_Items: []
+  - m_Id: 732083854868480
+    m_Key: main_menu.craft
+    m_Metadata:
+      m_Items: []
+  - m_Id: 732180709736448
+    m_Key: main_menu.my_diary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 733656261689344
+    m_Key: main_menu.ranking_match
+    m_Metadata:
+      m_Items: []
+  - m_Id: 734073221644288
+    m_Key: main_menu.casual_match
+    m_Metadata:
+      m_Items: []
+  - m_Id: 735197169287168
+    m_Key: main_menu.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 735475419414528
+    m_Key: main_menu.reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 735619502145536
+    m_Key: main_menu.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 735927888347136
+    m_Key: main_menu.leaderboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 736417527201792
+    m_Key: main_menu.double_effect_ticket
+    m_Metadata:
+      m_Items: []
+  - m_Id: 738391186309120
+    m_Key: main_menu.top_100_reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 739044650483712
+    m_Key: main_menu.current_ranking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 739821896957952
+    m_Key: main_menu.energy_recharge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 740131130408960
+    m_Key: main_menu.rank
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2160661997912064
+    m_Key: matchmaking.ready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3271167613698048
+    m_Key: item.quantity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4745683699335168
+    m_Key: item.please_select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5162369275494400
+    m_Key: my_room.select_decorate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7264096321634304
+    m_Key: name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7264319391498240
+    m_Key: enter_uid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7264523318558720
+    m_Key: add
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7264705510735872
+    m_Key: cannot_find
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7264798628478976
+    m_Key: back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7267968133988352
+    m_Key: remove
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7270890058121216
+    m_Key: cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7271009855832064
+    m_Key: confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7265675904909312
+    m_Key: okay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7305633160069120
+    m_Key: friendlist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7267250555682816
+    m_Key: friendlist.request_sent
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7306061620805632
+    m_Key: friendlist.friend_requested
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7306585124470784
+    m_Key: friendlist.requested
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7307598778695680
+    m_Key: decoration.decorate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7307642361708544
+    m_Key: done
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7308518992216064
+    m_Key: friends
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7308618581770240
+    m_Key: trade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7310648692015104
+    m_Key: information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7310894025244672
+    m_Key: destination
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7311798879223808
+    m_Key: menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7311934044864512
+    m_Key: item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 56915302786367488
+    m_Key: main_menu.settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57033004985188352
+    m_Key: home
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57057395882164224
+    m_Key: reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57360823464329216
+    m_Key: leaderboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58070493493559296
+    m_Key: main_menu.library
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58071079421050880
+    m_Key: main_menu.playground
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8080966491498610962
+  references:
+    version: 2
+    RefIds:
+    - rid: 8080966491498610962
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1749532862775

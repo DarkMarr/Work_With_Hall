@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: 
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: 2a1bca05bb346494d96d91913aa4da1a
+  m_SerializeEntries:
+  - m_GUID: 48463fff53969e746801490c8ce13097
+    m_Address: Assets/Settings/Localization/Tables/Authentication Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52743f907218f124898017fc9c7f0679
+    m_Address: Assets/Settings/Localization/Tables/QuizGameDestination Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 832e2a7486996374cb5520c84017ad19
+    m_Address: Assets/Settings/Localization/Quiz Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed13262006708df4fa4aa50d09b40b1c
+    m_Address: Assets/Settings/Localization/Tables/QuizGameItem Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 1b1ea95cd05112447ad0a374d7da95a2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 66a3b47736dfe0b458d40852112e53f5, type: 2}
+    - {fileID: 11400000, guid: 21dd731c6ee46484492ddec27c4772ab, type: 2}

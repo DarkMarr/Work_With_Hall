@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f821733202ea534b888fdbc781ad33d, type: 3}
+  m_Name: BundleNumber1
+  m_EditorClassIdentifier: 
+  items:
+  - Item: {fileID: 11400000, guid: 4d512b039b42c524d90e05ecc8991b46, type: 2}
+    Quantity: 2
+  - Item: {fileID: 11400000, guid: f63125480bfa3d84ab989ab6d2d1f3d3, type: 2}
+    Quantity: 1
+  - Item: {fileID: 11400000, guid: 1b8fbb6237e8d63429e907497890317e, type: 2}
+    Quantity: 4
+  - Item: {fileID: 11400000, guid: f80b7f8c628f4ee4da4091de661bad74, type: 2}
+    Quantity: 5000
+  - Item: {fileID: 11400000, guid: 0c1a18a5a9a4cf54599183c9f54aecdd, type: 2}
+    Quantity: 2000
+  - Item: {fileID: 11400000, guid: 01da7746e89eca044b32fac14ff93503, type: 2}
+    Quantity: 10
+  - Item: {fileID: 11400000, guid: cdb3c285165b6d74dbd529a074526349, type: 2}
+    Quantity: 10
+  jsonOutput: "[\r\n  {\r\n    \"item_id\": \"CarryOn_Mockup1\",\r\n    \"item_type\":
+    \"CarryOnItem\",\r\n    \"quantity\": 2\r\n  },\r\n  {\r\n    \"item_id\": \"CarryOn_Mockup5\",\r\n   
+    \"item_type\": \"CarryOnItem\",\r\n    \"quantity\": 1\r\n  },\r\n  {\r\n   
+    \"item_id\": \"TestDeocration3\",\r\n    \"item_type\": \"Decoration\",\r\n   
+    \"quantity\": 4\r\n  },\r\n  {\r\n    \"item_id\": \"Coin\",\r\n    \"item_type\":
+    \"Currency\",\r\n    \"quantity\": 5000\r\n  },\r\n  {\r\n    \"item_id\": \"Gem\",\r\n   
+    \"item_type\": \"Currency\",\r\n    \"quantity\": 2000\r\n  },\r\n  {\r\n   
+    \"item_id\": \"Crystal\",\r\n    \"item_type\": \"Material\",\r\n    \"quantity\":
+    10\r\n  },\r\n  {\r\n    \"item_id\": \"Wood\",\r\n    \"item_type\": \"Material\",\r\n   
+    \"quantity\": 10\r\n  }\r\n]"

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 178ef9e0ac739524597b03e35747c6da, type: 3}
+  m_Name: TestMyRoomMusic
+  m_EditorClassIdentifier: QuizGame.Sound::QuizGame.Sound.AudioSO
+  audio: {fileID: 8300000, guid: 9e1e99a2d8375034e8a934b3e8ae752e, type: 3}
+  audioID: TestMyRoomMusic
+  settings:
+    MixerGroup: 2
+    IsLooping: 1
+    IsRandomVolume: 0
+    Volume: 100
+    RandomVolumeRange: {x: 80, y: 100}
+    IsRandomPitch: 0
+    Pitch: 100
+    RandomPitchRange: {x: 80, y: 100}
+    StereoPan: 0
+    SpatialBlend: 0
+    ReverbZoneMix: 1

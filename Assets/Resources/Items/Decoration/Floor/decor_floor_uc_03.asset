@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5438b65e6395f142a094a08b7a4a971, type: 3}
+  m_Name: decor_floor_uc_03
+  m_EditorClassIdentifier: 
+  itemID: 33203
+  itemSprite: {fileID: -5071610934032407521, guid: b241a5143b3aeca43ae5c8ee516a89a6, type: 3}
+  decorationType: 3
+  decorationTier: 2
+  localizedName:
+    m_TableReference:
+      m_TableCollectionName: GUID:ed13262006708df4fa4aa50d09b40b1c
+    m_TableEntryReference:
+      m_KeyId: 1498062390132736
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  localizedDescription:
+    m_TableReference:
+      m_TableCollectionName: GUID:ed13262006708df4fa4aa50d09b40b1c
+    m_TableEntryReference:
+      m_KeyId: 1498169760120832
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  localizedSubDescription:
+    m_TableReference:
+      m_TableCollectionName: GUID:ed13262006708df4fa4aa50d09b40b1c
+    m_TableEntryReference:
+      m_KeyId: 21822263915282432
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  recycledItems:
+  - Item: {fileID: 11400000, guid: 5e211fc80e3a85b409e902c70c032686, type: 2}
+    Quantity: 9
+  - Item: {fileID: 11400000, guid: d2fa675a1ad5f05469b01963ea16e2e8, type: 2}
+    Quantity: 10
+  fuseRequirementItems: []
+  references:
+    version: 2
+    RefIds: []

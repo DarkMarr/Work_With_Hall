@@ -1,0 +1,4 @@
+# Keep the Unity Player currentActivity field for Google Sign-In and other plugins that need it.
+-keep class com.unity3d.player.UnityPlayer {
+    public static android.app.Activity currentActivity;
+}

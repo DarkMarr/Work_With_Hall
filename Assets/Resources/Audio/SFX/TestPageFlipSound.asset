@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 178ef9e0ac739524597b03e35747c6da, type: 3}
+  m_Name: TestPageFlipSound
+  m_EditorClassIdentifier: QuizGame.Sound::QuizGame.Sound.AudioSO
+  audio: {fileID: 8300000, guid: cf5db1ac89a57db49a145b51fcba6b56, type: 3}
+  audioID: TestPageFlipSound
+  settings:
+    MixerGroup: 3
+    IsLooping: 0
+    IsRandomVolume: 0
+    Volume: 100
+    RandomVolumeRange: {x: 80, y: 100}
+    IsRandomPitch: 0
+    Pitch: 100
+    RandomPitchRange: {x: 80, y: 100}
+    StereoPan: 0
+    SpatialBlend: 0
+    ReverbZoneMix: 1

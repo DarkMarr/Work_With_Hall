@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6845651322100644295
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8653719598885068355, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_Name
+      value: 003_Dog
+      objectReference: {fileID: 0}
+    - target: {fileID: -8142064284323777338, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 6849900493614534756, guid: 391bdae8baeadb144b234cb94ce11a04, type: 3}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.37
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7552582706839291426, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4393781290796869070, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -7271657784699467932, guid: 391bdae8baeadb144b234cb94ce11a04, type: 3}
+    - target: {fileID: -4393781290796869070, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 874246538552564251}
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6409645897755173050}
+    - targetCorrespondingSourceObject: {fileID: -1064315128964139246, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4033455281156977298}
+  m_SourcePrefab: {fileID: 4843985084834002234, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+--- !u!1 &3331089897728069333 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1064315128964139246, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+  m_PrefabInstance: {fileID: 6845651322100644295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4033455281156977298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3331089897728069333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CategoryHash: 2.283125e-36
+  m_labelHash: 1.1645329e-26
+  m_SpriteKey: 0
+  m_SpriteHash: 957827991
+--- !u!1 &6406208035469088890 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8653719598885068355, guid: b5f9326f0f33bf94cafc73e554f324ed, type: 3}
+  m_PrefabInstance: {fileID: 6845651322100644295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &874246538552564251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6406208035469088890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Library: []
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 81495850ffeebf54eba57da1d0be640b, type: 3}
+--- !u!114 &6409645897755173050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6406208035469088890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a05f6112297de040907b09bc13074f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteLibrary: {fileID: 874246538552564251}
+  categories:
+  - PartType: 12
+    DisplayTitle: Body Decoration
+    Resolver: {fileID: 4033455281156977298}
+  - PartType: 10
+    DisplayTitle: Head Decoration
+    Resolver: {fileID: 0}
+  - PartType: 11
+    DisplayTitle: Arm Decoration
+    Resolver: {fileID: 0}
+  - PartType: 3
+    DisplayTitle: Eyebrow
+    Resolver: {fileID: 0}
+  - PartType: 4
+    DisplayTitle: Eye
+    Resolver: {fileID: 0}
+  - PartType: 0
+    DisplayTitle: Mount
+    Resolver: {fileID: 0}
+  - PartType: 1
+    DisplayTitle: Head
+    Resolver: {fileID: 0}
+  - PartType: 5
+    DisplayTitle: Arm Left
+    Resolver: {fileID: 0}
+  - PartType: 2
+    DisplayTitle: Body
+    Resolver: {fileID: 0}
+  - PartType: 8
+    DisplayTitle: Leg Left
+    Resolver: {fileID: 0}
+  - PartType: 7
+    DisplayTitle: Leg Right
+    Resolver: {fileID: 0}
+  - PartType: 6
+    DisplayTitle: Arm Right
+    Resolver: {fileID: 0}
+  - PartType: 9
+    DisplayTitle: Tail
+    Resolver: {fileID: 0}
+  - PartType: 13
+    DisplayTitle: Back Decoration
+    Resolver: {fileID: 0}

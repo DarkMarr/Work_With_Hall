@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Destination Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Destination
+  m_TableCollectionNameGuidString: 52743f907218f124898017fc9c7f0679
+  m_Entries:
+  - m_Id: 66590703616
+    m_Key: destination.bangkok.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 102821101568
+    m_Key: destination.bangkok.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1557787410432
+    m_Key: destination.osaka.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1970494341120
+    m_Key: destination.osaka.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3528485339136
+    m_Key: destination.tokyo.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3534365753344
+    m_Key: destination.tokyo.description
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8080966653632315467
+  references:
+    version: 2
+    RefIds:
+    - rid: 8080966653632315467
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1750147788877

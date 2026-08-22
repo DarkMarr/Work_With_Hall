@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9448580a7e86e5e4c91c88e182d6397b, type: 3}
+  m_Name: CarryOn2_Coin
+  m_EditorClassIdentifier: 
+  productID: CarryOn2_Coin
+  product: {fileID: 11400000, guid: 2dcf22939e87eab43aaa621ca5b3022b, type: 2}
+  purchasedCurrency: {fileID: 11400000, guid: f80b7f8c628f4ee4da4091de661bad74, type: 2}
+  price: 4000

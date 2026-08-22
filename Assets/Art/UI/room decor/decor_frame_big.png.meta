@@ -1,0 +1,793 @@
+fileFormatVersion: 2
+guid: d42d8bb9d8ec03649bc0b7752963e74a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4584768489892600083
+    second: decor_frame_big_0
+  - first:
+      213: 6994295255798243311
+    second: decor_frame_big_1
+  - first:
+      213: -8688042362550498547
+    second: decor_frame_big_2
+  - first:
+      213: -2711592699938841816
+    second: decor_frame_big_3
+  - first:
+      213: 1597329047350901133
+    second: decor_frame_big_4
+  - first:
+      213: -5132481722816580667
+    second: decor_frame_big_5
+  - first:
+      213: 1812552516066985631
+    second: decor_frame_big_6
+  - first:
+      213: -5950348891758588554
+    second: decor_frame_big_7
+  - first:
+      213: -5431222960261536164
+    second: decor_frame_big_8
+  - first:
+      213: 5739215719789997177
+    second: decor_frame_big_9
+  - first:
+      213: 3722892762941225790
+    second: decor_frame_big_10
+  - first:
+      213: 3619703473104722510
+    second: decor_frame_big_11
+  - first:
+      213: 1163797773413397482
+    second: decor_frame_big_12
+  - first:
+      213: -7302993685612407025
+    second: decor_frame_big_13
+  - first:
+      213: -7829743015966445247
+    second: decor_frame_big_14
+  - first:
+      213: 6452994642708329796
+    second: decor_frame_big_15
+  - first:
+      213: 417681318410296492
+    second: decor_frame_big_16
+  - first:
+      213: 1293400255675236441
+    second: decor_frame_big_17
+  - first:
+      213: -2565059095004484483
+    second: decor_frame_big_18
+  - first:
+      213: 1496017996815366295
+    second: decor_frame_big_19
+  - first:
+      213: 6308004386156859992
+    second: decor_frame_big_20
+  - first:
+      213: 3434574316157407644
+    second: decor_frame_big_21
+  - first:
+      213: 5603339005399217681
+    second: decor_frame_big_22
+  - first:
+      213: -5708445968387657414
+    second: decor_frame_big_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: decor_frame_big_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 328
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 319d37186ae50af30800000000000000
+      internalID: 4584768489892600083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_1
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 354
+        width: 33
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fefdd005a7ab01160800000000000000
+      internalID: 6994295255798243311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_2
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 354
+        width: 33
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0bc1a2a08fdd6780800000000000000
+      internalID: -8688042362550498547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_3
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 354
+        width: 33
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82b5a985ecc7e5ad0800000000000000
+      internalID: -2711592699938841816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_4
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 351
+        width: 33
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8973c83e4ada2610800000000000000
+      internalID: 1597329047350901133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_5
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 318
+        width: 18
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c3355fe013c5c8b0800000000000000
+      internalID: -5132481722816580667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 284
+        width: 11
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f96c9e8f8ea772910800000000000000
+      internalID: 1812552516066985631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_7
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 273
+        width: 12
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67d0711953d1c6da0800000000000000
+      internalID: -5950348891758588554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 239
+        width: 11
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c566aa55e7b60a4b0800000000000000
+      internalID: -5431222960261536164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_9
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 228
+        width: 13
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97cab6b1a4ac5af40800000000000000
+      internalID: 5739215719789997177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 194
+        width: 11
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3bfbff3e3f5aa330800000000000000
+      internalID: 3722892762941225790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_11
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 184
+        width: 12
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4a97aa7125cb3230800000000000000
+      internalID: 3619703473104722510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 149
+        width: 11
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae332baa8e3a62010800000000000000
+      internalID: 1163797773413397482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_13
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 139
+        width: 12
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f07d6249fed86aa90800000000000000
+      internalID: -7302993685612407025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 105
+        width: 11
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14179b2f53a275390800000000000000
+      internalID: -7829743015966445247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_15
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 94
+        width: 12
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 445f0282074ad8950800000000000000
+      internalID: 6452994642708329796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 60
+        width: 11
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cac992532f6ebc500800000000000000
+      internalID: 417681318410296492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_17
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 49
+        width: 12
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9500ce70ea413f110800000000000000
+      internalID: 1293400255675236441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 15
+        width: 17
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7c6f56e754176cd0800000000000000
+      internalID: -2565059095004484483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_19
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 8
+        width: 24
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79875cd117ce2c410800000000000000
+      internalID: 1496017996815366295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_20
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 0
+        width: 33
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8525c7661988a8750800000000000000
+      internalID: 6308004386156859992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_21
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 0
+        width: 35
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c911e35b42f0aaf20800000000000000
+      internalID: 3434574316157407644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_22
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 33
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11639ec332f03cd40800000000000000
+      internalID: 5603339005399217681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decor_frame_big_23
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 0
+        width: 33
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a313ebae2a687c0b0800000000000000
+      internalID: -5708445968387657414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      decor_frame_big_0: 4584768489892600083
+      decor_frame_big_1: 6994295255798243311
+      decor_frame_big_10: 3722892762941225790
+      decor_frame_big_11: 3619703473104722510
+      decor_frame_big_12: 1163797773413397482
+      decor_frame_big_13: -7302993685612407025
+      decor_frame_big_14: -7829743015966445247
+      decor_frame_big_15: 6452994642708329796
+      decor_frame_big_16: 417681318410296492
+      decor_frame_big_17: 1293400255675236441
+      decor_frame_big_18: -2565059095004484483
+      decor_frame_big_19: 1496017996815366295
+      decor_frame_big_2: -8688042362550498547
+      decor_frame_big_20: 6308004386156859992
+      decor_frame_big_21: 3434574316157407644
+      decor_frame_big_22: 5603339005399217681
+      decor_frame_big_23: -5708445968387657414
+      decor_frame_big_3: -2711592699938841816
+      decor_frame_big_4: 1597329047350901133
+      decor_frame_big_5: -5132481722816580667
+      decor_frame_big_6: 1812552516066985631
+      decor_frame_big_7: -5950348891758588554
+      decor_frame_big_8: -5431222960261536164
+      decor_frame_big_9: 5739215719789997177
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd5893584978604997a9b6f87ac4bc0, type: 3}
+  m_Name: Osaka
+  m_EditorClassIdentifier: 
+  destinationID: Tokyo
+  destinationType: 1
+  npcPrefab: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
+  sprite: {fileID: -6876133760373132369, guid: 6cce849ad2c218c4b85dd942b1498d2a, type: 3}
+  localizedName:
+    m_TableReference:
+      m_TableCollectionName: GUID:52743f907218f124898017fc9c7f0679
+    m_TableEntryReference:
+      m_KeyId: 1557787410432
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  localizedDescription:
+    m_TableReference:
+      m_TableCollectionName: GUID:52743f907218f124898017fc9c7f0679
+    m_TableEntryReference:
+      m_KeyId: 1970494341120
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  destinationItemRewards:
+    trophyReward:
+    - {fileID: 11400000, guid: b081a00d0e687a84d82735ca9a8616cb, type: 2}
+    - {fileID: 11400000, guid: 1a521a6b0153e554892d5b788bf8770e, type: 2}
+    - {fileID: 11400000, guid: 9e5bbf3eeaf91b84a97ad784772dcfbc, type: 2}
+    equipmentReward:
+    - {fileID: 11400000, guid: f0c5f69a84b44144883a82fee0f77446, type: 2}
+    - {fileID: 11400000, guid: 7be2d67a655caa54a9b9cbf441fd83fb, type: 2}
+    materialReward:
+    - {fileID: 11400000, guid: d2fa675a1ad5f05469b01963ea16e2e8, type: 2}
+    - {fileID: 11400000, guid: cdb3c285165b6d74dbd529a074526349, type: 2}
+  references:
+    version: 2
+    RefIds: []

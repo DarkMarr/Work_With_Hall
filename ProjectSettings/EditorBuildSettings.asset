@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Init.unity
+    guid: 41db4e04b936bb74faed5ce2e98e4634
+  - enabled: 1
+    path: Assets/Scenes/Authentication.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: d6b09860e8eb94f478115b24dd801eb2
+  - enabled: 1
+    path: Assets/Scenes/Gameplay.unity
+    guid: ac6d01ce5f4bd164fb98cbd9ae42ee85
+  - enabled: 1
+    path: Assets/Scenes/MyRoom.unity
+    guid: ba6b874341622614ba392cb978553f64
+  - enabled: 1
+    path: Assets/Samples/Ads Mediation/9.1.0/Unity LevelPlay Sample/Scenes/LevelPlaySample.unity
+    guid: bd1eb3e1953724de08fadd7cbbc6d358
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: ccb71660ae0e68d45b3cd65b596edcaa, type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 757c13c396b404f48abf97220d3e829a, type: 3}
+    com.unity.localization.addressable-group-rules: {fileID: 11400000, guid: b283c5153f057874d9adaae618aecf1d, type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: b8376cbd7f1e2bf42a1acc8c5af4b9de, type: 2}
+  m_UseUCBPForAssetBundles: 0

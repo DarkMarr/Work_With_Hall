@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Item Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Item
+  m_TableCollectionNameGuidString: ed13262006708df4fa4aa50d09b40b1c
+  m_Entries:
+  - m_Id: 10634493952
+    m_Key: item.mockup.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71539982336
+    m_Key: item.mockup.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1498169760120832
+    m_Key: decoration.mockup.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1498062390132736
+    m_Key: decoration.mockup.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21815323327823872
+    m_Key: material.fabric
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21815430974636032
+    m_Key: material.plan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21815605700952064
+    m_Key: material.wood
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21815768230232064
+    m_Key: material.crystal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21816050225872896
+    m_Key: material.paint_bucket
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21822105211207680
+    m_Key: decoration.type.wall_trophy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1793037988364288
+    m_Key: decoration.type.shelf_trophy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21822263915282432
+    m_Key: decoration.type.floor_trophy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21822891311857664
+    m_Key: decoration.type.room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54797847960059904
+    m_Key: carry_on.ticket_x2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54798090709598208
+    m_Key: carry_on.hourglass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54798352882958336
+    m_Key: carry_on.omamori_amulet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54798480452714496
+    m_Key: carry_on.calabash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54798608253157376
+    m_Key: carry_on.blindfold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54798833663442944
+    m_Key: carry_on.handy_fan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54798921773187072
+    m_Key: consumeable.plastic_hammer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 54799059858063360
+    m_Key: carry_on.fox_mask
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8080966695545733205
+  references:
+    version: 2
+    RefIds:
+    - rid: 8080966695545733205
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1750325287957
