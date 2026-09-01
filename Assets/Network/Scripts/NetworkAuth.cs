@@ -230,7 +230,7 @@ namespace QuizGame.Network
 
         public async Task<bool> SignInWithEmailAndPassword(string email, string password)
         {
-            DebugLog($"Attempting to sign in with email: {email}");
+            DebugLog($"Attempting to sign in to account with email: {email}");
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -353,6 +353,36 @@ namespace QuizGame.Network
             catch (Exception ex)
             {
                 Debug.LogError($"Unexpected error updating password: {ex.Message}");
+                Debug.LogException(ex);
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteAccountAsync()
+        {
+            if (auth?.CurrentUser == null)
+            {
+                Debug.LogError("No user is currently signed in");
+                return false;
+            }
+
+            var currentUser = auth.CurrentUser;
+            DebugLog($"Deleting Firebase Authentication account: {currentUser.UserId}");
+
+            try
+            {
+                await currentUser.DeleteAsync();
+                DebugLog("Firebase Authentication account deleted successfully");
+                return true;
+            }
+            catch (Firebase.FirebaseException firebaseEx)
+            {
+                Debug.LogError($"Failed to delete Firebase Authentication account: {firebaseEx.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Unexpected error deleting Firebase Authentication account: {ex.Message}");
                 Debug.LogException(ex);
                 return false;
             }
