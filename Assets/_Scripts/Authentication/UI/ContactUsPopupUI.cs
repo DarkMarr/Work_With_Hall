@@ -46,7 +46,7 @@ namespace QuizGame.Authentication.UI
             overlay.color = new Color(0f, 0f, 0f, 0.65f);
             overlay.raycastTarget = true;
 
-            var panel = CreatePanel("Panel", transform, new Vector2(900f, 700f), new Vector2(0f, 0f), new Color(0.96f, 0.96f, 0.96f, 1f));
+            var panel = CreatePanel("Panel", transform, new Vector2(900f, 700f), Vector2.zero, new Color(0.96f, 0.96f, 0.96f, 1f));
 
             CreateText("Title", panel.transform, "Contact Us", new Vector2(0f, 265f), new Vector2(760f, 70f), 46f, TextAlignmentOptions.Center);
             CreateText("Instruction", panel.transform, "Tell us how we can help. Maximum 1000 characters.", new Vector2(0f, 205f), new Vector2(760f, 60f), 26f, TextAlignmentOptions.Center);
@@ -113,6 +113,7 @@ namespace QuizGame.Authentication.UI
                 description: "This permanently deletes your Firebase Authentication account. You may need to sign in again before deletion.",
                 onConfirmButtonClicked: async () =>
                 {
+                    confirmPopup.Close();
                     var success = await NetworkAuth.Instance.DeleteAccountAsync();
                     if (success)
                     {
@@ -123,7 +124,7 @@ namespace QuizGame.Authentication.UI
                         Debug.LogError("[ContactUs] Account deletion failed. Firebase may require recent authentication.");
                     }
                 },
-                onCancelButtonClicked: () => { }
+                onCancelButtonClicked: () => confirmPopup.Close()
             );
         }
 
