@@ -23,7 +23,13 @@ namespace QuizGame.Authentication.UI
         {
             if (transform.Find("Contact-Us-Button") != null) return;
 
-            var buttonObject = new GameObject("Contact-Us-Button", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+            var buttonObject = new GameObject(
+                "Contact-Us-Button",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image),
+                typeof(Button));
+
             var buttonTransform = buttonObject.GetComponent<RectTransform>();
             buttonTransform.SetParent(transform, false);
             buttonTransform.anchorMin = new Vector2(0.5f, 0f);
@@ -31,14 +37,24 @@ namespace QuizGame.Authentication.UI
             buttonTransform.pivot = new Vector2(0.5f, 0f);
             buttonTransform.anchoredPosition = new Vector2(0f, 125f);
             buttonTransform.sizeDelta = new Vector2(744f, 96f);
+            buttonTransform.SetAsLastSibling();
 
             var image = buttonObject.GetComponent<Image>();
             image.color = new Color(0.2f, 0.2f, 0.2f, 0.9f);
+            image.raycastTarget = true;
 
             var button = buttonObject.GetComponent<Button>();
+            button.interactable = true;
+            button.targetGraphic = image;
+            button.onClick.RemoveAllListeners();
             button.onClick.AddListener(OpenContactUs);
 
-            var labelObject = new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            var labelObject = new GameObject(
+                "Label",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(TextMeshProUGUI));
+
             var labelTransform = labelObject.GetComponent<RectTransform>();
             labelTransform.SetParent(buttonTransform, false);
             labelTransform.anchorMin = Vector2.zero;
@@ -47,6 +63,7 @@ namespace QuizGame.Authentication.UI
             labelTransform.offsetMax = Vector2.zero;
 
             var label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.font = TMP_Settings.defaultFontAsset;
             label.text = "Contact Us";
             label.alignment = TextAlignmentOptions.Center;
             label.fontSize = 36f;
@@ -55,7 +72,11 @@ namespace QuizGame.Authentication.UI
 
         private void OpenContactUs()
         {
-            ContactUsPopupUI.Open(transform.root);
+            Debug.Log("[ContactUs] Contact Us button clicked.");
+
+            var canvas = GetComponentInParent<Canvas>();
+            var parent = canvas != null ? canvas.transform : transform;
+            ContactUsPopupUI.Open(parent);
         }
     }
 }
