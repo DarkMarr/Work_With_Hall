@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -28,20 +27,33 @@ namespace QuizGame.Editor.UI
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("HALL900 UI Auditor - Phase 1", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(
-                "Phase 1 scans the currently open Unity scene, reports UI structure and assigned graphics, and discovers reference images. It does not modify scenes or graphic resources.",
+                "Phase 1 scans Scene/Prefab UI and, while Play Mode is running, the runtime UI instantiated by the game. It reports UI structure and assigned graphics, and discovers reference images. It does not modify scenes or graphic resources.",
                 MessageType.Info);
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Audit Active Scene", GUILayout.Height(28)))
+                if (GUILayout.Button("Audit Scene UI", GUILayout.Height(28)))
                 {
-                    AuditActiveScene();
+                    AuditSceneUI();
+                }
+
+                using (new EditorGUI.DisabledScope(!Application.isPlaying))
+                {
+                    if (GUILayout.Button("Audit Runtime UI", GUILayout.Height(28)))
+                    {
+                        AuditRuntimeUI();
+                    }
                 }
 
                 if (GUILayout.Button("Refresh References", GUILayout.Height(28)))
                 {
                     RefreshReferences();
                 }
+            }
+
+            if (!Application.isPlaying)
+            {
+                EditorGUILayout.HelpBox("Runtime UI audit requires Play Mode because this project instantiates many UI prefabs through UIManager at runtime.", MessageType.Warning);
             }
 
             EditorGUILayout.Space(8);
@@ -52,6 +64,7 @@ namespace QuizGame.Editor.UI
                 return;
             }
 
+            EditorGUILayout.LabelField("Mode", report.auditMode);
             EditorGUILayout.LabelField("Scene", report.sceneName);
             EditorGUILayout.LabelField("Path", report.scenePath);
             EditorGUILayout.LabelField("Canvas", report.canvasCount.ToString());
@@ -92,7 +105,7 @@ namespace QuizGame.Editor.UI
             EditorGUILayout.EndScrollView();
         }
 
-        private void AuditActiveScene()
+        private void AuditSceneUI()
         {
             var scene = SceneManager.GetActiveScene();
             if (!scene.IsValid())
@@ -101,16 +114,11 @@ namespace QuizGame.Editor.UI
                 return;
             }
 
-            report = new UIAuditReport
-            {
-                sceneName = scene.name,
-                scenePath = scene.path,
-                generatedAtUtc = DateTime.UtcNow.ToString("O")
-            };
+            report = CreateReport(scene.name, scene.path, "Scene");
 
             foreach (var root in scene.GetRootGameObjects())
             {
-                ScanTransform(root.transform, root.name, report);
+                ScanTransform(root.transform, root.name, report, null);
             }
 
             RefreshReferences();
@@ -118,9 +126,49 @@ namespace QuizGame.Editor.UI
             Repaint();
         }
 
-        private void ScanTransform(Transform current, string hierarchyPath, UIAuditReport target)
+        private void AuditRuntimeUI()
         {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("[HALL900 UI Auditor] Enter Play Mode before running the runtime UI audit.");
+                return;
+            }
+
+            var scene = SceneManager.GetActiveScene();
+            report = CreateReport(scene.name, scene.path, "Runtime");
+            var visited = new HashSet<int>();
+
+            var canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var canvas in canvases)
+            {
+                if (canvas == null) continue;
+                ScanTransform(canvas.transform, canvas.name, report, visited);
+            }
+
+            RefreshReferences();
+            SaveReport(report);
+            Repaint();
+            Debug.Log($"[HALL900 UI Auditor] Runtime audit complete. Canvases={report.canvasCount}, UI Elements={report.uiElementCount}, Images={report.imageCount}, Buttons={report.buttonCount}, TMP={report.tmpTextCount}.");
+        }
+
+        private static UIAuditReport CreateReport(string sceneName, string scenePath, string mode)
+        {
+            return new UIAuditReport
+            {
+                sceneName = sceneName,
+                scenePath = scenePath,
+                auditMode = mode,
+                generatedAtUtc = DateTime.UtcNow.ToString("O")
+            };
+        }
+
+        private void ScanTransform(Transform current, string hierarchyPath, UIAuditReport target, HashSet<int> visited)
+        {
+            if (current == null) return;
+
             var go = current.gameObject;
+            if (visited != null && !visited.Add(go.GetInstanceID())) return;
+
             var canvas = go.GetComponent<Canvas>();
             if (canvas != null)
             {
@@ -186,7 +234,7 @@ namespace QuizGame.Editor.UI
 
             foreach (Transform child in current)
             {
-                ScanTransform(child, hierarchyPath + "/" + child.name, target);
+                ScanTransform(child, hierarchyPath + "/" + child.name, target, visited);
             }
         }
 
@@ -235,7 +283,8 @@ namespace QuizGame.Editor.UI
             }
 
             var safeName = string.IsNullOrEmpty(value.sceneName) ? "UnknownScene" : value.sceneName;
-            var path = $"{directory}/{safeName}_UIAudit.json";
+            var safeMode = string.IsNullOrEmpty(value.auditMode) ? "Unknown" : value.auditMode;
+            var path = $"{directory}/{safeName}_{safeMode}_UIAudit.json";
             File.WriteAllText(path, JsonUtility.ToJson(value, true));
             AssetDatabase.ImportAsset(path);
         }
