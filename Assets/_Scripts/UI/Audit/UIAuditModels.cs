@@ -25,6 +25,7 @@ namespace QuizGame.UI.Audit
     {
         public string sceneName;
         public string scenePath;
+        public string auditMode;
         public int canvasCount;
         public int uiElementCount;
         public int imageCount;
