@@ -12,6 +12,7 @@ using QuizGame.Player;
 using QuizGame.MyRoom.MyItem;
 using QuizGame.Item;
 using QuizGame.Item.Interfaces;
+using QuizGame.Character;
 
 namespace QuizGame.MyRoom
 {
@@ -91,7 +92,39 @@ namespace QuizGame.MyRoom
 
         private void HandleEquipButtonClicked()
         {
+            // Open the character selection / cosmetic equip UI.
+            // This uses the same EquipItemSelectionUI pattern to let the player
+            // select a character and equip/unequip cosmetic items.
+            var characterManager = PlayerCharacterManager.Instance;
+            if (characterManager == null)
+            {
+                Debug.LogWarning("[MyRoom] PlayerCharacterManager not available.");
+                return;
+            }
 
+            // For now, cycle through available characters as a simple equip flow.
+            // A full UI can be wired later using EquipItemSelectionUI with cosmetic items.
+            var allCharacters = CharacterResourceManager.Instance.GetAllResources();
+            if (allCharacters == null || allCharacters.Length == 0)
+            {
+                Debug.LogWarning("[MyRoom] No character SOs found.");
+                return;
+            }
+
+            var currentIndex = 0;
+            for (int i = 0; i < allCharacters.Length; i++)
+            {
+                if (allCharacters[i].GetID() == characterManager.SelectedCharacterId)
+                {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            var nextIndex = (currentIndex + 1) % allCharacters.Length;
+            var nextCharacter = allCharacters[nextIndex];
+            _ = characterManager.SetSelectedCharacter(nextCharacter.GetID());
+            Debug.Log($"[MyRoom] Switched character to '{nextCharacter.GetID()}'.");
         }
 
         private void HandleTradeButtonClicked()

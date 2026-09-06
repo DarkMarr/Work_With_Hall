@@ -8,7 +8,7 @@ namespace QuizGame.Network.FirestoreDataModels
     [FirestoreData]
     public class PlayerData
     {        
-        [FirestoreProperty("profiileData")]
+        [FirestoreProperty("profileData")]
         public ProfileData ProfileData { get; set; }
                         
         [FirestoreProperty("energy")]

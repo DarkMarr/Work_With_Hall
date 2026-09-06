@@ -8,11 +8,14 @@ namespace QuizGame.Network.FirestoreDataModels
     {
         [FirestoreProperty("gems")]
         public int Gems { get; set; }
-        
+
         [FirestoreProperty("coins")]
         public int Coins { get; set; }
-        
+
         [FirestoreProperty("materials")]
         public Dictionary<string, int> Materials { get; set; }
+
+        [FirestoreProperty("items")]
+        public List<InventoryItem> Items { get; set; }
     }
 }

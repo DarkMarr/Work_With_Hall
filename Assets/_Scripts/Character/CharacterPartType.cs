@@ -13,5 +13,6 @@ public enum CharacterPartType
     HeadDecoration,
     ArmDecoration,
     BodyDecoration,
-    BackDecoration
+    BackDecoration,
+    Mouth
 }

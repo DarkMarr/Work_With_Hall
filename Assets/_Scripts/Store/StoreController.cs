@@ -2,6 +2,7 @@ using System;
 using QuizGame.Store.UI;
 using QuizGame.UI;
 using UnityEngine;
+using QuizGame.Network;
 
 namespace QuizGame.Store
 {
@@ -43,10 +44,11 @@ namespace QuizGame.Store
 
         public void OpenAvatarStore()
         {
-            // var avatarStoreUI = UIManager.Instance.Replace<AvatarStoreUI>(ref currentUI);
-            // avatarStoreUI.Init(
-            //     onBackButtonClicked: OpenMainStore
-            // );
+            var itemStoreUI = UIManager.Instance.Replace<ItemStoreUI>(ref currentUI);
+            var avatarProducts = AvatarStoreProductsResourceManager.Instance.GetAllResources();
+            itemStoreUI.Init(avatarProducts);
+            itemStoreUI.OnClosed += OpenMainStore;
+            itemStoreUI.OnPurchaseProduct += PurchaseProduct;
         }
 
         public void OpenRoomStore()
@@ -67,15 +69,42 @@ namespace QuizGame.Store
             itemStoreUI.OnPurchaseProduct += PurchaseProduct;
         }
 
-        public void PurchaseProduct(IInGameProductMetadata product)
+        /// <summary>
+        /// Handles purchasing an in-game product: checks currency balance, deducts cost, and grants the item.
+        /// </summary>
+        public async void PurchaseProduct(IInGameProductMetadata product)
         {
-            Debug.Log("Purchase");
             if (product == null) return;
-            //TODO: [Network] Subtract player currency here and give item
-            var currencyType =  product.GetPurchasedCurrency().GetCurrencyType();
-            var price =  product.GetPrice();
-            var id =  product.GetID();
-            Debug.Log($"[Store] User purchase product ID: {id}, currency: {currencyType}, price: {price}");
+
+            var currencyType = product.GetPurchasedCurrency().GetCurrencyType();
+            var price = product.GetPrice();
+            var productId = product.GetID();
+
+            Debug.Log($"[Store] User purchase product ID: {productId}, currency: {currencyType}, price: {price}");
+
+            // Try to spend the currency (checks balance internally).
+            var spendSuccess = await PlayerDataManager.Instance.TrySpendCurrency(currencyType, price);
+            if (!spendSuccess)
+            {
+                Debug.LogWarning($"[Store] Purchase failed: not enough {currencyType} for product '{productId}'.");
+                // TODO: Show "not enough currency" popup UI
+                return;
+            }
+
+            // Grant the item to the player inventory.
+            var item = product.GetItemProduct();
+            if (item != null)
+            {
+                await PlayerDataManager.Instance.AddInventoryItem(
+                    itemId: item.GetID(),
+                    itemName: item.GetName(),
+                    itemType: ((int)item.GetItemType()).ToString(),
+                    quantity: 1
+                );
+                Debug.Log($"[Store] Granted item '{item.GetID()}' to player.");
+            }
+
+            // TODO: Refresh any open store UI to reflect updated currency balance.
         }
 
         public void OpenTopUpStore()

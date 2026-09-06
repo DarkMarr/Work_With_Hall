@@ -62,16 +62,47 @@ namespace QuizGame.Gameplay
 
         void Start()
         {
-            var npc = SelectedDestinationInfo != null ? SelectedDestinationInfo.GetNPCPrefab() : null;
-            if (npc != null)
-            {
-                Instantiate(npc, npcPlaceHolder);
-            }
-
+            SpawnNPC();
             InitializeUI();
             InitializeQuizzes();
             StartCoroutine(StartQuestionSequence());
             SetGameMode(CurrentGameMode);
+        }
+
+        /// <summary>
+        /// Spawns an NPC in the gameplay scene.
+        /// In multiplayer, uses the destination's NPC. In single player, falls back to a random NPC from resources.
+        /// </summary>
+        private void SpawnNPC()
+        {
+            GameObject npcPrefab = null;
+
+            // Multiplayer: use destination's NPC if available.
+            if (SelectedDestinationInfo != null)
+            {
+                npcPrefab = SelectedDestinationInfo.GetNPCPrefab();
+            }
+
+            // Single player fallback: pick a random NPC from the NPC resource manager.
+            if (npcPrefab == null && CurrentGameMode == GameMode.SinglePlayer)
+            {
+                var npcManager = NpcResourceManager.Instance;
+                if (npcManager != null && npcManager.Count() > 0)
+                {
+                    var randomNpc = npcManager.GetRandomResource();
+                    npcPrefab = randomNpc?.GetNpcPrefab();
+                    Debug.Log($"[GameplayController] Single player: spawned random NPC '{randomNpc?.GetName()}'.");
+                }
+                else
+                {
+                    Debug.LogWarning("[GameplayController] No NPC resources found in Resources/NPCs.");
+                }
+            }
+
+            if (npcPrefab != null)
+            {
+                Instantiate(npcPrefab, npcPlaceHolder);
+            }
         }
 
         void Update()

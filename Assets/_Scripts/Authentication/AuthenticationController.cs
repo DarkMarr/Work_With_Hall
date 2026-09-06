@@ -171,6 +171,7 @@ namespace QuizGame.Authentication
             if (success)
             {
                 Debug.Log("[Authentication] Sign in with Google completed successfully.");
+                await PlayerDataManager.Instance.EnsureUserDocumentExists();
                 SceneManager.LoadScene(SceneList.MainMenu.ToString());
             }
             else
@@ -190,6 +191,8 @@ namespace QuizGame.Authentication
             bool isSuccess = await NetworkAuth.Instance.SignInWithEmailAndPassword(email, password);
             if (isSuccess)
             {
+                await PlayerDataManager.Instance.EnsureUserDocumentExists();
+
                 // Check if already created profile
                 var profileData = await PlayerDataManager.Instance.GetProfileData();
                 if (!String.IsNullOrEmpty(profileData?.ProfileName) && profileData.BodyType >= 0)
@@ -272,6 +275,7 @@ namespace QuizGame.Authentication
             if (isSuccess)
             {
                 Debug.Log("[Authentication] Create new account completed successfully.");
+                await PlayerDataManager.Instance.EnsureUserDocumentExists();
                 var defaultTransitionUI = UIManager.Instance.Replace<DefaultTransitionUI>(ref currentUI);
                 defaultTransitionUI.Init(
                     completeCondition: () => gotResponse,

@@ -132,11 +132,36 @@ MonoBehaviour:
     m_Hash: 130111906
     m_CategoryList: []
     m_OverrideEntries:
-    - m_Name: (UC)Yawn
-      m_Hash: 237311868
+    - m_Name: UC_rabbit_Yawn
+      m_Hash: 87110173
       m_Sprite: {fileID: 1376791584588777858, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
       m_FromMain: 0
       m_SpriteOverride: {fileID: 1376791584588777858, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+    - m_Name: UC_rabbit_Chloe
+      m_Hash: 313105096
+      m_Sprite: {fileID: 7325953537062597841, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 7325953537062597841, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+    - m_Name: UC_rabbit_Enzo
+      m_Hash: 369873884
+      m_Sprite: {fileID: 8144123675411048112, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 8144123675411048112, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+    - m_Name: UC_rabbit_Momo
+      m_Hash: 402527634
+      m_Sprite: {fileID: 7400887493998496949, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 7400887493998496949, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
+    - m_Name: R_rabbit_Harry
+      m_Hash: 628074489
+      m_Sprite: {fileID: -500436465659508511, guid: 4e48330d043de854b91c923304e5ed70, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -500436465659508511, guid: 4e48330d043de854b91c923304e5ed70, type: 3}
+    - m_Name: R_rabbit_Lopez
+      m_Hash: 792622920
+      m_Sprite: {fileID: -6590036218590304918, guid: 0618d7bf349b60442b6d799cf968c567, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -6590036218590304918, guid: 0618d7bf349b60442b6d799cf968c567, type: 3}
     - m_Name: R_rabbit_Puffin
       m_Hash: 142601804
       m_Sprite: {fileID: -4158976520473574568, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
@@ -162,23 +187,8 @@ MonoBehaviour:
       m_Sprite: {fileID: 1658852786831138603, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
       m_FromMain: 0
       m_SpriteOverride: {fileID: 1658852786831138603, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
-    - m_Name: UC_rabbit_Chloe
-      m_Hash: 313105096
-      m_Sprite: {fileID: 7325953537062597841, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
-      m_FromMain: 0
-      m_SpriteOverride: {fileID: 7325953537062597841, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
-    - m_Name: UC_rabbit_Enzo
-      m_Hash: 369873884
-      m_Sprite: {fileID: 8144123675411048112, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
-      m_FromMain: 0
-      m_SpriteOverride: {fileID: 8144123675411048112, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
-    - m_Name: UC_rabbit_Momo
-      m_Hash: 402527634
-      m_Sprite: {fileID: 7400887493998496949, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
-      m_FromMain: 0
-      m_SpriteOverride: {fileID: 7400887493998496949, guid: 6d95ddd74670f82408eed8f618154c05, type: 3}
     m_FromMain: 0
-    m_EntryOverrideCount: 9
+    m_EntryOverrideCount: 11
   - m_Name: Arm L
     m_Hash: 140943257
     m_CategoryList: []
@@ -488,5 +498,5 @@ MonoBehaviour:
     m_FromMain: 0
     m_EntryOverrideCount: 3
   m_PrimaryLibraryGUID: 
-  m_ModificationHash: 639241216233034819
+  m_ModificationHash: 639241279030544691
   m_Version: 1
