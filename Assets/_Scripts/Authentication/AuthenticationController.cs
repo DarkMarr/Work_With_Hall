@@ -185,7 +185,7 @@ namespace QuizGame.Authentication
 
         public async void SignInAccount(string email, string password)
         {
-            Debug.Log($"[Authentication] Sign in for email:{email}, Password:{password}");
+            Debug.Log($"[Authentication] Sign in for email:{email}");
             var gotResponse = false;
 
             bool isSuccess = await NetworkAuth.Instance.SignInWithEmailAndPassword(email, password);
@@ -267,7 +267,7 @@ namespace QuizGame.Authentication
             }
 
             onActionValid?.Invoke();
-            Debug.Log($"[Authentication] Create new account >> email:{email}, Password:{password}, Re-Enter Password:{reEnterPassword}");
+            Debug.Log($"[Authentication] Create new account >> email:{email}");
 
             var gotResponse = false;
 
@@ -299,17 +299,25 @@ namespace QuizGame.Authentication
         {
             Debug.Log($"[Authentication] Recover account >> email:{email}");
 
-            //TODO: [Network]  Replace with real API
             var gotResponse = false;
+            var isSuccess = false;
             var defaultTransitionUI = UIManager.Instance.Replace<DefaultTransitionUI>(ref currentUI);
             defaultTransitionUI.Init(
                 completeCondition: () => gotResponse,
                 onTransitionEnd: () =>
                 {
-                    var recoverSubmittedUI = UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI);
-                    Debug.Log("[Authentication] Recover email sent!");
+                    if (isSuccess)
+                    {
+                        UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI);
+                        Debug.Log("[Authentication] Recover email sent!");
+                        return;
+                    }
+
+                    Debug.LogError("[Authentication] Failed to send recover email.");
+                    OpenRecoverAccountUI();
                 });
-            await Task.Delay(2000);
+
+            isSuccess = await NetworkAuth.Instance.SendPasswordResetEmail(email);
             gotResponse = true;
         }
     }

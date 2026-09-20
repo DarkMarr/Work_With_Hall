@@ -40,6 +40,11 @@ namespace QuizGame.Gameplay
         [SerializeField]
         private Transform npcPlaceHolder;
 
+        // The multiplayer narrator slot lives under multiplayerScenario, which SetGameMode
+        // disables in single player, so single player needs its own slot.
+        [SerializeField]
+        private Transform singlePlayerNpcPlaceHolder;
+
         [SerializeField]
         private int quizCount = 20;
 
@@ -101,13 +106,18 @@ namespace QuizGame.Gameplay
 
             if (npcPrefab != null)
             {
-                Instantiate(npcPrefab, npcPlaceHolder);
+                var placeHolder = CurrentGameMode == GameMode.SinglePlayer && singlePlayerNpcPlaceHolder != null
+                    ? singlePlayerNpcPlaceHolder
+                    : npcPlaceHolder;
+                Instantiate(npcPrefab, placeHolder);
             }
         }
 
         void Update()
         {
+#if UNITY_EDITOR
             HandleDebugInput();
+#endif
             UpdateQuizTimer();
         }
 
@@ -375,6 +385,7 @@ namespace QuizGame.Gameplay
             SceneManager.LoadScene(SceneList.MainMenu.ToString());
         }
 
+#if UNITY_EDITOR
         private void HandleDebugInput()
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -382,6 +393,7 @@ namespace QuizGame.Gameplay
                 EndGame();
             }
         }
+#endif
 
         public string GetLuckyRewardDataTempJson() => @"
             {

@@ -34,8 +34,8 @@ namespace QuizGame.Destination
         }
 
         public string GetID() => npcID;
-        public string GetName() => localizedName.GetLocalizedString();
-        public string GetDescription() => localizedDescription.GetLocalizedString();
+        public string GetName() => localizedName.IsEmpty ? npcID : localizedName.GetLocalizedString();
+        public string GetDescription() => localizedDescription.IsEmpty ? string.Empty : localizedDescription.GetLocalizedString();
         public Sprite GetSprite() => previewSprite;
         public GameObject GetNpcPrefab() => npcPrefab;
     }

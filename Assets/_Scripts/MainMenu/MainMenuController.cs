@@ -189,6 +189,7 @@ namespace QuizGame.MainMenu
             var libraryQuizCategory = new List<QuizCategory>() { QuizCategory.General, QuizCategory.Geography, QuizCategory.History, QuizCategory.Science };  //TODO: Make some kind of game settings might be better practice.
             GameplayController.SelectedQuizCategories = libraryQuizCategory;
             GameplayController.CurrentGameMode = GameplayController.GameMode.SinglePlayer;
+            UIManager.Instance.CloseAll();
             SceneManager.LoadScene(SceneList.Gameplay.ToString());
         }
 
@@ -197,6 +198,7 @@ namespace QuizGame.MainMenu
             var playgroundQuizCategory = new List<QuizCategory>() { QuizCategory.General, QuizCategory.PopCulture, QuizCategory.Entertainment, QuizCategory.Sports };  //TODO: Make some kind of game settings might be better practice.
             GameplayController.SelectedQuizCategories = playgroundQuizCategory;
             GameplayController.CurrentGameMode = GameplayController.GameMode.SinglePlayer;
+            UIManager.Instance.CloseAll();
             SceneManager.LoadScene(SceneList.Gameplay.ToString());
         }
 
@@ -245,6 +247,7 @@ namespace QuizGame.MainMenu
 
         private void HandleMyRoomButtonClicked()
         {
+            UIManager.Instance.CloseAll();
             SceneManager.LoadScene(SceneList.MyRoom.ToString());
         }
 

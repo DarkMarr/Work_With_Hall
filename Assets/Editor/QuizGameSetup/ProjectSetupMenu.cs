@@ -26,14 +26,13 @@ namespace QuizGame.Editor.Setup
             var resourcePath = "Assets/Resources/Characters";
             EnsureDirectoryExists(resourcePath);
 
-            // Find character prefabs in the project.
-            var rabbitPrefab = FindPrefabByPartialName("001_Rabbit");
-            var catPrefab = FindPrefabByPartialName("002_Cat");
-            var dogPrefab = FindPrefabByPartialName("003_Dog");
+            foreach (var characterName in new[] { "001_Rabbit", "002_Cat", "003_Dog" })
+            {
+                var prefab = FindCharacterPrefab(characterName);
+                if (prefab == null) continue;
 
-            CreateCharacterSO(resourcePath, "001_Rabbit_base", rabbitPrefab);
-            CreateCharacterSO(resourcePath, "002_Cat_base", catPrefab);
-            CreateCharacterSO(resourcePath, "003_Dog_base", dogPrefab);
+                CreateCharacterSO(resourcePath, prefab.name, prefab);
+            }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -214,19 +213,39 @@ namespace QuizGame.Editor.Setup
             }
         }
 
-        private static GameObject FindPrefabByPartialName(string partialName)
+        /// <summary>
+        /// Several prefabs share a character's name (e.g. "001_Rabbit" and "001_Rabbit_base"),
+        /// but only the one carrying a CharacterSpriteMixer supports outfit mixing.
+        /// </summary>
+        private static GameObject FindCharacterPrefab(string partialName)
         {
-            var guids = AssetDatabase.FindAssets("t:GameObject", new[] { "Assets/Prefabs" });
+            var guids = AssetDatabase.FindAssets("t:GameObject", new[] { "Assets/Prefabs/Char" });
+            GameObject fallback = null;
+
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                if (path.Contains(partialName))
+                if (!Path.GetFileNameWithoutExtension(path).StartsWith(partialName)) continue;
+
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null) continue;
+
+                if (prefab.GetComponentInChildren<CharacterSpriteMixer>(true) != null)
                 {
-                    return AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                    return prefab;
                 }
+                fallback ??= prefab;
             }
-            Debug.LogWarning($"[QuizGameSetup] Prefab matching '{partialName}' not found in Assets/Prefabs.");
-            return null;
+
+            if (fallback == null)
+            {
+                Debug.LogWarning($"[QuizGameSetup] Prefab matching '{partialName}' not found in Assets/Prefabs/Char.");
+            }
+            else
+            {
+                Debug.LogWarning($"[QuizGameSetup] No CharacterSpriteMixer found on any '{partialName}' prefab. Using '{fallback.name}' — outfits will not apply until a mixer is added.");
+            }
+            return fallback;
         }
 
         #endregion

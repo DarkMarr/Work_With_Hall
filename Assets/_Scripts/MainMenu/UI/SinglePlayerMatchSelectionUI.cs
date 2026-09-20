@@ -28,8 +28,8 @@ namespace QuizGame.MainMenu.UI
 
         void Start()
         {
-            playgroundButton.onClick.AddListener(() => OnLibraryButtonClicked?.Invoke());
-            libraryButton.onClick.AddListener(() => OnPlaygroundButtonClicked?.Invoke());
+            libraryButton.onClick.AddListener(() => OnLibraryButtonClicked?.Invoke());
+            playgroundButton.onClick.AddListener(() => OnPlaygroundButtonClicked?.Invoke());
             leaderboardButton.onClick.AddListener(() => OnLeaderboardButtonClicked?.Invoke());
             backButton.onClick.AddListener(() =>
             {

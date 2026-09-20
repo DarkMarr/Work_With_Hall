@@ -34,7 +34,7 @@ namespace QuizGame.Character
         }
 
         public string GetID() => characterID;
-        public string GetName() => localizedName.GetLocalizedString();
+        public string GetName() => localizedName.IsEmpty ? characterID : localizedName.GetLocalizedString();
         public Sprite GetSprite() => previewSprite;
         public GameObject GetCharacterPrefab() => characterPrefab;
     }
