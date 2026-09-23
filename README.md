@@ -110,7 +110,7 @@ The project uses **modular Assembly Definitions** (`.asmdef`) to enforce compile
 
 ```
 CharacterInfoSO (ScriptableObject)
-    └── references characterPrefab (e.g. "001_Rabbit_base")
+    └── references characterPrefab (e.g. "001_Rabbit")
             └── has CharacterSpriteMixer component
                     └── uses SpriteLibrary + SpriteResolver (Unity 2D Animation)
 
@@ -141,7 +141,7 @@ CharacterCosmeticItemSO (extends EquipmentItemSO)
 1. Create the character prefab with `SpriteResolver` children (one per body part) in `Assets/Prefabs/Char/`.
 2. Assign a `SpriteLibraryAsset` with appropriate categories/labels.
 3. Create a `CharacterInfoSO`: **Assets → Create → QuizGame → Character → Character**
-4. Place it in `Assets/Resources/Characters/` with name matching the prefab (e.g. `004_Bear_base.asset`).
+4. Place it in `Assets/Resources/Characters/` with name matching the prefab (e.g. `004_Bear.asset`). Where several prefabs share a name, match the one that actually carries the `CharacterSpriteMixer` — for the shipped characters that is `001_Rabbit` / `002_Cat` / `003_Dog`, **not** the `_base` variants, which have no mixer.
 5. Add a `PlayerCharacter` component and `CharacterSpriteMixer` to the prefab (or use the editor tool).
 
 ### Adding a Cosmetic Item
@@ -152,20 +152,24 @@ CharacterCosmeticItemSO (extends EquipmentItemSO)
    - **Sprite Label**: the exact label name in the character's sprite library category
    - **Restricted Character ID**: (optional) limit to one character; leave empty for universal
    - **Item ID / Sprite / Name**: standard item metadata from `BaseItemSO`
-3. Place in `Assets/Resources/Characters/Cosmetics/` (for general catalog) or create a corresponding `InGameProductMetadataSO` for store sale.
+3. Create a corresponding `InGameProductMetadataSO` and place it in `Assets/Resources/InGameProducts/AvatarStore/` so the item reaches the game through the store. There is no general cosmetics catalog folder yet — no `ResourceManager` loads `CharacterCosmeticItemSO` on its own.
 
 ### Equipping Cosmetics at Runtime
 
 ```csharp
-// Equip
-var cosmetic = CharacterResourceManager.Instance.GetResource<CharacterCosmeticItemSO>("hat_red");
-await PlayerCharacterManager.Instance.EquipCosmetic(cosmetic);
+// Equip — cosmetics are only reachable through their store product,
+// so look the product up by its productID and unwrap the item.
+var product = AvatarStoreProductsResourceManager.Instance.GetResource("hat_red");
+if (product?.GetItemProduct() is CharacterCosmeticItemSO cosmetic)
+{
+    await PlayerCharacterManager.Instance.EquipCosmetic(cosmetic);
+}
 
 // Unequip
 await PlayerCharacterManager.Instance.UnequipPart(CharacterPartType.HeadDecoration);
 
 // Change character
-await PlayerCharacterManager.Instance.SetSelectedCharacter("003_Dog_base");
+await PlayerCharacterManager.Instance.SetSelectedCharacter("003_Dog");
 ```
 
 ---
@@ -276,7 +280,9 @@ When no destination is selected (single player "Library" or "Playground"), the `
 var npcManager = NpcResourceManager.Instance;
 var randomNpc = npcManager.GetRandomResource();
 var npcPrefab = randomNpc.GetNpcPrefab();
-Instantiate(npcPrefab, npcPlaceHolder);
+// singlePlayerNpcPlaceHolder, not npcPlaceHolder: the multiplayer narrator slot
+// sits under multiplayerScenario, which SetGameMode disables in single player.
+Instantiate(npcPrefab, singlePlayerNpcPlaceHolder);
 ```
 
 ### Multiplayer Mode
