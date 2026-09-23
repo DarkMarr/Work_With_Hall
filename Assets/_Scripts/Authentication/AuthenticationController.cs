@@ -1,8 +1,11 @@
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using QuizGame.Authentication.UI;
+using QuizGame.Character;
 using QuizGame.UI;
 using QuizGame.Scene;
 using QuizGame.Network;
@@ -55,6 +58,7 @@ namespace QuizGame.Authentication
                         break;
 
                     case CreateProfileBodyTypeUI:
+                    case CreateCharacterUI:
                         OpenCreateProfileNameUI();
                         break;
                 }
@@ -145,6 +149,22 @@ namespace QuizGame.Authentication
             );
         }
 
+        private void OpenCreateCharacterUI()
+        {
+            // Starter avatars: every Uncommon avatar, in design-sheet ID order.
+            var starterCharacters = CharacterResourceManager.Instance.GetAllResources()
+                .Where(character => character.GetRarity() == CharacterRarity.Uncommon)
+                .OrderBy(character => character.GetAvatarCode(), StringComparer.Ordinal)
+                .ToArray();
+
+            var createCharacterUI = UIManager.Instance.Replace<CreateCharacterUI>(ref currentUI);
+            createCharacterUI.Init(starterCharacters, character =>
+            {
+                CreateCharacter(character);
+                createCharacterUI.Close();
+            });
+        }
+
         private void OpenCreateProfileNameUI()
         {
             var createProfileNameUI = UIManager.Instance.Replace<CreateProfileNameUI>(ref currentUI);
@@ -195,9 +215,9 @@ namespace QuizGame.Authentication
 
                 // Check if already created profile
                 var profileData = await PlayerDataManager.Instance.GetProfileData();
-                if (!String.IsNullOrEmpty(profileData?.ProfileName) && profileData.BodyType >= 0)
+                if (!String.IsNullOrEmpty(profileData?.ProfileName) && !String.IsNullOrEmpty(profileData.CharacterId))
                 {
-                    Debug.Log($"[Authentication] Profile data found. Profile Name: '{profileData.ProfileName}', Body Type: {profileData.BodyType}");
+                    Debug.Log($"[Authentication] Profile data found. Profile Name: '{profileData.ProfileName}', Character: {profileData.CharacterId}");
                     OpenMainMenu();
                     return;
                 }
@@ -237,8 +257,26 @@ namespace QuizGame.Authentication
                 return;
             }
 
-            OpenCreateBodyTypeUI();
+            OpenCreateCharacterUI();
             Debug.Log("[Authentication] Create profile name done!");
+        }
+
+        public async void CreateCharacter(CharacterInfoSO character)
+        {
+            Debug.Log($"[Authentication] Create character >> character id:{character.GetID()}");
+
+            bool isSuccess = await PlayerDataManager.Instance.UpdateSelectedCharacter(character.GetID())
+                && await PlayerDataManager.Instance.UpdateEquippedItems(new Dictionary<string, string>());
+            // TODO: Handle failure ??
+            if (!isSuccess)
+            {
+                Debug.LogError("[Authentication] Failed to save selected character.");
+                OpenCreateCharacterUI();
+                return;
+            }
+
+            SceneManager.LoadScene(SceneList.MainMenu.ToString());
+            Debug.Log("[Authentication] Create character done!");
         }
 
         public async void CreateProfileBodyType(int bodyTypeID)

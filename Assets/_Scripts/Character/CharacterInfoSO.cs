@@ -25,6 +25,22 @@ namespace QuizGame.Character
         [SerializeField, ShowAssetPreview]
         private Sprite previewSprite;
 
+        [Header("Avatar")]
+        [SerializeField, Tooltip("Avatar ID from the design sheet, e.g. 132001.")]
+        private string avatarCode;
+
+        [SerializeField]
+        private CharacterRarity rarity;
+
+        [SerializeField]
+        private CharacterSpecies species;
+
+        [SerializeField]
+        private LocalizedString localizedDescription;
+
+        [SerializeField, Tooltip("True while the prefab is a stand-in until the avatar's own art is delivered.")]
+        private bool isPlaceholderArt;
+
         private void OnValidate()
         {
             if (string.IsNullOrEmpty(characterID))
@@ -37,5 +53,10 @@ namespace QuizGame.Character
         public string GetName() => localizedName.IsEmpty ? characterID : localizedName.GetLocalizedString();
         public Sprite GetSprite() => previewSprite;
         public GameObject GetCharacterPrefab() => characterPrefab;
+        public string GetAvatarCode() => avatarCode;
+        public CharacterRarity GetRarity() => rarity;
+        public CharacterSpecies GetSpecies() => species;
+        public string GetDescription() => localizedDescription.IsEmpty ? string.Empty : localizedDescription.GetLocalizedString();
+        public bool IsPlaceholderArt() => isPlaceholderArt;
     }
 }

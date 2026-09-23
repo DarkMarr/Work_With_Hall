@@ -52,7 +52,11 @@ namespace QuizGame.Character
         {
             if (spriteMixer == null)
             {
-                Debug.LogWarning("[PlayerCharacter] No CharacterSpriteMixer found.");
+                // Whole-art avatars (e.g. UC_rabbit_*) have no mixer; only complain if cosmetics were requested.
+                if (equippedLabels != null && equippedLabels.Count > 0)
+                {
+                    Debug.LogWarning("[PlayerCharacter] No CharacterSpriteMixer found; cosmetics cannot be applied.");
+                }
                 return;
             }
 
