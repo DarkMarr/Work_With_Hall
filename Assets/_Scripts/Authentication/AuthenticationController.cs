@@ -19,19 +19,19 @@ namespace QuizGame.Authentication
         private Sprite[] bodyTypeSprites; //TODO: replace with real sprites
 
         private BaseUI currentUI;
+        private bool profileOperationRunning;
 
         private void Start()
         {
             UIManager.Instance.CloseAll();
 
             var startGameUI = UIManager.Instance.Replace<StartGameUI>(ref currentUI);
-            startGameUI.OnStartGameButtonClicked += () =>
+            startGameUI.OnStartGameButtonClicked += async () =>
             {
                 // Check if the user is already signed in
                 if (NetworkAuth.Instance.IsAlreadySignedIn())
                 {
-                    Debug.Log("[Authentication] User already signed in, opening main menu.");
-                    OpenMainMenu();
+                    await ContinueAfterSignIn();
                     return;
                 }
                 // If not signed in, open the login or register UI
@@ -42,7 +42,7 @@ namespace QuizGame.Authentication
         private void Update()
         {
             //Back button on phone
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (!profileOperationRunning && Input.GetKeyDown(KeyCode.Escape))
             {
                 switch (currentUI)
                 {
@@ -161,7 +161,6 @@ namespace QuizGame.Authentication
             createCharacterUI.Init(starterCharacters, character =>
             {
                 CreateCharacter(character);
-                createCharacterUI.Close();
             });
         }
 
@@ -171,15 +170,13 @@ namespace QuizGame.Authentication
             createProfileNameUI.Init(profileName =>
             {
                 CreateProfileName(profileName);
-                createProfileNameUI.Close();
             });
         }
 
         private void SignInWithApple()
         {
-            //TODO: [Network] Replace with real API
-            Debug.Log("[Authentication] Sign in with Apple");
-            SceneManager.LoadScene(SceneList.MainMenu.ToString());
+            // Do not admit an unauthenticated player while this provider is unimplemented.
+            ShowProfileMessage("Apple sign-in is not available yet. Please use another sign-in method.");
         }
 
         private async void SignInWithGoogle()
@@ -191,8 +188,7 @@ namespace QuizGame.Authentication
             if (success)
             {
                 Debug.Log("[Authentication] Sign in with Google completed successfully.");
-                await PlayerDataManager.Instance.EnsureUserDocumentExists();
-                SceneManager.LoadScene(SceneList.MainMenu.ToString());
+                await ContinueAfterSignIn();
             }
             else
             {
@@ -206,33 +202,11 @@ namespace QuizGame.Authentication
         public async void SignInAccount(string email, string password)
         {
             Debug.Log($"[Authentication] Sign in for email:{email}");
-            var gotResponse = false;
 
             bool isSuccess = await NetworkAuth.Instance.SignInWithEmailAndPassword(email, password);
             if (isSuccess)
             {
-                await PlayerDataManager.Instance.EnsureUserDocumentExists();
-
-                // Check if already created profile
-                var profileData = await PlayerDataManager.Instance.GetProfileData();
-                if (!String.IsNullOrEmpty(profileData?.ProfileName) && !String.IsNullOrEmpty(profileData.CharacterId))
-                {
-                    Debug.Log($"[Authentication] Profile data found. Profile Name: '{profileData.ProfileName}', Character: {profileData.CharacterId}");
-                    OpenMainMenu();
-                    return;
-                }
-
-                var defaultTransitionUI = UIManager.Instance.Replace<DefaultTransitionUI>(ref currentUI);
-                defaultTransitionUI.Init(
-                    completeCondition: () => gotResponse,
-                    onTransitionEnd: () =>
-                    {
-                        OpenCreateProfileNameUI();
-                        Debug.Log("[Authentication] Sign in done!");
-                    });
-
-                // await Task.Delay(2000);
-                gotResponse = true;
+                await ContinueAfterSignIn();
             }
             else
             {
@@ -245,38 +219,73 @@ namespace QuizGame.Authentication
 
         public async void CreateProfileName(string profileName)
         {
-            Debug.Log($"[Authentication] Create profile name >> profile name:{profileName}");
-
-            //TODO: [Network]  Replace with real API
-            bool isSuccess = await PlayerDataManager.Instance.UpdateProfileName(profileName);
-
-            // TODO: Handle failure ??
-            if (!isSuccess)
+            if (profileOperationRunning || string.IsNullOrWhiteSpace(profileName)) return;
+            profileOperationRunning = true;
+            var ui = currentUI as CreateProfileNameUI;
+            ui?.SetBusy(true);
+            try
             {
-                Debug.LogError("[Authentication] Failed to create profile name.");
-                return;
+                if (!await PlayerDataManager.Instance.UpdateProfileName(profileName.Trim()))
+                {
+                    ShowProfileMessage("Your profile name could not be saved. Please try again.");
+                    return;
+                }
+                if (this != null) OpenCreateCharacterUI();
             }
-
-            OpenCreateCharacterUI();
-            Debug.Log("[Authentication] Create profile name done!");
+            catch (Exception e) { Debug.LogException(e); if (this != null) ShowProfileMessage("Your profile name could not be saved. Please try again."); }
+            finally { profileOperationRunning = false; if (ui != null) ui.SetBusy(false); }
         }
 
         public async void CreateCharacter(CharacterInfoSO character)
         {
-            Debug.Log($"[Authentication] Create character >> character id:{character.GetID()}");
-
-            bool isSuccess = await PlayerDataManager.Instance.UpdateSelectedCharacter(character.GetID())
-                && await PlayerDataManager.Instance.UpdateEquippedItems(new Dictionary<string, string>());
-            // TODO: Handle failure ??
-            if (!isSuccess)
+            if (profileOperationRunning || character == null || character.GetCharacterPrefab() == null) return;
+            profileOperationRunning = true;
+            var ui = currentUI as CreateCharacterUI;
+            ui?.SetBusy(true);
+            try
             {
-                Debug.LogError("[Authentication] Failed to save selected character.");
-                OpenCreateCharacterUI();
-                return;
+                if (!await PlayerDataManager.Instance.SelectCharacterAndClearOutfit(character.GetID()))
+                {
+                    if (this != null) ShowProfileMessage("Your character could not be saved. Please try again.");
+                    return;
+                }
+                if (this != null) SceneManager.LoadScene(SceneList.MainMenu.ToString());
             }
+            catch (Exception e) { Debug.LogException(e); if (this != null) ShowProfileMessage("Your character could not be saved. Please try again."); }
+            finally { profileOperationRunning = false; if (ui != null) ui.SetBusy(false); }
+        }
 
-            SceneManager.LoadScene(SceneList.MainMenu.ToString());
-            Debug.Log("[Authentication] Create character done!");
+        private async Task ContinueAfterSignIn()
+        {
+            if (profileOperationRunning) return;
+            profileOperationRunning = true;
+            try
+            {
+                if (!await PlayerDataManager.Instance.EnsureUserDocumentExists())
+                    throw new InvalidOperationException("User document could not be prepared.");
+                var profile = await PlayerDataManager.Instance.GetProfileData();
+                if (this == null) return;
+                if (profile == null) throw new InvalidOperationException("Profile could not be read.");
+                if (string.IsNullOrWhiteSpace(profile.ProfileName)) OpenCreateProfileNameUI();
+                else if (string.IsNullOrWhiteSpace(profile.CharacterId) || !CharacterResourceManager.Instance.GetAllResources().Any(c => c.GetID() == profile.CharacterId && c.GetCharacterPrefab() != null)) OpenCreateCharacterUI();
+                else OpenMainMenu();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Authentication] Profile check failed: {e.Message}");
+                if (this != null)
+                {
+                    OpenLoginOrRegisterUI();
+                    ShowProfileMessage("Your profile could not be loaded. Please sign in again to retry.");
+                }
+            }
+            finally { profileOperationRunning = false; }
+        }
+
+        private void ShowProfileMessage(string message)
+        {
+            var popup = UIManager.Instance.Create<MessagePopupUI>(currentUI);
+            popup.Setup("Profile", message, "OK", () => popup.Close());
         }
 
         public async void CreateProfileBodyType(int bodyTypeID)
@@ -313,18 +322,7 @@ namespace QuizGame.Authentication
             if (isSuccess)
             {
                 Debug.Log("[Authentication] Create new account completed successfully.");
-                await PlayerDataManager.Instance.EnsureUserDocumentExists();
-                var defaultTransitionUI = UIManager.Instance.Replace<DefaultTransitionUI>(ref currentUI);
-                defaultTransitionUI.Init(
-                    completeCondition: () => gotResponse,
-                    onTransitionEnd: () =>
-                    {
-                        OpenLoginOrRegisterUI();
-                        Debug.Log("[Authentication] Create account done!");
-                    });
-
-                // await Task.Delay(2000);
-                gotResponse = true;
+                await ContinueAfterSignIn();
             }
             else
             {

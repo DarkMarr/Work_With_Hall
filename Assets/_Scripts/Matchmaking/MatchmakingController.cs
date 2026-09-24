@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using QuizGame.Character;
 using QuizGame.Destination;
 using QuizGame.Destination.UI;
 using QuizGame.Item;
@@ -47,6 +48,23 @@ namespace QuizGame.Matchmaking
         {
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
+        }
+
+        /// <summary>
+        /// Prefab of the player's selected avatar, or null (keep the slot placeholder) if none is loaded yet.
+        /// </summary>
+        private static GameObject GetSelectedCharacterPrefab()
+        {
+            var characterId = PlayerCharacterManager.Instance.SelectedCharacterId;
+            if (string.IsNullOrEmpty(characterId)) return null;
+
+            var characterInfo = CharacterResourceManager.Instance.GetResource(characterId);
+            if (characterInfo == null)
+            {
+                Debug.LogWarning($"[Matchmaking] Selected character '{characterId}' not found.");
+                return null;
+            }
+            return characterInfo.GetCharacterPrefab();
         }
 
         private void CloseMatchmakingVisuals()
@@ -221,6 +239,7 @@ namespace QuizGame.Matchmaking
 
             Debug.Log("[Matchmaking] Simulating player joins...");
 
+            matchmakingWorldSpaceVisual.SetPlayerAvatar(0, GetSelectedCharacterPrefab());
             matchmakingWorldSpaceVisual.ShowJoinedPlayer(0); // Show self as joined
             var selectedDestination = DestinationResourceManager.Instance.GetRandomResource(); // TODO: [Network] Get the selected map from player vote
             playerSelectedDestinations.Add(0, selectedDestination);

@@ -45,6 +45,8 @@ namespace QuizGame.Network
 
         private DocumentReference GetUserDocument()
         {
+            // A singleton can be created and used before Unity calls Start.
+            if (db == null || auth == null) InitializeFirestore();
             var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
             {
@@ -184,6 +186,17 @@ namespace QuizGame.Network
         {
             Debug.Log($"[PlayerDataManager] UpdateSelectedCharacter >> characterId: {characterId}");
             return await UpdateUserField("profileData.characterId", characterId ?? string.Empty);
+        }
+
+        /// <summary>Changes the character and clears its outfit in one atomic document update.</summary>
+        public Task<bool> SelectCharacterAndClearOutfit(string characterId)
+        {
+            if (string.IsNullOrWhiteSpace(characterId)) return Task.FromResult(false);
+            return UpdateUserFields(new Dictionary<string, object>
+            {
+                { "profileData.characterId", characterId },
+                { "profileData.equippedItems", new Dictionary<string, string>() }
+            });
         }
 
         /// <summary>

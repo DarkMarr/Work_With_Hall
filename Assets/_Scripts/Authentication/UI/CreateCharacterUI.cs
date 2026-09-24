@@ -28,12 +28,14 @@ namespace QuizGame.Authentication.UI
         private Button nextButton;
 
         private CharacterInfoSO[] characters;
+        private bool isBusy;
 
         public void Init(CharacterInfoSO[] characterList, Action<CharacterInfoSO> onCharacterSelected)
         {
             characters = characterList;
             if (characters == null || characters.Length == 0)
             {
+                SetBusy(true);
                 Debug.LogError("[CreateCharacterUI] No characters to select.");
                 return;
             }
@@ -44,9 +46,17 @@ namespace QuizGame.Authentication.UI
 
             nextButton.onClick.AddListener(() =>
             {
-                nextButton.interactable = false;
+                if (isBusy) return;
                 onCharacterSelected?.Invoke(characters[characterSelection.SelectingIndex]);
             });
+            SetBusy(false);
+        }
+
+        public void SetBusy(bool busy)
+        {
+            isBusy = busy;
+            foreach (var button in GetComponentsInChildren<Button>(true))
+                button.interactable = !busy && characters != null && characters.Length > 0;
         }
 
         private void RefreshDetails(int index)

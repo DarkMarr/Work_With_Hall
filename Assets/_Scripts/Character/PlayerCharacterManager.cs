@@ -115,7 +115,9 @@ namespace QuizGame.Character
                 return;
             }
 
-            var instance = Instantiate(prefab, spawnPoint.transform.position, Quaternion.identity);
+            var instance = spawnPoint.ParentToSpawnPoint
+                ? Instantiate(prefab, spawnPoint.transform.position, Quaternion.identity, spawnPoint.transform)
+                : Instantiate(prefab, spawnPoint.transform.position, Quaternion.identity);
             if (!spawnPoint.FaceRight)
             {
                 instance.transform.localScale = new Vector3(-1f, 1f, 1f);
@@ -170,11 +172,12 @@ namespace QuizGame.Character
         {
             if (string.IsNullOrEmpty(characterId)) return;
 
+            var info = CharacterResourceManager.Instance.GetResource(characterId);
+            if (info == null || info.GetCharacterPrefab() == null) return;
+            if (!await PlayerDataManager.Instance.SelectCharacterAndClearOutfit(characterId)) return;
+
             currentOutfit.CharacterId = characterId;
             currentOutfit.EquippedItems = new Dictionary<string, string>(); // Clear cosmetics on character change.
-
-            await PlayerDataManager.Instance.UpdateSelectedCharacter(characterId);
-            await PlayerDataManager.Instance.UpdateEquippedItems(currentOutfit.EquippedItems);
 
             // Respawn the player with the new character.
             var spawnPoint = FindActiveSpawnPoint();
@@ -192,6 +195,11 @@ namespace QuizGame.Character
         public async Task EquipCosmetic(CharacterCosmeticItemSO cosmeticItem)
         {
             if (cosmeticItem == null || currentPlayer == null) return;
+            if (currentPlayer.SpriteMixer == null)
+            {
+                Debug.LogWarning("[PlayerCharacterManager] This avatar does not support separate cosmetics.");
+                return;
+            }
 
             // Check character restriction.
             if (cosmeticItem.IsRestrictedToCharacter(currentOutfit.CharacterId))
