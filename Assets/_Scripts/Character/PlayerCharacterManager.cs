@@ -68,6 +68,8 @@ namespace QuizGame.Character
         {
             // Load profile data to get saved character and equipped items.
             var profileData = await PlayerDataManager.Instance.GetProfileData();
+            // The scene may have changed while the profile request was in flight.
+            if (this == null || spawnPoint == null || !spawnPoint.gameObject.activeInHierarchy) return;
             if (profileData != null)
             {
                 currentOutfit.CharacterId = profileData.CharacterId ?? string.Empty;

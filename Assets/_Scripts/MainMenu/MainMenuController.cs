@@ -56,12 +56,20 @@ namespace QuizGame.MainMenu
         //TODO: Mock up only
         private float tilEnergyRechargeMS = 2990;
 
+        private void Awake()
+        {
+            // Enable the room before sceneLoaded discovers its child PlayerSpawnPoint.
+            if (roomBackground != null) roomBackground.SetActive(true);
+        }
+
         private async void Start()
         {
             UIManager.Instance.CloseAll();
 
             var profileData = await PlayerDataManager.Instance.GetProfileData();
+            if (this == null) return;
             var energyData = await PlayerDataManager.Instance.GetEnergyData();
+            if (this == null) return;
 
             profileUI = UIManager.Instance.Create<MainMenuProfileUI>();
             profileUI.SetProfileName(profileData?.ProfileName ?? "Unknown");
