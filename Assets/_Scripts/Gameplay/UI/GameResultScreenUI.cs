@@ -24,8 +24,18 @@ namespace QuizGame.Gameplay.UI
             rewardButton.onClick.AddListener(() =>
             {
                 onRewardButtonClicked?.Invoke();
-                Close();
+
             });
+        }
+
+        public void SetResults(PlayerGameResultData[] players)
+        {
+            if (currentResultScreen != null) currentResultScreen.Init(players);
+        }
+
+        private void OnDestroy()
+        {
+            if (currentResultScreen != null) currentResultScreen.Close();
         }
 
         public override void Close()

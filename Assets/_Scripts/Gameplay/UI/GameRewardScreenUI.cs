@@ -92,6 +92,22 @@ namespace QuizGame.Gameplay
             rankingPointText.text = $"{Mathf.Round(currentRP)}<size=\"40\"><color=#F9DB79>(+{rpToAdd})"; //TODO: Handle decrease RP case
         }
 
+        public void SetupSinglePlayer(int score, int? bestScore, string message, string buttonText = "Main Menu")
+        {
+            isLerping = false;
+            SetupRewards(Array.Empty<IQuantifiableItem>());
+            watchAdsButton.gameObject.SetActive(false);
+            rankingPointText.text = bestScore.HasValue ? $"{score} Points\n<size=60%>Best: {bestScore.Value}</size>" : $"{score} Points";
+            foreach (var label in GetComponentsInChildren<TextMeshProUGUI>(true))
+            {
+                if (label.name == "RPTitle-Text") label.text = "Single Player";
+                if (label.name == "RewardTitle-Text") { label.text = message; label.enableAutoSizing = true; label.fontSizeMin = 16; }
+            }
+            var nextText = nextButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (nextText != null) nextText.text = buttonText;
+            nextButton.interactable = bestScore.HasValue || buttonText == "Retry";
+        }
+
         public void SetAdsEnable(bool isEnable)
         {
             watchAdsButton.interactable = isEnable;

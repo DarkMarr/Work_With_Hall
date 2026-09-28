@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using QuizGame.Network;
+using QuizGame.Network.FirestoreDataModels;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +54,15 @@ namespace QuizGame.Gameplay
         [SerializeField]
         private float timePerQuestion = 20f;
 
+        public static string SinglePlayerMode = "Library";
+        [SerializeField] private MultiplayerResultReceiver multiplayerResults;
+        private Task<ProfileData> profileTask;
+        private PlayerGameResultData localResult;
+        private GameResultScreenUI resultUI;
+        private bool gameEnded;
+        private bool openingRewards;
+        private bool answerRecorded;
+        private string runId = System.Guid.NewGuid().ToString("N");
         private GameplayUI mainGameplayUI;
         private BaseUI currentGameplayUI;
         private QuizData[] currentQuizzes;
@@ -67,6 +79,14 @@ namespace QuizGame.Gameplay
 
         void Start()
         {
+            profileTask = PlayerDataManager.Instance.GetProfileData();
+            if (multiplayerResults == null)
+            {
+                var receiverObject = new GameObject("MultiplayerResults");
+                receiverObject.transform.SetParent(transform, false);
+                multiplayerResults = receiverObject.AddComponent<MultiplayerResultReceiver>();
+            }
+            multiplayerResults.ResultsChanged += RefreshMultiplayerResults;
             SpawnNPC();
             InitializeUI();
             InitializeQuizzes();
@@ -205,6 +225,7 @@ namespace QuizGame.Gameplay
 
         private void StartQuizTimer()
         {
+            answerRecorded = false;
             isTimerRunning = true;
             quizTimer = timePerQuestion;
         }
@@ -217,6 +238,9 @@ namespace QuizGame.Gameplay
 
         private void OnQuizAnswered(bool isCorrect)
         {
+            if (gameEnded || answerRecorded || quizTimer <= 0) return;
+            answerRecorded = true;
+            isTimerRunning = false;
             if (isCorrect)
             {
                 HandleCorrectAnswer();
@@ -229,11 +253,12 @@ namespace QuizGame.Gameplay
 
         private void HandleCorrectAnswer()
         {
-            Debug.Log($"[GameplayController] OnQuizAnswered - Correct answer! +{CORRECT_ANSWER_POINTS} points");
-            mainGameplayUI.SetNarratorText($"Correct! +{CORRECT_ANSWER_POINTS} points");
+            int points = CalculateAnswerScore(quizTimer, timePerQuestion);
+            Debug.Log($"[GameplayController] OnQuizAnswered - Correct answer! +{points} points");
+            mainGameplayUI.SetNarratorText($"Correct! +{points} points");
 
             //TODO: This is single player test, change to real multiplayer 
-            playerScores[LOCAL_PLAYER_INDEX] += CORRECT_ANSWER_POINTS;
+            playerScores[LOCAL_PLAYER_INDEX] += points;
             mainGameplayUI.SetPlayerPoint(LOCAL_PLAYER_INDEX, playerScores[LOCAL_PLAYER_INDEX]);
             mainGameplayUI.SetCorrectAnswerCountText(++localPlayerCorrectAnswerCount);
         }
@@ -274,110 +299,81 @@ namespace QuizGame.Gameplay
             mainGameplayUI.SetTimerPercentage(quizTimer / timePerQuestion);
         }
 
-        public void EndGame()
+        // GAME DESIGN DOC 02.xlsx, quiz!A10:A12. Rounded to the nearest integer.
+        public static int CalculateAnswerScore(float timeLeft, float maxTime)
+            => maxTime <= 0 || timeLeft <= 0 ? 0 : Mathf.RoundToInt(100 + Mathf.Clamp01(timeLeft / maxTime) * 100);
+
+        public async void EndGame()
         {
+            if (gameEnded) return;
+            gameEnded = true;
+            isTimerRunning = false;
+            StopAllCoroutines();
             quizController.DisableCurrentQuizInteraction();
+            quizController.CloseCurrentQuiz();
+            var profile = profileTask == null ? await PlayerDataManager.Instance.GetProfileData() : await profileTask;
+            if (this == null) return;
+            var user = FirebaseConnection.Auth.CurrentUser;
+            localResult = new PlayerGameResultData(profile?.ProfileName ?? "Player", playerScores[LOCAL_PLAYER_INDEX]) {
+                UserId = user?.UserId, CharacterId = profile?.CharacterId,
+                EquippedItems = profile?.EquippedItems, IsLocalPlayer = true
+            };
+            if (string.IsNullOrEmpty(localResult.CharacterId))
+                localResult.CharacterId = QuizGame.Character.PlayerCharacterManager.Instance.SelectedCharacterId;
             ShowGameResults();
         }
 
         private void ShowGameResults()
         {
-            var playerResultDatas = GetSortedPlayerResults();
-            var resultScreenUI = UIManager.Instance.Replace<GameResultScreenUI>(ref currentGameplayUI);
-            resultScreenUI.Init(playerResultDatas);
-            resultScreenUI.onRewardButtonClicked += OpenRewardUI;
+            resultUI = UIManager.Instance.Replace<GameResultScreenUI>(ref currentGameplayUI);
+            resultUI.Init(GetSortedPlayerResults());
+            resultUI.onRewardButtonClicked += OpenRewardUI;
         }
 
         private PlayerGameResultData[] GetSortedPlayerResults()
         {
-            var playerResultDatas = PlayerGameResultData.FromJson(PlayerGameResultData.GetJsonTempData());
-            return playerResultDatas.OrderByDescending(x => x.Point).ToArray();
+            if (CurrentGameMode == GameMode.SinglePlayer) return new[] { localResult };
+            var results = multiplayerResults.Results.ToList();
+            // Show the actual local score while waiting for a complete network snapshot.
+            if (localResult != null && !results.Any(p => p.UserId == localResult.UserId)) results.Add(localResult.Copy());
+            foreach (var result in results) result.IsLocalPlayer = result.UserId == localResult?.UserId;
+            return results.OrderByDescending(p => p.Point).ThenBy(p => p.UserId, System.StringComparer.Ordinal).Take(4).ToArray();
         }
 
-        public void OpenRewardUI()
+        private void RefreshMultiplayerResults()
         {
-            var rewardScreenUI = UIManager.Instance.Replace<GameRewardScreenUI>(ref currentGameplayUI);
-            var rewardItems = GetRewardItems();
-
-            SetupRewardScreen(rewardScreenUI, rewardItems);
+            if (CurrentGameMode == GameMode.Multiplayer && resultUI != null) resultUI.SetResults(GetSortedPlayerResults());
         }
 
-        private ItemWithQuantityPair[] GetRewardItems()
+        private void OnDestroy()
         {
-            //TODO: [Network] load real rewards
-            return ItemHelper.GetItemsWithQuantityFromDataJson(GetRewardsDataTempJson()).ToArray();
+            if (multiplayerResults != null) multiplayerResults.ResultsChanged -= RefreshMultiplayerResults;
         }
 
-        private void SetupRewardScreen(GameRewardScreenUI rewardScreenUI, ItemWithQuantityPair[] rewardItems)
+        public async void OpenRewardUI()
         {
-            rewardScreenUI.SetupRewards(rewardItems);
-            rewardScreenUI.SetRankingPointVisualize(125, 3450, 150); //TODO: [Network] load real rank points
-            rewardScreenUI.OnAdsButtonClicked += () => HandleRewardScreenAdsButtonClicked(rewardScreenUI, rewardItems);
-            rewardScreenUI.OnNextButtonClicked += ShowLuckyDraw;
-        }
-
-        public void HandleRewardScreenAdsButtonClicked(GameRewardScreenUI rewardScreenUI, ItemWithQuantityPair[] rewardItems)
-        {
-            //TODO: Watch ads before add reward
-            if (AdsManager.Instance.IsRewardedAdAvailable())
+            if (openingRewards || localResult == null) return;
+            openingRewards = true;
+            if (CurrentGameMode == GameMode.Multiplayer)
             {
-                AdsManager.Instance.ShowRewardedAd(new AdsManager.RewardedAdShowCallbacks()
-                {
-                    OnAdRewarded = (adInfo, rewardInfo) =>
-                    {
-                        Debug.Log("[GameplayController] Rewarded Ad watched completely. Granting double rewards.");
-                        MultiplyRewardQuantities(rewardItems, ADS_REWARD_MULTIPLIER);
-                        rewardScreenUI.SetupRewards(rewardItems);
-                        rewardScreenUI.SetAdsEnable(false);
-                    },
-                    OnAdClosed = (adInfo) =>
-                    {
-                        Debug.Log("[GameplayController] Rewarded Ad closed.");
-                    }
-                });
+                // Network reward settlement has not been connected; don't award sample items/RP.
+                ReturnToMainMenu();
+                return;
+            }
+            var rewardUI = UIManager.Instance.Replace<GameRewardScreenUI>(ref currentGameplayUI);
+            rewardUI.SetupSinglePlayer(localResult.Point, null, "Saving score...");
+            var best = await PlayerDataManager.Instance.RecordSinglePlayerResult(runId, SinglePlayerMode, localResult.Point);
+            if (this == null || rewardUI == null) return;
+            if (best.HasValue)
+            {
+                rewardUI.SetupSinglePlayer(localResult.Point, best, "Item rewards are not configured yet.");
+                rewardUI.OnNextButtonClicked += ReturnToMainMenu;
             }
             else
             {
-                //TODO: Show some UI to inform user that ads is not available
-                Debug.Log("[GameplayController] Rewarded Ad not available.");
+                rewardUI.SetupSinglePlayer(localResult.Point, null, "Could not save. Tap Retry.", "Retry");
+                rewardUI.OnNextButtonClicked += () => { openingRewards = false; OpenRewardUI(); };
             }
-        }
-
-        private void MultiplyRewardQuantities(ItemWithQuantityPair[] rewardItems, int multiplier)
-        {
-            foreach (var reward in rewardItems)
-            {
-                reward.SetQuantity(reward.GetQuantity() * multiplier);
-            }
-        }
-
-        public void ShowLuckyDraw()
-        {
-            var luckyDrawUI = UIManager.Instance.Replace<LuckyDrawUI>(ref currentGameplayUI);
-            luckyDrawUI.SetupBonusMessage("1st place\nBonus Rate!", "Unique x1.5\nRare x1.75");
-            luckyDrawUI.OnEndDrawReward += ShowDrawResult;
-        }
-
-        public void ShowDrawResult()
-        {
-            var luckyDrawResultUI = UIManager.Instance.Replace<LuckyDrawResultUI>(ref currentGameplayUI);
-
-            if (TryGetLuckyDrawItem(out var drawItem))
-            {
-                luckyDrawResultUI.Setup(drawItem);
-            }
-            else
-            {
-                Debug.LogError("No item found for lucky draw");
-            }
-
-            luckyDrawResultUI.onAcceptButtonClicked += ReturnToMainMenu;
-        }
-
-        private bool TryGetLuckyDrawItem(out ItemWithQuantityPair drawItem)
-        {
-            //TODO: [Network] Get real result from network
-            return ItemHelper.TryGetItemFromDataJson(GetLuckyRewardDataTempJson(), out drawItem);
         }
 
         private void ReturnToMainMenu()
@@ -395,30 +391,5 @@ namespace QuizGame.Gameplay
         }
 #endif
 
-        public string GetLuckyRewardDataTempJson() => @"
-            {
-                ""item_id"": ""33304"",
-                ""item_type"": 2,
-                ""quantity"": 20
-            }
-        ";
-
-        public string GetRewardsDataTempJson() => @"[
-            {
-                ""item_id"": ""Coin"",
-                ""item_type"": 4,
-                ""quantity"": 5000
-            },
-            {
-                ""item_id"": ""50003"",
-                ""item_type"": 3,
-                ""quantity"": 10
-            },
-            {
-                ""item_id"": ""50004"",
-                ""item_type"": 3,
-                ""quantity"": 10
-            }
-        ]";
     }
 }

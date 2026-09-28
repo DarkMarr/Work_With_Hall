@@ -1,51 +1,28 @@
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace QuizGame.Gameplay
 {
+    [Serializable]
     public class PlayerGameResultData
     {
-        [JsonProperty("name")]
-        public string Name;
+        [JsonProperty("user_id")] public string UserId;
+        [JsonProperty("name")] public string Name;
+        [JsonProperty("rank_name")] public string RankName;
+        [JsonProperty("point")] public int Point;
+        [JsonProperty("character_id")] public string CharacterId;
+        [JsonProperty("equipped_items")] public Dictionary<string, string> EquippedItems;
+        [JsonIgnore] public bool IsLocalPlayer;
 
-        [JsonProperty("rank_name")]
-        public string RankName;
+        public PlayerGameResultData(string name, int point) { Name = name; Point = point; }
 
-        [JsonProperty("point")]
-        public int Point;
+        public PlayerGameResultData Copy() => new PlayerGameResultData(Name, Point) {
+            UserId = UserId, RankName = RankName, CharacterId = CharacterId,
+            IsLocalPlayer = IsLocalPlayer,
+            EquippedItems = EquippedItems == null ? null : new Dictionary<string, string>(EquippedItems)
+        };
 
-        public PlayerGameResultData(string name, int point)
-        {
-            Name = name;
-            Point = point;
-        }
-
-        public static PlayerGameResultData[] FromJson(string json)
-        {
-            return JsonConvert.DeserializeObject<PlayerGameResultData[]>(json);
-        }
-
-        public static string GetJsonTempData() => @"
-        [
-            {
-                ""name"": ""Player1"",
-                ""rank_name"": ""Kindergarten |||"",
-                ""point"": 5000
-            },
-            {
-                ""name"": ""Player2"",
-                ""rank_name"": ""Kindergarten |||"",
-                ""point"": 2200
-            },
-            {
-                ""name"": ""Player3"",
-                ""rank_name"": ""Kindergarten |||"",
-                ""point"": 4000
-            },
-            {
-                ""name"": ""Player4"",
-                ""rank_name"": ""Kindergarten |||"",
-                ""point"": 7000
-            }
-        ]";
+        public static PlayerGameResultData[] FromJson(string json) => JsonConvert.DeserializeObject<PlayerGameResultData[]>(json);
     }
 }

@@ -56,6 +56,37 @@ namespace QuizGame.Network
             return db.Collection(USERS_COLLECTION).Document(userId);
         }
 
+        /// <summary>Idempotent per-run high score update. This does not grant unconfigured rewards.</summary>
+        public async Task<int?> RecordSinglePlayerResult(string runId, string mode, int score)
+        {
+            if (string.IsNullOrWhiteSpace(runId) || runId.Contains("/") || (mode != "Library" && mode != "Playground") || score < 0) return null;
+            var userDoc = GetUserDocument();
+            if (userDoc == null) return null;
+            var receipt = userDoc.Collection("singlePlayerRuns").Document(runId);
+            try
+            {
+                return await db.RunTransactionAsync(async transaction =>
+                {
+                    var existing = await transaction.GetSnapshotAsync(receipt);
+                    var snapshot = await transaction.GetSnapshotAsync(userDoc);
+                    if (!snapshot.Exists) throw new InvalidOperationException("Player profile is missing.");
+                    var player = snapshot.ConvertTo<PlayerData>();
+                    SinglePlayerStats stats;
+                    if (player.SinglePlayerStats == null || !player.SinglePlayerStats.TryGetValue(mode, out stats)) stats = new SinglePlayerStats();
+                    if (existing.Exists) return stats.Score;
+                    stats.Score = Math.Max(stats.Score, score);
+                    stats.GamesPlayed++;
+                    transaction.Update(userDoc, new Dictionary<string, object> { { "singlePlayerStats." + mode, stats } });
+                    transaction.Set(receipt, new Dictionary<string, object> {
+                        { "mode", mode }, { "score", score }, { "completedAt", FieldValue.ServerTimestamp },
+                        { "rewardsStatus", "not_configured" }
+                    });
+                    return stats.Score;
+                });
+            }
+            catch (Exception e) { Debug.LogError("[PlayerDataManager] Could not record single player result: " + e.Message); return null; }
+        }
+
         #region User Document
 
         /// <summary>

@@ -16,11 +16,12 @@ namespace QuizGame.Gameplay.UI
             for (int i = 0; i < playerGameResultVisualizations.Length; i++)
             {
                 var visual = playerGameResultVisualizations[i];
-                var isDataExist = i < playerGameResultDatas.Length;
+                visual.gameObject.name = "ResultSlot_" + (i + 1);
+                var isDataExist = playerGameResultDatas != null && i < playerGameResultDatas.Length;
                 if (isDataExist)
                 {
                     var data = playerGameResultDatas[i];
-                    visual.Init(rankSprites[i], data.RankName, data.Name, data.Point);
+                    visual.Init(i < rankSprites.Length ? rankSprites[i] : null, data);
                 }
                 else
                 {
