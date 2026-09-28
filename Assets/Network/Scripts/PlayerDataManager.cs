@@ -34,8 +34,8 @@ namespace QuizGame.Network
 
         private void InitializeFirestore()
         {
-            db = FirebaseFirestore.DefaultInstance;
-            auth = FirebaseAuth.DefaultInstance;
+            db = FirebaseConnection.Firestore;
+            auth = FirebaseConnection.Auth;
         }
 
         private string GetCurrentUserId()

@@ -28,6 +28,17 @@ namespace QuizGame.Authentication
             var startGameUI = UIManager.Instance.Replace<StartGameUI>(ref currentUI);
             startGameUI.OnStartGameButtonClicked += async () =>
             {
+                if (profileOperationRunning) return;
+                profileOperationRunning = true;
+                bool ready;
+                try { ready = await NetworkAuth.Instance.EnsureReadyAsync(); }
+                finally { profileOperationRunning = false; }
+                if (this == null) return;
+                if (!ready)
+                {
+                    ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Sign-in services are not ready. Please try again.", "Sign In");
+                    return;
+                }
                 // Check if the user is already signed in
                 if (NetworkAuth.Instance.IsAlreadySignedIn())
                 {
@@ -211,9 +222,9 @@ namespace QuizGame.Authentication
             else
             {
                 Debug.LogError("[Authentication] Sign in failed. Please check your credentials.");
-                // TODO: Handle failure (e.g., show error message to user)
-                // You might want to show a popup or a message in the UI
+                if (this == null) return;
                 OpenSignInUI();
+                ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Sign in failed. Please try again.", "Sign In");
             }
         }
 
@@ -282,10 +293,10 @@ namespace QuizGame.Authentication
             finally { profileOperationRunning = false; }
         }
 
-        private void ShowProfileMessage(string message)
+        private void ShowProfileMessage(string message, string title = "Profile")
         {
             var popup = UIManager.Instance.Create<MessagePopupUI>(currentUI);
-            popup.Setup("Profile", message, "OK", () => popup.Close());
+            popup.Setup(title, message, "OK", () => popup.Close());
         }
 
         public async void CreateProfileBodyType(int bodyTypeID)
@@ -309,16 +320,16 @@ namespace QuizGame.Authentication
         {
             if (password != reEnterPassword)
             {
-                Debug.Log("[Authentication] Password dosn't match!"); //TODO: Maybe Popup UI?
+                Debug.Log("[Authentication] Password doesn't match!");
+                ShowProfileMessage("Passwords do not match.", "Create Account");
                 return;
             }
 
             onActionValid?.Invoke();
             Debug.Log($"[Authentication] Create new account >> email:{email}");
 
-            var gotResponse = false;
-
             bool isSuccess = await NetworkAuth.Instance.SignUpWithEmailAndPassword(email, password);
+            if (this == null) return;
             if (isSuccess)
             {
                 Debug.Log("[Authentication] Create new account completed successfully.");
@@ -327,7 +338,9 @@ namespace QuizGame.Authentication
             else
             {
                 Debug.LogError("[Authentication] Create new account failed. Please check your credentials.");
-                // Handle success (e.g., transition to next UI)
+                // The create-account screen was closed when the request started; bring it back with the reason.
+                OpenCreateNewAccountUI();
+                ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Account could not be created. Please try again.", "Create Account");
             }
         }
 

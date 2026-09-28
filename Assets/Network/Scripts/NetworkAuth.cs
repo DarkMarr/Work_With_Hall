@@ -35,30 +35,43 @@ namespace QuizGame.Network
 
         Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
 
-        // When the app starts, check to make sure that we have
-        // the required dependencies to use Firebase, and if not,
-        // add them if possible.
-        public virtual void Start()
+        private Task<bool> initializationTask;
+
+        public virtual async void Start()
         {
-            Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+            await EnsureReadyAsync();
+        }
+
+        public Task<bool> EnsureReadyAsync()
+        {
+            if (initializationTask == null || (initializationTask.IsCompleted && !initializationTask.Result))
+                initializationTask = InitializeAsync();
+            return initializationTask;
+        }
+
+        private async Task<bool> InitializeAsync()
+        {
+            try
             {
-                dependencyStatus = task.Result;
-                if (dependencyStatus == Firebase.DependencyStatus.Available)
-                {
-                    InitializeFirebase();
-                }
-                else
-                {
-                    Debug.LogError(
-                      "Could not resolve all Firebase dependencies: " + dependencyStatus);
-                }
-            });
+                dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
+                if (this == null) return false;
+                if (dependencyStatus != Firebase.DependencyStatus.Available)
+                    throw new InvalidOperationException("Firebase dependencies: " + dependencyStatus);
+                InitializeFirebase();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LastAuthErrorMessage = "Sign-in services are not ready. Please try again.";
+                Debug.LogError("[NetworkAuth] Initialization failed: " + ex.Message);
+                return false;
+            }
         }
 
         protected void InitializeFirebase()
         {
             DebugLog("Setting up Firebase Auth");
-            auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+            auth = FirebaseConnection.Auth;
             auth.StateChanged += AuthStateChanged;
             auth.IdTokenChanged += IdTokenChanged;
             // Specify valid options to construct a secondary authentication object.
@@ -96,6 +109,7 @@ namespace QuizGame.Network
         
         public async Task<bool> SigninWithGoogle()
         {
+            if (!await EnsureReadyAsync()) return false;
             DebugLog("Calling SigninWithGoogle");
 
             GoogleSignIn.Configuration = new GoogleSignInConfiguration
@@ -187,10 +201,13 @@ namespace QuizGame.Network
 
         public async Task<bool> SignUpWithEmailAndPassword(string email, string password)
         {
+            if (!await EnsureReadyAsync()) return false;
             DebugLog($"Attempting to sign up with email: {email}");
+            LastAuthErrorMessage = null;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
+                LastAuthErrorMessage = "Please enter both email and password.";
                 Debug.LogError("Email or password is null or empty");
                 OnSignInResult?.Invoke(SignInResult.InvalidCredential);
                 return false;
@@ -230,10 +247,13 @@ namespace QuizGame.Network
 
         public async Task<bool> SignInWithEmailAndPassword(string email, string password)
         {
+            if (!await EnsureReadyAsync()) return false;
             DebugLog($"Attempting to sign in to account with email: {email}");
+            LastAuthErrorMessage = null;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
+                LastAuthErrorMessage = "Please enter both email and password.";
                 Debug.LogError("Email or password is null or empty");
                 OnSignInResult?.Invoke(SignInResult.InvalidCredential);
                 return false;
@@ -273,6 +293,7 @@ namespace QuizGame.Network
 
         public async Task<bool> SendPasswordResetEmail(string email)
         {
+            if (!await EnsureReadyAsync()) return false;
             DebugLog($"Sending password reset email to: {email}");
 
             if (string.IsNullOrEmpty(email))
@@ -417,8 +438,40 @@ namespace QuizGame.Network
             return null;
         }
 
+        /// <summary>
+        /// Player-facing text for the most recent failed auth request (null when the last request succeeded or failed without a Firebase error).
+        /// </summary>
+        public string LastAuthErrorMessage { get; private set; }
+
+        private static string GetPlayerMessage(int errorCode)
+        {
+            switch (errorCode)
+            {
+                case (int)Firebase.Auth.AuthError.EmailAlreadyInUse:
+                case (int)Firebase.Auth.AuthError.AccountExistsWithDifferentCredentials:
+                    return "This email is already registered. Please sign in instead.";
+                case (int)Firebase.Auth.AuthError.WeakPassword:
+                    return "Password is too weak. Use at least 6 characters.";
+                case (int)Firebase.Auth.AuthError.InvalidEmail:
+                    return "Please enter a valid email address.";
+                case (int)Firebase.Auth.AuthError.WrongPassword:
+                case (int)Firebase.Auth.AuthError.UserNotFound:
+                case (int)Firebase.Auth.AuthError.InvalidCredential:
+                    return "Email or password is incorrect.";
+                case (int)Firebase.Auth.AuthError.NetworkRequestFailed:
+                    return "Network error. Please check your connection and try again.";
+                case (int)Firebase.Auth.AuthError.UserDisabled:
+                    return "This account has been disabled.";
+                case (int)Firebase.Auth.AuthError.TooManyRequests:
+                    return "Too many attempts. Please try again later.";
+                default:
+                    return "Something went wrong. Please try again.";
+            }
+        }
+
         private void HandleFirebaseError(Firebase.FirebaseException firebaseEx)
         {
+            LastAuthErrorMessage = GetPlayerMessage(firebaseEx.ErrorCode);
             switch (firebaseEx.ErrorCode)
             {
                 case (int)Firebase.Auth.AuthError.InvalidCredential:

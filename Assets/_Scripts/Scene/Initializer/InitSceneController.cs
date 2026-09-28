@@ -10,14 +10,22 @@ namespace QuizGame.Scene
 {
     public class InitSceneController : MonoBehaviour
     {
+        // Store connectivity must not prevent players from reaching authentication.
+        private static async Task InitializePurchasesAsync()
+        {
+            try { await IAPManager.Instance.InitAsync(); }
+            catch (System.Exception ex) { Debug.LogWarning("[Init] Purchases unavailable: " + ex.Message); }
+        }
+
         private async void Start()
         {
             EnhancedTouchSupport.Enable();
             var localizationTask = LocalizationSettings.InitializationOperation.Task;
-            var iAPTask = IAPManager.Instance.InitAsync();
+            _ = InitializePurchasesAsync();
             var QuizCollectionsTask = QuizCollections.Initialize();
 
-            await Task.WhenAll(localizationTask, iAPTask, QuizCollectionsTask);
+            await Task.WhenAll(localizationTask, QuizCollectionsTask);
+            if (this == null) return;
             SceneManager.LoadScene(SceneList.Authentication.ToString());
         }
     }
