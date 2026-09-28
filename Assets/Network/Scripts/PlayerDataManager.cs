@@ -87,6 +87,57 @@ namespace QuizGame.Network
             catch (Exception e) { Debug.LogError("[PlayerDataManager] Could not record single player result: " + e.Message); return null; }
         }
 
+        /// <summary>One transaction grants an item and RP once per completed match.</summary>
+        public async Task<MatchRewardReceipt> ClaimLuckyDraw(string matchId, string expectedUserId, MatchRewardReceipt proposed)
+        {
+            if (string.IsNullOrWhiteSpace(matchId) || matchId.Contains("/") || proposed == null ||
+                string.IsNullOrWhiteSpace(proposed.ItemId) || proposed.Quantity <= 0 || proposed.Place < 1 || proposed.Place > 4 ||
+                (proposed.Type != "Material" && proposed.Type != "Decoration" && proposed.Type != "Equipment")) return null;
+            var userDoc = GetUserDocument();
+            if (userDoc == null || userDoc.Id != expectedUserId) return null;
+            var receipt = userDoc.Collection("matchRewards").Document(matchId);
+            try
+            {
+                return await db.RunTransactionAsync(async transaction =>
+                {
+                    var existing = await transaction.GetSnapshotAsync(receipt);
+                    if (existing.Exists) return existing.ConvertTo<MatchRewardReceipt>();
+                    var snapshot = await transaction.GetSnapshotAsync(userDoc);
+                    if (!snapshot.Exists) throw new InvalidOperationException("Player profile is missing.");
+                    var player = snapshot.ConvertTo<PlayerData>();
+                    var inventory = player.Inventory ?? new Inventory();
+                    if (proposed.Type == "Material")
+                    {
+                        if (inventory.Materials == null) inventory.Materials = new Dictionary<string, int>();
+                        int count; inventory.Materials.TryGetValue(proposed.ItemId, out count);
+                        inventory.Materials[proposed.ItemId] = checked(count + proposed.Quantity);
+                    }
+                    else
+                    {
+                        if (inventory.Items == null) inventory.Items = new List<InventoryItem>();
+                        var item = inventory.Items.Find(x => x.ItemId == proposed.ItemId && x.Type == proposed.Type);
+                        if (item == null)
+                        {
+                            item = new InventoryItem { ItemId = proposed.ItemId, Name = proposed.Name, Type = proposed.Type,
+                                AcquiredAt = Timestamp.GetCurrentTimestamp() };
+                            inventory.Items.Add(item);
+                        }
+                        item.Quantity = checked(item.Quantity + proposed.Quantity);
+                    }
+                    var stats = player.MultiPlayerStats ?? new MultiPlayerStats();
+                    var delta = new[] { 10, 5, 0, -5 }[proposed.Place - 1];
+                    var after = Math.Max(0, checked(stats.Score + delta));
+                    var saved = new MatchRewardReceipt { ItemId = proposed.ItemId, Name = proposed.Name, Type = proposed.Type,
+                        Quantity = proposed.Quantity, Place = proposed.Place, RankingPointsDelta = after - stats.Score, RankingPointsAfter = after };
+                    stats.Score = after; stats.GamesPlayed++; if (proposed.Place == 1) stats.GamesWon++;
+                    transaction.Update(userDoc, new Dictionary<string, object> { { "inventory", inventory }, { "multiPlayerStats", stats } });
+                    transaction.Set(receipt, saved);
+                    return saved;
+                });
+            }
+            catch (Exception e) { Debug.LogError("[PlayerDataManager] Lucky Draw save failed: " + e.Message); return null; }
+        }
+
         #region User Document
 
         /// <summary>

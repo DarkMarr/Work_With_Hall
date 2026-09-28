@@ -18,7 +18,8 @@ namespace QuizGame.Item
 
         protected override ItemType ItemType => ItemType.Equipment;
 
-        protected override ItemTier ItemTier => ItemTier.NoTier;
+        [SerializeField] private ItemTier equipmentTier = ItemTier.NoTier;
+        protected override ItemTier ItemTier => equipmentTier;
 
         public override string GetName() => localizedName.GetLocalizedString();
 

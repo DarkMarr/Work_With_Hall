@@ -89,7 +89,7 @@ namespace QuizGame.Gameplay
 
         public void SetRankingPointText(float currentRP, float rpToAdd)
         {
-            rankingPointText.text = $"{Mathf.Round(currentRP)}<size=\"40\"><color=#F9DB79>(+{rpToAdd})"; //TODO: Handle decrease RP case
+            rankingPointText.text = $"{Mathf.Round(currentRP)}<size=\"40\"><color=#F9DB79>({rpToAdd:+0;-0;0})</color></size>"; //TODO: Handle decrease RP case
         }
 
         public void SetupSinglePlayer(int score, int? bestScore, string message, string buttonText = "Main Menu")
@@ -98,14 +98,58 @@ namespace QuizGame.Gameplay
             SetupRewards(Array.Empty<IQuantifiableItem>());
             watchAdsButton.gameObject.SetActive(false);
             rankingPointText.text = bestScore.HasValue ? $"{score} Points\n<size=60%>Best: {bestScore.Value}</size>" : $"{score} Points";
-            foreach (var label in GetComponentsInChildren<TextMeshProUGUI>(true))
-            {
-                if (label.name == "RPTitle-Text") label.text = "Single Player";
-                if (label.name == "RewardTitle-Text") { label.text = message; label.enableAutoSizing = true; label.fontSizeMin = 16; }
-            }
+            ReplaceTitle("RPTitle-Text", "Single Player");
+            ReplaceTitle("RewardTitle-Text", message);
             var nextText = nextButton.GetComponentInChildren<TextMeshProUGUI>();
             if (nextText != null) nextText.text = buttonText;
             nextButton.interactable = bestScore.HasValue || buttonText == "Retry";
+        }
+
+        public void SetupMatch(string heading, string detail, string buttonText)
+        {
+            isLerping = false;
+            watchAdsButton.gameObject.SetActive(false);
+            SetupRewards(Array.Empty<IQuantifiableItem>());
+            rankingPointText.text = heading;
+            ReplaceTitle("RPTitle-Text", "Multiplayer");
+            ReplaceTitle("RewardTitle-Text", detail);
+            var label = nextButton.GetComponentInChildren<TMP_Text>();
+            if (label != null) label.text = buttonText;
+            nextButton.interactable = true;
+        }
+
+        private void ReplaceTitle(string objectName, string text)
+        {
+            // The existing frame has baked English headings. Use a plain template panel
+            // until a frame without text is supplied; the source sprite stays untouched.
+            foreach (var background in GetComponentsInChildren<Image>(true))
+                if (background.name == "Background-Image")
+                { background.sprite = null; background.color = new Color(.78f, .48f, .20f); }
+            foreach (var target in GetComponentsInChildren<RectTransform>(true))
+            {
+                if (target.name != objectName) continue;
+                target.gameObject.SetActive(true);
+                target.SetAsLastSibling();
+                target.anchorMin = new Vector2(.14f, objectName == "RPTitle-Text" ? .72f : .43f);
+                target.anchorMax = new Vector2(.86f, objectName == "RPTitle-Text" ? .80f : .56f);
+                target.offsetMin = target.offsetMax = Vector2.zero;
+                var image = target.GetComponent<Image>();
+                if (image != null) image.enabled = false;
+                var label = target.GetComponent<TextMeshProUGUI>();
+                if (label == null) label = target.GetComponentInChildren<TextMeshProUGUI>();
+                if (label == null)
+                {
+                    label = Instantiate(rankingPointText, target);
+                    label.name = "LiveTitle";
+                    label.rectTransform.anchorMin = Vector2.zero; label.rectTransform.anchorMax = Vector2.one;
+                    label.rectTransform.offsetMin = label.rectTransform.offsetMax = Vector2.zero;
+                }
+                label.text = text; label.richText = false; label.enableAutoSizing = true;
+                label.fontSizeMin = 28; label.fontSizeMax = 54; label.alignment = TextAlignmentOptions.Center;
+                label.color = Color.white;
+                label.raycastTarget = false;
+                return;
+            }
         }
 
         public void SetAdsEnable(bool isEnable)

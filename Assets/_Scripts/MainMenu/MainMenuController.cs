@@ -163,6 +163,7 @@ namespace QuizGame.MainMenu
                     {
                         GameplayController.SelectedDestinationInfo = matchmakingController.SelectedDestinationInfo;
                         GameplayController.CurrentGameMode = GameplayController.GameMode.Multiplayer;
+                        GameplayController.IsRankedMatch = matchType == MatchmakingType.Ranking;
                     }
                 });
         }

@@ -55,6 +55,13 @@ namespace QuizGame.Gameplay
         private float timePerQuestion = 20f;
 
         public static string SinglePlayerMode = "Library";
+        public static bool IsRankedMatch;
+        [Tooltip("Grey-ball material quantity. Zero keeps rewards disabled until the economy is approved.")]
+        [SerializeField] private int luckyDrawMaterialQuantity;
+        private ItemWithQuantityPair pendingDraw;
+        private int pendingPlace;
+        private string pendingMatchId;
+        private bool savingDraw;
         [SerializeField] private MultiplayerResultReceiver multiplayerResults;
         private Task<ProfileData> profileTask;
         private PlayerGameResultData localResult;
@@ -168,7 +175,7 @@ namespace QuizGame.Gameplay
 
         private void InitializeQuizzes()
         {
-            currentQuizzes = new QuizData[quizCount];
+            currentQuizzes = new QuizData[CurrentGameMode == GameMode.Multiplayer ? 16 : quizCount];
             var filteredQuizzes = QuizCollections.GetAllQuizzes();
 
             if (SelectedQuizCategories != null && SelectedQuizCategories.Count > 0)
@@ -178,11 +185,15 @@ namespace QuizGame.Gameplay
                     .ToList();
             }
 
-            if (filteredQuizzes == null || filteredQuizzes.Count <= quizCount)
+            if (filteredQuizzes == null || filteredQuizzes.Count == 0)
             {
-                Debug.LogError($"[GameplayController] Not enough quizzes in selected categories. Requested: {quizCount}, Available: {filteredQuizzes.Count}. Filling with random quizzes.");
+                Debug.LogError($"[GameplayController] Not enough quizzes in selected categories. Requested: {quizCount}, Available: {filteredQuizzes?.Count ?? 0}. Filling with random quizzes.");
                 filteredQuizzes = QuizCollections.GetAllQuizzes();
             }
+
+            if (CurrentGameMode == GameMode.SinglePlayer)
+                filteredQuizzes = filteredQuizzes.Where(q => q.Type != QuizType.NumberGuessing).ToList();
+            if (filteredQuizzes.Count == 0) { currentQuizzes = System.Array.Empty<QuizData>(); return; }
 
             for (int i = 0; i < currentQuizzes.Length; i++)
             {
@@ -343,6 +354,8 @@ namespace QuizGame.Gameplay
         private void RefreshMultiplayerResults()
         {
             if (CurrentGameMode == GameMode.Multiplayer && resultUI != null) resultUI.SetResults(GetSortedPlayerResults());
+            if (CurrentGameMode == GameMode.Multiplayer && openingRewards && pendingDraw == null &&
+                currentGameplayUI is GameRewardScreenUI && multiplayerResults.IsFinal) OpenMultiplayerRewards();
         }
 
         private void OnDestroy()
@@ -356,8 +369,7 @@ namespace QuizGame.Gameplay
             openingRewards = true;
             if (CurrentGameMode == GameMode.Multiplayer)
             {
-                // Network reward settlement has not been connected; don't award sample items/RP.
-                ReturnToMainMenu();
+                OpenMultiplayerRewards();
                 return;
             }
             var rewardUI = UIManager.Instance.Replace<GameRewardScreenUI>(ref currentGameplayUI);
@@ -374,6 +386,93 @@ namespace QuizGame.Gameplay
                 rewardUI.SetupSinglePlayer(localResult.Point, null, "Could not save. Tap Retry.", "Retry");
                 rewardUI.OnNextButtonClicked += () => { openingRewards = false; OpenRewardUI(); };
             }
+        }
+
+        private void OpenMultiplayerRewards()
+        {
+            var screen = UIManager.Instance.Replace<GameRewardScreenUI>(ref currentGameplayUI);
+            if (!IsRankedMatch)
+            {
+                screen.SetupMatch("Casual Match", "Casual matches do not award RP or items.", "Main Menu");
+                screen.OnNextButtonClicked += ReturnToMainMenu;
+                return;
+            }
+            var players = GetSortedPlayerResults();
+            if (!multiplayerResults.IsFinal || !multiplayerResults.Results.Any(x => x.UserId == localResult.UserId))
+            {
+                screen.SetupMatch("Results pending", "Waiting for the final scores of all players.", "Main Menu");
+                screen.OnNextButtonClicked += ReturnToMainMenu;
+                return;
+            }
+            pendingPlace = System.Array.FindIndex(players, x => x.UserId == localResult.UserId) + 1;
+            var finalLocalScore = players[pendingPlace - 1].Point;
+            if (players.Count(x => x.Point == finalLocalScore) > 1)
+            {
+                screen.SetupMatch("Tied score", "Final placement is needed before awarding ranked rewards.", "Main Menu");
+                screen.OnNextButtonClicked += ReturnToMainMenu;
+                return;
+            }
+            pendingMatchId = multiplayerResults.MatchId;
+            string missing = LuckyDrawRules.MissingPools(SelectedDestinationInfo);
+            if (luckyDrawMaterialQuantity <= 0 || !string.IsNullOrEmpty(missing))
+            {
+                var reason = luckyDrawMaterialQuantity <= 0 ? "Reward amounts are awaiting configuration." : "Missing reward pools: " + missing;
+                screen.SetupMatch("Place #" + pendingPlace, reason, "Main Menu");
+                screen.OnNextButtonClicked += ReturnToMainMenu;
+                Debug.LogWarning("[Rewards] " + reason + " Missing pools: " + missing);
+                return;
+            }
+            int delta = LuckyDrawRules.RankingPoints(pendingPlace);
+            screen.SetupMatch("Place #" + pendingPlace + "  RP " + delta.ToString("+0;-0;0"),
+                "Draw your map reward. RP and item are saved together.", "Lucky Draw");
+            screen.OnNextButtonClicked += ShowLuckyDraw;
+        }
+
+        private void ShowLuckyDraw()
+        {
+            var draw = UIManager.Instance.Replace<LuckyDrawUI>(ref currentGameplayUI);
+            draw.SetupBonusMessage("Place #" + pendingPlace, LuckyDrawRules.OddsText(pendingPlace));
+            draw.OnStartDrawReward += () =>
+            {
+                if (pendingDraw != null) return;
+                int roll = Random.Range(0, 10000);
+                var tier = LuckyDrawRules.RollTier(pendingPlace, roll);
+                int itemRoll = Random.Range(0, LuckyDrawRules.Pool(SelectedDestinationInfo, tier).Length);
+                pendingDraw = LuckyDrawRules.Choose(SelectedDestinationInfo, pendingPlace, roll, itemRoll, luckyDrawMaterialQuantity);
+            };
+            draw.OnEndDrawReward += SaveDraw;
+        }
+
+        private async void SaveDraw()
+        {
+            if (savingDraw || pendingDraw == null) return;
+            savingDraw = true;
+            var proposed = new MatchRewardReceipt { ItemId = pendingDraw.GetID(), Name = pendingDraw.GetName(),
+                Type = pendingDraw.GetItemType().ToString(), Quantity = pendingDraw.GetQuantity(), Place = pendingPlace };
+            var receipt = await PlayerDataManager.Instance.ClaimLuckyDraw(pendingMatchId, localResult.UserId, proposed);
+            if (this == null) return;
+            savingDraw = false;
+            if (receipt == null)
+            {
+                var retry = UIManager.Instance.Replace<GameRewardScreenUI>(ref currentGameplayUI);
+                retry.SetupMatch("Could not save", "Your draw is kept. Retry to claim the same reward.", "Retry");
+                retry.OnNextButtonClicked += SaveDraw;
+                return;
+            }
+            // A previous claim wins over a later random roll (retry/reopened match).
+            var reward = new[] { ItemTier.SuperRare, ItemTier.Rare, ItemTier.Uncommon, ItemTier.Common, ItemTier.NoTier }
+                .SelectMany(t => LuckyDrawRules.Pool(SelectedDestinationInfo, t))
+                .FirstOrDefault(x => x.GetID() == receipt.ItemId && x.GetItemType().ToString() == receipt.Type);
+            if (reward == null)
+            {
+                var saved = UIManager.Instance.Replace<GameRewardScreenUI>(ref currentGameplayUI);
+                saved.SetupMatch("Reward saved", receipt.ItemId + " x" + receipt.Quantity, "Main Menu");
+                saved.OnNextButtonClicked += ReturnToMainMenu;
+                return;
+            }
+            var result = UIManager.Instance.Replace<LuckyDrawResultUI>(ref currentGameplayUI);
+            result.Setup(new ItemWithQuantityPair(reward, receipt.Quantity));
+            result.onAcceptButtonClicked += ReturnToMainMenu;
         }
 
         private void ReturnToMainMenu()
