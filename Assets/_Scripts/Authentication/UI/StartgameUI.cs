@@ -1,6 +1,8 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 using QuizGame.UI;
 
@@ -64,10 +66,16 @@ namespace QuizGame.Authentication.UI
 
             var label = labelObject.GetComponent<TextMeshProUGUI>();
             label.font = TMP_Settings.defaultFontAsset;
-            label.text = "Contact Us";
             label.alignment = TextAlignmentOptions.Center;
             label.fontSize = 36f;
             label.raycastTarget = false;
+
+            // Built in code rather than authored in the prefab, so it needs a
+            // LocalizeStringEvent to follow the selected locale.
+            var localize = labelObject.AddComponent<LocalizeStringEvent>();
+            localize.StringReference = new LocalizedString("Common", "authentication.contact_us");
+            localize.OnUpdateString.AddListener(value => label.text = value);
+            localize.RefreshString();
         }
 
         private void OpenContactUs()
