@@ -31,7 +31,7 @@ namespace QuizGame.Gameplay.QuizManagement
             { "#Bangkok", DestinationType.Bangkok },
             { "#Tokyo", DestinationType.Tokyo },
             { "#New York", DestinationType.NewYork },
-            { "#Paris", DestinationType.NewYork },
+            { "#Paris", DestinationType.Paris },
             { "#London", DestinationType.London },
             { "#Cairo", DestinationType.Cairo },
             { "#none", DestinationType.None }
