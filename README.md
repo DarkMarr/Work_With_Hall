@@ -12,8 +12,9 @@ Unity 6000.1.5f1 mobile quiz game with Firebase backend, 2D sprite-mixing charac
 4. [Store System Guide](#store-system-guide)
 5. [Database & Firestore Integration](#database--firestore-integration)
 6. [NPC System](#npc-system)
-7. [Scene Flow & Lifecycle](#scene-flow--lifecycle)
-8. [Setup Instructions](#setup-instructions)
+7. [Multiplayer Opponents](#multiplayer-opponents)
+8. [Scene Flow & Lifecycle](#scene-flow--lifecycle)
+9. [Setup Instructions](#setup-instructions)
 
 ---
 
@@ -299,6 +300,40 @@ var npcPrefab = GameplayController.SelectedDestinationInfo.GetNPCPrefab();
 3. Assign the prefab, name, description.
 4. Place the SO in `Assets/Resources/NPCs/`.
 5. The NPC is automatically available for random spawning in single player.
+
+---
+
+## Multiplayer Opponents
+
+There is no room adapter yet, so the three opponents a player sees are invented locally. They come
+from one place — `MultiplayerRoster` (`_Scripts/Player/MultiplayerRoster.cs`) — which both the lobby
+and the match read, so the same three players appear in both.
+
+```csharp
+// Lobby and gameplay both do this; the first caller wins and the roster survives the scene change.
+MultiplayerRoster.EnsurePlaceholders(CharacterResourceManager.Instance.GetAllResourcesID());
+foreach (var opponent in MultiplayerRoster.Opponents)
+{
+    // opponent.DisplayName -> HUD label
+    // opponent.CharacterId -> CharacterInfoSO id, resolve to a prefab for the avatar
+}
+```
+
+Each stand-in gets a `Player ####` name and a character drawn without replacement, so no two
+opponents wear the same avatar while there are enough characters to go round.
+
+### Wiring the server up
+
+1. Call `MultiplayerRoster.SetFromServer(...)` as soon as the room is known — before the lobby draws
+   its slots. Nothing else changes: both screens already read from the roster.
+2. Call `MultiplayerRoster.Clear()` when a match ends so the next one starts fresh. Matchmaking does
+   this today.
+3. `MultiplayerRoster.IsFromServer` says whether the current roster is real. Use it before trusting
+   these names anywhere that matters — the result screen deliberately does not read the roster at
+   all, because `MultiplayerResultReceiver` refuses to show results that did not come from a server.
+
+Opponent avatars are playable characters, not the NPC art. The only NPC in a match is the narrator
+in `NarratorPlaceHolder`, which comes from the destination's `npcPrefab`.
 
 ---
 

@@ -9,6 +9,7 @@ using QuizGame.Destination.UI;
 using QuizGame.Item;
 using QuizGame.Item.Interfaces;
 using QuizGame.Matchmaking.UI;
+using QuizGame.Player;
 using QuizGame.Scene;
 using QuizGame.UI;
 using UnityEngine;
@@ -53,6 +54,29 @@ namespace QuizGame.Matchmaking
         /// <summary>
         /// Prefab of the player's selected avatar, or null (keep the slot placeholder) if none is loaded yet.
         /// </summary>
+        /// <summary>
+        /// The opponent shown in this lobby slot, taken from the shared roster so the same three
+        /// players appear again once the match starts.
+        /// </summary>
+        private static GameObject GetOpponentCharacterPrefab(int playerIndex)
+        {
+            MultiplayerRoster.EnsurePlaceholders(CharacterResourceManager.Instance.GetAllResourcesID());
+            var roster = MultiplayerRoster.Opponents;
+            var rosterIndex = playerIndex - 1;                 // slot 0 is the local player
+            if (rosterIndex < 0 || rosterIndex >= roster.Count) return null;
+
+            var characterId = roster[rosterIndex].CharacterId;
+            if (string.IsNullOrEmpty(characterId)) return null;
+
+            var info = CharacterResourceManager.Instance.GetResource(characterId);
+            if (info == null)
+            {
+                Debug.LogWarning($"[Matchmaking] Opponent character '{characterId}' not found.");
+                return null;
+            }
+            return info.GetCharacterPrefab();
+        }
+
         private static GameObject GetSelectedCharacterPrefab()
         {
             var characterId = PlayerCharacterManager.Instance.SelectedCharacterId;
@@ -283,6 +307,7 @@ namespace QuizGame.Matchmaking
         private void PlayerJoinTheLobby(int playerIndex)
         {
             matchmakingWorldSpaceVisual.ShowJoinedPlayer(playerIndex);
+            matchmakingWorldSpaceVisual.SetPlayerAvatar(playerIndex, GetOpponentCharacterPrefab(playerIndex));
             var selectedDestination = DestinationResourceManager.Instance.GetRandomResource(); // TODO: [Network] Get the selected map from player vote
             playerSelectedDestinations.Add(playerIndex, selectedDestination);
             matchmakingUI.SetPlayerSelectedMapSprite(playerIndex, selectedDestination.GetSprite());

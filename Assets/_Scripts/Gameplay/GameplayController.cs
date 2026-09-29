@@ -5,11 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QuizGame.Ads;
+using QuizGame.Character;
 using QuizGame.Destination;
 using QuizGame.Gameplay.Quiz;
 using QuizGame.Gameplay.QuizManagement;
 using QuizGame.Gameplay.UI;
 using QuizGame.Item;
+using QuizGame.Player;
 using QuizGame.Scene;
 using QuizGame.Store;
 using QuizGame.UI;
@@ -46,6 +48,10 @@ namespace QuizGame.Gameplay
         [SerializeField]
         [Tooltip("Scene backdrop. Swapped to the selected destination's artwork when there is one.")]
         private SpriteRenderer backgroundRenderer;
+
+        [SerializeField]
+        [Tooltip("One entry per player index. Opponent avatars are spawned here; index 0 (the local player) is ignored.")]
+        private Transform[] opponentPlaceHolders;
 
         // The multiplayer narrator slot lives under multiplayerScenario, which SetGameMode
         // disables in single player, so single player needs its own slot.
@@ -193,24 +199,53 @@ namespace QuizGame.Gameplay
 
                 case GameMode.Multiplayer:
                     mainGameplayUI.SetEnablePlayerUIs(0, 1, 2, 3);
-                    ShowPlaceholderOpponents();
+                    ShowOpponents();
                     break;
             }
         }
 
         /// <summary>
-        /// Until a room adapter supplies the real roster, the three opponent slots all read the
-        /// name authored in the prefab. Stand-in names keep them apart on screen. Display only —
+        /// Draws the three opponents from <see cref="MultiplayerRoster"/> — the same roster the lobby
+        /// showed — as player avatars in their slots, with their names on the HUD. Display only:
         /// MultiplayerResultReceiver still refuses to invent opponents for the result screen.
         /// </summary>
-        private void ShowPlaceholderOpponents()
+        private void ShowOpponents()
         {
+            MultiplayerRoster.EnsurePlaceholders(CharacterResourceManager.Instance.GetAllResourcesID());
+            var roster = MultiplayerRoster.Opponents;
+
             for (int i = 0; i < playerScores.Length; i++)
             {
                 if (i == LOCAL_PLAYER_INDEX) continue;
-                mainGameplayUI.SetPlayerName(i, $"Player {Random.Range(1000, 10000)}");
+
+                var rosterIndex = i > LOCAL_PLAYER_INDEX ? i - 1 : i;
+                if (rosterIndex >= roster.Count) continue;
+
+                var opponent = roster[rosterIndex];
+                mainGameplayUI.SetPlayerName(i, opponent.DisplayName);
                 mainGameplayUI.SetPlayerPoint(i, 0);
+                SpawnOpponentAvatar(i, opponent.CharacterId);
             }
+        }
+
+        /// <summary>
+        /// Opponents are players, so their slot shows a playable character rather than one of the
+        /// NPC figures the placeholder art used.
+        /// </summary>
+        private void SpawnOpponentAvatar(int playerIndex, string characterId)
+        {
+            if (opponentPlaceHolders == null || playerIndex >= opponentPlaceHolders.Length) return;
+            var slot = opponentPlaceHolders[playerIndex];
+            if (slot == null || string.IsNullOrEmpty(characterId)) return;
+
+            var info = CharacterResourceManager.Instance.GetResource(characterId);
+            var prefab = info != null ? info.GetCharacterPrefab() : null;
+            if (prefab == null)
+            {
+                Debug.LogWarning($"[GameplayController] Opponent character '{characterId}' has no prefab; slot {playerIndex} left empty.");
+                return;
+            }
+            Instantiate(prefab, slot);
         }
 
         private void InitializeUI()

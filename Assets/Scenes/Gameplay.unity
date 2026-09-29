@@ -500,6 +500,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_liberty
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -698,6 +702,11 @@ MonoBehaviour:
   multiplayerScenario: {fileID: 1611379887}
   npcPlaceHolder: {fileID: 508893354}
   backgroundRenderer: {fileID: 1649694229}
+  opponentPlaceHolders:
+  - {fileID: 0}
+  - {fileID: 1168741277}
+  - {fileID: 1085511544}
+  - {fileID: 1824096747}
   singlePlayerNpcPlaceHolder: {fileID: 443264536}
   quizCount: 20
   timePerQuestion: 20
@@ -726,6 +735,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
       propertyPath: m_Name
       value: NPC_yakusha
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -935,6 +948,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
       propertyPath: m_Name
       value: NPC_monalisa
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1247,6 +1264,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_hachiko
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1313,6 +1334,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
       propertyPath: m_Name
       value: NPC_liberty
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1553,6 +1578,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_liberty
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: e3c6aa908037b4e469fd59767fa3b61a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1619,6 +1648,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
       propertyPath: m_Name
       value: NPC_yakusha
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1847,6 +1880,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
       propertyPath: m_Name
       value: NPC_yakusha
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: e5f0c1e9128d46540a288eac00373cd2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2128,6 +2165,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_monalisa
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2395,6 +2436,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_royal guard
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2496,7 +2541,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1085511543}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a573c96f08f33ec46a827fca7b324153, type: 3}
   m_Name: 
@@ -2625,7 +2670,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1168741276}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a573c96f08f33ec46a827fca7b324153, type: 3}
   m_Name: 
@@ -2719,6 +2764,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
       propertyPath: m_Name
       value: NPC_hachiko
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2857,6 +2906,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
       propertyPath: m_Name
       value: NPC_mummy
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3086,6 +3139,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_royal guard
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3295,6 +3352,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_hachiko
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1dd03d49c9500e348b8f61e17680a37c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3419,6 +3480,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
       propertyPath: m_Name
       value: NPC_mummy
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4094,7 +4159,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824096746}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a573c96f08f33ec46a827fca7b324153, type: 3}
   m_Name: 
@@ -4207,6 +4272,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
       propertyPath: m_Name
       value: NPC_mummy
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 70a6322ad08acdf4baebbc27756b8d3b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4411,6 +4480,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
       propertyPath: m_Name
       value: NPC_royal guard
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 2e71649ca7a8b284881d895b47b69f37, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4691,6 +4764,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
       propertyPath: m_Name
       value: NPC_monalisa
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 21ad4570d29b1e942b57c8887652cc7a, type: 3}
       propertyPath: m_LocalPosition.x
