@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using QuizGame.UI;
 
@@ -27,7 +28,12 @@ namespace QuizGame.Authentication.UI
                 busyLabel = submitButton.GetComponentInChildren<TMP_Text>();
                 if (busyLabel != null) idleLabel = busyLabel.text;
             }
-            if (busyLabel != null) busyLabel.text = busy ? "Sending..." : idleLabel;
+            if (busyLabel != null)
+            {
+                busyLabel.text = busy
+                    ? LocalizationSettings.StringDatabase.GetLocalizedString("Common", "authentication.sending")
+                    : idleLabel;
+            }
         }
 
         public void Init(OnRecoverAccount onRecoverAccount, string prefillEmail = null)

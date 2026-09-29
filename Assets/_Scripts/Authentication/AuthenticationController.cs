@@ -406,7 +406,8 @@ namespace QuizGame.Authentication
                 else if (FirebaseConnection.IsUsingEmulator)
                     ShowProfileMessage("Local test mode: the reset link is available in the Firebase Auth Emulator. No email is sent to your inbox in this mode.", "Reset Password");
                 else
-                    UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI);
+                    UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI)
+                        .Init(onBack: OpenLoginOrRegisterUI);
             }
             catch (Exception e)
             {

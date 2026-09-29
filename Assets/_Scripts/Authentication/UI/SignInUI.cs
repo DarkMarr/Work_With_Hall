@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using QuizGame.UI;
 
@@ -36,7 +37,12 @@ namespace QuizGame.Authentication.UI
                 busyLabel = signInButton.GetComponentInChildren<TMP_Text>();
                 if (busyLabel != null) idleLabel = busyLabel.text;
             }
-            if (busyLabel != null) busyLabel.text = busy ? "Signing in..." : idleLabel;
+            if (busyLabel != null)
+            {
+                busyLabel.text = busy
+                    ? LocalizationSettings.StringDatabase.GetLocalizedString("Common", "authentication.signing_in")
+                    : idleLabel;
+            }
         }
 
         public void Init(OnSignIn signIn, Action<string> onForgotPassword)
