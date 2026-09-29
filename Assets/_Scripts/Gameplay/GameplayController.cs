@@ -161,7 +161,23 @@ namespace QuizGame.Gameplay
 
                 case GameMode.Multiplayer:
                     mainGameplayUI.SetEnablePlayerUIs(0, 1, 2, 3);
+                    ShowPlaceholderOpponents();
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Until a room adapter supplies the real roster, the three opponent slots all read the
+        /// name authored in the prefab. Stand-in names keep them apart on screen. Display only —
+        /// MultiplayerResultReceiver still refuses to invent opponents for the result screen.
+        /// </summary>
+        private void ShowPlaceholderOpponents()
+        {
+            for (int i = 0; i < playerScores.Length; i++)
+            {
+                if (i == LOCAL_PLAYER_INDEX) continue;
+                mainGameplayUI.SetPlayerName(i, $"Player {Random.Range(1000, 10000)}");
+                mainGameplayUI.SetPlayerPoint(i, 0);
             }
         }
 
