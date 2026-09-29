@@ -7,6 +7,47 @@ namespace QuizGame.Network
     // One connection choice for authentication and player data. Builds always use Firebase defaults.
     public static class FirebaseConnection
     {
+        public static bool IsUsingEmulator
+        {
+            get
+            {
+#if UNITY_EDITOR
+                return UseLocalEmulator;
+#else
+                return false;
+#endif
+            }
+        }
+
+        // A stopped local service must not look like a bad password or a production outage.
+        public static async System.Threading.Tasks.Task CheckLocalServiceAsync(bool firestore = false)
+        {
+#if UNITY_EDITOR
+            if (!UseLocalEmulator) return;
+            int port = firestore ? 8085 : 9099;
+            using (var client = new System.Net.Sockets.TcpClient())
+            {
+                try
+                {
+                    var connect = client.ConnectAsync("127.0.0.1", port);
+                    if (await System.Threading.Tasks.Task.WhenAny(connect, System.Threading.Tasks.Task.Delay(1500)) != connect)
+                    {
+                        _ = connect.ContinueWith(t => _ = t.Exception, System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
+                        throw new System.TimeoutException();
+                    }
+                    await connect;
+                }
+                catch (System.Exception)
+                {
+                    throw new System.InvalidOperationException("Local test mode: Firebase " + (firestore ? "Firestore" : "Auth") +
+                        " Emulator is not running on port " + port + ". Start the HALL900 test emulators and retry. Local test accounts are separate from real accounts.");
+                }
+            }
+#else
+            await System.Threading.Tasks.Task.CompletedTask;
+#endif
+        }
+
         public static FirebaseAuth Auth => FirebaseAuth.GetAuth(App);
         public static FirebaseFirestore Firestore
         {

@@ -20,6 +20,7 @@ namespace QuizGame.Authentication
 
         private BaseUI currentUI;
         private bool profileOperationRunning;
+        private bool authOperationRunning;
 
         private void Start()
         {
@@ -53,7 +54,7 @@ namespace QuizGame.Authentication
         private void Update()
         {
             //Back button on phone
-            if (!profileOperationRunning && Input.GetKeyDown(KeyCode.Escape))
+            if (!profileOperationRunning && !authOperationRunning && Input.GetKeyDown(KeyCode.Escape))
             {
                 switch (currentUI)
                 {
@@ -125,7 +126,7 @@ namespace QuizGame.Authentication
                 (email, password) =>
                 {
                     SignInAccount(email, password);
-                    signInUI.Close();
+
                 },
                 onForgotPassword: email => OpenRecoverAccountUI(email));
         }
@@ -145,7 +146,7 @@ namespace QuizGame.Authentication
             recoverAccountUI.Init(email =>
             {
                 RecoverAccount(email);
-                recoverAccountUI.Close();
+
             }, prefillEmail);
         }
 
@@ -230,27 +231,28 @@ namespace QuizGame.Authentication
 
         public async void SignInAccount(string email, string password)
         {
-            Debug.Log($"[Authentication] Sign in for email:{email}");
-
-            bool isSuccess = await NetworkAuth.Instance.SignInWithEmailAndPassword(email, password);
-            if (isSuccess)
+            if (authOperationRunning || profileOperationRunning) return;
+            authOperationRunning = true;
+            var ui = currentUI as SignInUI;
+            if (ui != null) ui.SetBusy(true);
+            try
             {
-                await ContinueAfterSignIn();
-            }
-            else
-            {
-                Debug.LogError("[Authentication] Sign in failed. Please check your credentials.");
+                bool success = await NetworkAuth.Instance.SignInWithEmailAndPassword(email, password);
                 if (this == null) return;
-                OpenSignInUI();
-
-                if (NetworkAuth.Instance.LastErrorWasWrongCredential)
-                {
-                    OfferPasswordReset("Sign In",
-                        "We could not sign you in with that email and password. Do you want to reset your password?", email);
-                    return;
-                }
-
-                ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Sign in failed. Please try again.", "Sign In");
+                if (success) await ContinueAfterSignIn();
+                else if (NetworkAuth.Instance.LastErrorWasWrongCredential)
+                    OfferPasswordReset("Sign In", "We could not sign you in with that email and password. Do you want to reset your password?", email);
+                else ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Sign in failed. Please try again.", "Sign In");
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                if (this != null) ShowProfileMessage("Sign in could not be completed. Please try again.", "Sign In");
+            }
+            finally
+            {
+                authOperationRunning = false;
+                if (ui != null) ui.SetBusy(false);
             }
         }
 
@@ -298,9 +300,10 @@ namespace QuizGame.Authentication
             profileOperationRunning = true;
             try
             {
-                if (!await PlayerDataManager.Instance.EnsureUserDocumentExists())
+                await FirebaseConnection.CheckLocalServiceAsync(firestore: true);
+                if (!await WaitForProfile(PlayerDataManager.Instance.EnsureUserDocumentExists()))
                     throw new InvalidOperationException("User document could not be prepared.");
-                var profile = await PlayerDataManager.Instance.GetProfileData();
+                var profile = await WaitForProfile(PlayerDataManager.Instance.GetProfileData());
                 if (this == null) return;
                 if (profile == null) throw new InvalidOperationException("Profile could not be read.");
                 if (string.IsNullOrWhiteSpace(profile.ProfileName)) OpenCreateProfileNameUI();
@@ -313,10 +316,20 @@ namespace QuizGame.Authentication
                 if (this != null)
                 {
                     OpenLoginOrRegisterUI();
-                    ShowProfileMessage("Your profile could not be loaded. Please sign in again to retry.");
+                    ShowProfileMessage(FirebaseConnection.IsUsingEmulator ? e.Message : "Your profile could not be loaded. Please sign in again to retry.");
                 }
             }
             finally { profileOperationRunning = false; }
+        }
+
+        private static async Task<T> WaitForProfile<T>(Task<T> task)
+        {
+            if (await Task.WhenAny(task, Task.Delay(30000)) != task)
+            {
+                _ = task.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+                throw new TimeoutException("Loading your profile took too long. Please check the connection and retry.");
+            }
+            return await task;
         }
 
         private void ShowProfileMessage(string message, string title = "Profile")
@@ -380,29 +393,31 @@ namespace QuizGame.Authentication
 
         public async void RecoverAccount(string email)
         {
-            Debug.Log($"[Authentication] Recover account >> email:{email}");
-
-            var gotResponse = false;
-            var isSuccess = false;
-            var defaultTransitionUI = UIManager.Instance.Replace<DefaultTransitionUI>(ref currentUI);
-            defaultTransitionUI.Init(
-                completeCondition: () => gotResponse,
-                onTransitionEnd: () =>
-                {
-                    if (isSuccess)
-                    {
-                        UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI);
-                        Debug.Log("[Authentication] Recover email sent!");
-                        return;
-                    }
-
-                    Debug.LogError("[Authentication] Failed to send recover email.");
-                    OpenRecoverAccountUI(email);
+            if (authOperationRunning || profileOperationRunning) return;
+            authOperationRunning = true;
+            var ui = currentUI as RecoverAccountUI;
+            if (ui != null) ui.SetBusy(true);
+            try
+            {
+                bool success = await NetworkAuth.Instance.SendPasswordResetEmail(email);
+                if (this == null) return;
+                if (!success)
                     ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Could not send the reset email. Please try again.", "Reset Password");
-                });
-
-            isSuccess = await NetworkAuth.Instance.SendPasswordResetEmail(email);
-            gotResponse = true;
+                else if (FirebaseConnection.IsUsingEmulator)
+                    ShowProfileMessage("Local test mode: the reset link is available in the Firebase Auth Emulator. No email is sent to your inbox in this mode.", "Reset Password");
+                else
+                    UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                if (this != null) ShowProfileMessage("Could not request a password reset. Please try again.", "Reset Password");
+            }
+            finally
+            {
+                authOperationRunning = false;
+                if (ui != null) ui.SetBusy(false);
+            }
         }
     }
 }

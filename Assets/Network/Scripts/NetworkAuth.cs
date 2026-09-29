@@ -42,11 +42,28 @@ namespace QuizGame.Network
             await EnsureReadyAsync();
         }
 
-        public Task<bool> EnsureReadyAsync()
+        public async Task<bool> EnsureReadyAsync()
         {
-            if (initializationTask == null || (initializationTask.IsCompleted && !initializationTask.Result))
-                initializationTask = InitializeAsync();
-            return initializationTask;
+            LastAuthErrorCode = null;
+            try
+            {
+                await FirebaseConnection.CheckLocalServiceAsync();
+                if (this == null) return false;
+                if (initializationTask == null || (initializationTask.IsCompleted && !initializationTask.Result))
+                    initializationTask = InitializeAsync();
+                return await WithTimeout(initializationTask);
+            }
+            catch (TimeoutException)
+            {
+                HandleTimeout("initialization");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                LastAuthErrorMessage = ex.Message;
+                Debug.LogWarning("[NetworkAuth] " + ex.Message);
+                return false;
+            }
         }
 
         private async Task<bool> InitializeAsync()
@@ -271,7 +288,7 @@ namespace QuizGame.Network
 
             try
             {
-                var authResult = await WithTimeout(auth.SignInWithEmailAndPasswordAsync(email, password));
+                var authResult = await WithTimeout(auth.SignInWithEmailAndPasswordAsync(email.Trim(), password));
                 FirebaseUser newUser = authResult?.User;
                 
                 if (newUser != null)
@@ -323,7 +340,7 @@ namespace QuizGame.Network
             try
             {
                 await WithTimeout(auth.SendPasswordResetEmailAsync(email.Trim()));
-                Debug.Log($"Password reset email sent to: {email}");
+                Debug.Log(FirebaseConnection.IsUsingEmulator ? "[NetworkAuth] Reset link created in Auth Emulator; no email is sent in local test mode." : "[NetworkAuth] Password reset request accepted by Firebase.");
                 return true;
             }
             catch (Firebase.FirebaseException firebaseEx)

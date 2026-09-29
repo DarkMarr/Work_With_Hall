@@ -15,6 +15,21 @@ namespace QuizGame.Authentication.UI
         [SerializeField]
         private Button submitButton;
 
+        private TMP_Text busyLabel;
+        private string idleLabel;
+
+        public void SetBusy(bool busy)
+        {
+            submitButton.interactable = !busy;
+            emailInput.interactable = !busy;
+            if (busy && busyLabel == null)
+            {
+                busyLabel = submitButton.GetComponentInChildren<TMP_Text>();
+                if (busyLabel != null) idleLabel = busyLabel.text;
+            }
+            if (busyLabel != null) busyLabel.text = busy ? "Sending..." : idleLabel;
+        }
+
         public void Init(OnRecoverAccount onRecoverAccount, string prefillEmail = null)
         {
             if (!string.IsNullOrEmpty(prefillEmail))

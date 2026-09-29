@@ -22,6 +22,23 @@ namespace QuizGame.Authentication.UI
         [SerializeField]
         private Button forgotPasswordButton;
 
+        private TMP_Text busyLabel;
+        private string idleLabel;
+
+        public void SetBusy(bool busy)
+        {
+            signInButton.interactable = !busy;
+            emailInput.interactable = !busy;
+            passwordInput.interactable = !busy;
+            forgotPasswordButton.interactable = !busy;
+            if (busy && busyLabel == null)
+            {
+                busyLabel = signInButton.GetComponentInChildren<TMP_Text>();
+                if (busyLabel != null) idleLabel = busyLabel.text;
+            }
+            if (busyLabel != null) busyLabel.text = busy ? "Signing in..." : idleLabel;
+        }
+
         public void Init(OnSignIn signIn, Action<string> onForgotPassword)
         {
             signInButton.onClick.AddListener(() => signIn?.Invoke(emailInput.text, passwordInput.text));
