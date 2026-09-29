@@ -19,6 +19,10 @@ namespace QuizGame.Destination
         [SerializeField, ShowAssetPreview]
         private Sprite sprite;
 
+        [SerializeField, ShowAssetPreview]
+        [Tooltip("Full-screen backdrop for the gameplay scene. The 'sprite' above is the small picker card.")]
+        private Sprite backgroundSprite;
+
         [SerializeField]
         private LocalizedString localizedName;
 
@@ -35,6 +39,7 @@ namespace QuizGame.Destination
 
         public string GetID() => destinationID;
         public Sprite GetSprite() => sprite;
+        public Sprite GetBackgroundSprite() => backgroundSprite;
         public string GetName() => localizedName.GetLocalizedString();
         public string GetDescription() => localizedDescription.GetLocalizedString();
         public DestinationItemReward GetItemRewardInDestination() => destinationItemRewards;

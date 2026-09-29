@@ -10,5 +10,6 @@ namespace QuizGame.Destination
         public string GetDescription();
         public DestinationItemReward GetItemRewardInDestination();
         public GameObject GetNPCPrefab();
+        public Sprite GetBackgroundSprite();
     }
 }

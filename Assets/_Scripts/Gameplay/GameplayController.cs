@@ -43,6 +43,10 @@ namespace QuizGame.Gameplay
         [SerializeField]
         private Transform npcPlaceHolder;
 
+        [SerializeField]
+        [Tooltip("Scene backdrop. Swapped to the selected destination's artwork when there is one.")]
+        private SpriteRenderer backgroundRenderer;
+
         // The multiplayer narrator slot lives under multiplayerScenario, which SetGameMode
         // disables in single player, so single player needs its own slot.
         [SerializeField]
@@ -94,11 +98,39 @@ namespace QuizGame.Gameplay
                 multiplayerResults = receiverObject.AddComponent<MultiplayerResultReceiver>();
             }
             multiplayerResults.ResultsChanged += RefreshMultiplayerResults;
+            ApplyDestinationBackground();
             SpawnNPC();
             InitializeUI();
             InitializeQuizzes();
             StartCoroutine(StartQuestionSequence());
             SetGameMode(CurrentGameMode);
+            ShowLocalPlayerName();
+        }
+
+        /// <summary>
+        /// Keeps the backdrop on the destination that was drawn. Single player has no destination,
+        /// so the scene's own artwork is left alone.
+        /// </summary>
+        private void ApplyDestinationBackground()
+        {
+            if (backgroundRenderer == null || SelectedDestinationInfo == null) return;
+
+            var background = SelectedDestinationInfo.GetBackgroundSprite();
+            if (background == null)
+            {
+                Debug.LogWarning($"[GameplayController] Destination '{SelectedDestinationInfo.GetID()}' has no background sprite; keeping the scene default.");
+                return;
+            }
+            backgroundRenderer.sprite = background;
+        }
+
+        private async void ShowLocalPlayerName()
+        {
+            var profile = profileTask == null ? await PlayerDataManager.Instance.GetProfileData() : await profileTask;
+            if (this == null || mainGameplayUI == null) return;
+
+            var displayName = string.IsNullOrWhiteSpace(profile?.ProfileName) ? "Player" : profile.ProfileName;
+            mainGameplayUI.SetPlayerName(LOCAL_PLAYER_INDEX, displayName);
         }
 
         /// <summary>
