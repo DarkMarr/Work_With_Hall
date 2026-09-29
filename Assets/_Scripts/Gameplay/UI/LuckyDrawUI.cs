@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using QuizGame.UI;
 using TMPro;
 using UnityEngine;
@@ -16,11 +15,10 @@ namespace QuizGame.Gameplay
         [SerializeField] private TextMeshProUGUI bonusRateText;
         [SerializeField] private TextMeshProUGUI bonusRateDetailsText;
         [SerializeField] private GameObject contentHolder;
-        [SerializeField] private RectTransform machineVisual;
-        [SerializeField] private float drawDuration = 2f;
+        [SerializeField] private LuckyDrawMachineView machinePrefab;
+        private LuckyDrawMachineView machine;
         private Button drawButton;
         private TMP_Text drawLabel;
-        private Quaternion restRotation;
 
         protected override void Awake()
         {
@@ -58,43 +56,39 @@ namespace QuizGame.Gameplay
             drawLabel.rectTransform.offsetMin = drawLabel.rectTransform.offsetMax = Vector2.zero;
             drawLabel.alignment = TextAlignmentOptions.Center; drawLabel.enableAutoSizing = true;
             drawLabel.fontSizeMin = 24; drawLabel.fontSizeMax = 56;
-            // Art slot: replace this labelled block with the supplied machine image/animation.
-            if (machineVisual == null)
+            if (machinePrefab != null)
             {
-                var slot = new GameObject("MachineArt-Placeholder", typeof(RectTransform), typeof(Image));
+                var slot = new GameObject("Machine-Slot", typeof(RectTransform));
                 slot.transform.SetParent(contentHolder.transform, false);
-                machineVisual = (RectTransform)slot.transform;
-                machineVisual.anchorMin = new Vector2(.24f, .34f); machineVisual.anchorMax = new Vector2(.76f, .65f);
-                machineVisual.offsetMin = machineVisual.offsetMax = Vector2.zero;
-                slot.GetComponent<Image>().color = new Color(.98f, .72f, .23f);
-                slot.GetComponent<Image>().raycastTarget = false;
-                var text = Instantiate(drawLabel, machineVisual); text.text = "Lucky Draw\n<size=55%>Machine art placeholder</size>";
+                var machineRect = (RectTransform)slot.transform;
+                machineRect.anchorMin = new Vector2(.04f, .30f); machineRect.anchorMax = new Vector2(.96f, .69f);
+                machineRect.offsetMin = machineRect.offsetMax = Vector2.zero;
+                machine = Instantiate(machinePrefab, machineRect);
             }
-            restRotation = machineVisual.localRotation;
+            if (machine == null || !machine.IsConfigured)
+            {
+                drawButton.interactable = false;
+                drawLabel.text = "Machine unavailable";
+                Debug.LogError("[LuckyDrawUI] Configure the LuckyDrawMachine prefab before drawing.", this);
+            }
             foreach (var text in contentHolder.GetComponentsInChildren<TMP_Text>(true))
                 if (text.name == "TouchToDraw-Text") text.gameObject.SetActive(false);
         }
         public void SetupBonusMessage(string info, string details) { bonusRateText.text = info; bonusRateDetailsText.text = details; }
         public void DrawReward()
         {
-            if (HasDrawn || IsDrawing || !isActiveAndEnabled) return;
+            if (HasDrawn || IsDrawing || !isActiveAndEnabled || machine == null || !machine.IsConfigured) return;
             HasDrawn = true; IsDrawing = true; drawButton.interactable = false; drawLabel.text = "Drawing...";
             OnStartDrawReward?.Invoke();
-            if (this != null && isActiveAndEnabled) StartCoroutine(AnimateDraw());
+            // The existing controller selects the pending award. Animation never grants or rerolls it.
+            if (this != null && isActiveAndEnabled) machine.Play(FinishAnimation);
         }
-        private IEnumerator AnimateDraw()
+        private void FinishAnimation()
         {
-            float elapsed = 0;
-            while (elapsed < drawDuration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                machineVisual.localRotation = restRotation * Quaternion.Euler(0, 0, Mathf.Sin(elapsed * 24) * 12);
-                yield return null;
-            }
-            machineVisual.localRotation = restRotation; IsDrawing = false;
+            IsDrawing = false;
             drawLabel.text = "Saving reward...";
             OnEndDrawReward?.Invoke();
         }
-        private void OnDisable() { StopAllCoroutines(); IsDrawing = false; }
+        private void OnDisable() { if (machine != null) machine.ResetPose(); IsDrawing = false; }
     }
 }
