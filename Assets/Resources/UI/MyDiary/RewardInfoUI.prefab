@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b00b43df218c73a4295e2b2e5cc2d44c, type: 2}
+  button: {fileID: 5416586949171845607}
 --- !u!1 &1604570405061169397
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,8 +203,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Material
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -338,8 +339,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1/1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -474,8 +475,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Equipment
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -645,6 +646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b00b43df218c73a4295e2b2e5cc2d44c, type: 2}
+  toggle: {fileID: 3750636251631622392}
 --- !u!1 &2489064135745387203
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,6 +1170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b00b43df218c73a4295e2b2e5cc2d44c, type: 2}
+  toggle: {fileID: 6048002066088023908}
 --- !u!1 &4189919621011994777
 GameObject:
   m_ObjectHideFlags: 0
@@ -1311,8 +1314,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Trophy
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1590,6 +1593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b00b43df218c73a4295e2b2e5cc2d44c, type: 2}
+  button: {fileID: 2265505564414508823}
 --- !u!1 &5918200771679117974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1996,3 +2000,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b00b43df218c73a4295e2b2e5cc2d44c, type: 2}
+  toggle: {fileID: 4985377606839810159}

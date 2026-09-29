@@ -141,8 +141,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Back
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -277,8 +277,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Bundle
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -415,8 +415,8 @@ MonoBehaviour:
 
     <size="36">2.99 usd'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -751,8 +751,8 @@ MonoBehaviour:
   m_text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.
     Lorem Ipsum has been the industry''s standard dummy text ever since the '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -956,6 +956,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b5746831845de3e479412cdc98fdb6ec, type: 2}
+  button: {fileID: 7292503396329626090}
 --- !u!1 &8173647149939752312
 GameObject:
   m_ObjectHideFlags: 0
@@ -1094,17 +1095,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   productId: 
   buttonType: 0
-  consumePurchase: 1
+  automaticallyConfirmTransaction: 1
+  onProductFetched:
+    m_PersistentCalls:
+      m_Calls: []
+  onProductFetchFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  onPurchaseFetched:
+    m_PersistentCalls:
+      m_Calls: []
   onTransactionsRestored:
     m_PersistentCalls:
       m_Calls: []
-  onPurchaseComplete:
+  onOrderPending:
+    m_PersistentCalls:
+      m_Calls: []
+  onOrderConfirmed:
     m_PersistentCalls:
       m_Calls: []
   onPurchaseFailed:
     m_PersistentCalls:
       m_Calls: []
-  onProductFetched:
+  onOrderDeferred:
+    m_PersistentCalls:
+      m_Calls: []
+  onPurchaseCompleteLegacy:
+    m_PersistentCalls:
+      m_Calls: []
+  onPurchaseFailedLegacy:
     m_PersistentCalls:
       m_Calls: []
   button: {fileID: 5961901546279039116}
@@ -1136,6 +1155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioRandomRange:
   - {fileID: 11400000, guid: b5746831845de3e479412cdc98fdb6ec, type: 2}
+  button: {fileID: 5961901546279039116}
 --- !u!1 &8508856648926454076
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,6 +1202,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 751829196957212161}
     m_Modifications:
+    - target: {fileID: 322774191805788502, guid: c0fa0a097da9f7f4384be048f424c2a2, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+    - target: {fileID: 322774191805788502, guid: c0fa0a097da9f7f4384be048f424c2a2, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
     - target: {fileID: 4376625639810664327, guid: c0fa0a097da9f7f4384be048f424c2a2, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1266,6 +1294,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BundleBanner
       objectReference: {fileID: 0}
+    - target: {fileID: 7543908860942707741, guid: c0fa0a097da9f7f4384be048f424c2a2, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+    - target: {fileID: 7543908860942707741, guid: c0fa0a097da9f7f4384be048f424c2a2, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

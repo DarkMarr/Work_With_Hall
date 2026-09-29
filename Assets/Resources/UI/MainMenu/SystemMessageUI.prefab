@@ -779,8 +779,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: System message
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+  m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1056,6 +1056,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8818021224134196985}
     m_Modifications:
+    - target: {fileID: 2226985353429148370, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+    - target: {fileID: 2226985353429148370, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
     - target: {fileID: 2764404263904708185, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1156,6 +1164,22 @@ PrefabInstance:
       propertyPath: 'audioRandomRange.Array.data[1]'
       value: 
       objectReference: {fileID: 11400000, guid: b5746831845de3e479412cdc98fdb6ec, type: 2}
+    - target: {fileID: 4981939100788854935, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+    - target: {fileID: 4981939100788854935, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+    - target: {fileID: 6471779231071747616, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
+    - target: {fileID: 6471779231071747616, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
     - target: {fileID: 8583418878969343094, guid: 258708ce4e462a844a9394f430bd36ff, type: 3}
       propertyPath: m_Name
       value: SystemMessageElement

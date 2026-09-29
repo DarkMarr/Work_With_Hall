@@ -204,6 +204,7 @@ namespace QuizGame.Network
             if (!await EnsureReadyAsync()) return false;
             DebugLog($"Attempting to sign up with email: {email}");
             LastAuthErrorMessage = null;
+            LastAuthErrorCode = null;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -215,7 +216,7 @@ namespace QuizGame.Network
 
             try
             {
-                var authResult = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
+                var authResult = await WithTimeout(auth.CreateUserWithEmailAndPasswordAsync(email, password));
                 FirebaseUser newUser = authResult?.User;
                 
                 if (newUser != null)
@@ -234,6 +235,14 @@ namespace QuizGame.Network
             catch (Firebase.FirebaseException firebaseEx)
             {
                 HandleFirebaseError(firebaseEx);
+                // Desktop/Editor builds report a duplicate email as a generic failure (AuthError 1), so keep the player's next step visible.
+                if (firebaseEx.ErrorCode == (int)Firebase.Auth.AuthError.Failure)
+                    LastAuthErrorMessage = "Account could not be created. If this email is already registered, please sign in or reset your password.";
+                return false;
+            }
+            catch (TimeoutException)
+            {
+                HandleTimeout("sign-up");
                 return false;
             }
             catch (Exception ex)
@@ -250,6 +259,7 @@ namespace QuizGame.Network
             if (!await EnsureReadyAsync()) return false;
             DebugLog($"Attempting to sign in to account with email: {email}");
             LastAuthErrorMessage = null;
+            LastAuthErrorCode = null;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -261,7 +271,7 @@ namespace QuizGame.Network
 
             try
             {
-                var authResult = await auth.SignInWithEmailAndPasswordAsync(email, password);
+                var authResult = await WithTimeout(auth.SignInWithEmailAndPasswordAsync(email, password));
                 FirebaseUser newUser = authResult?.User;
                 
                 if (newUser != null)
@@ -282,6 +292,11 @@ namespace QuizGame.Network
                 HandleFirebaseError(firebaseEx);
                 return false;
             }
+            catch (TimeoutException)
+            {
+                HandleTimeout("email sign-in");
+                return false;
+            }
             catch (Exception ex)
             {
                 Debug.LogError($"Unexpected error during Firebase email sign-in: {ex.Message}");
@@ -295,26 +310,39 @@ namespace QuizGame.Network
         {
             if (!await EnsureReadyAsync()) return false;
             DebugLog($"Sending password reset email to: {email}");
+            LastAuthErrorMessage = null;
+            LastAuthErrorCode = null;
 
-            if (string.IsNullOrEmpty(email))
+            if (!IsValidEmail(email))
             {
-                Debug.LogError("Email is null or empty");
+                LastAuthErrorMessage = "Please enter a valid email address.";
+                Debug.LogError("Email is null, empty or malformed");
                 return false;
             }
 
             try
             {
-                await auth.SendPasswordResetEmailAsync(email);
+                await WithTimeout(auth.SendPasswordResetEmailAsync(email.Trim()));
                 Debug.Log($"Password reset email sent to: {email}");
                 return true;
             }
             catch (Firebase.FirebaseException firebaseEx)
             {
-                Debug.LogError($"Failed to send password reset email: {firebaseEx.Message}");
+                LastAuthErrorCode = firebaseEx.ErrorCode;
+                LastAuthErrorMessage = firebaseEx.ErrorCode == (int)Firebase.Auth.AuthError.UserNotFound
+                    ? "No account was found for this email."
+                    : GetPlayerMessage(firebaseEx.ErrorCode);
+                Debug.LogError($"Failed to send password reset email: {firebaseEx.ErrorCode} - {firebaseEx.Message}");
+                return false;
+            }
+            catch (TimeoutException)
+            {
+                HandleTimeout("password reset");
                 return false;
             }
             catch (Exception ex)
             {
+                LastAuthErrorMessage = "Something went wrong. Please try again.";
                 Debug.LogError($"Unexpected error sending password reset email: {ex.Message}");
                 Debug.LogException(ex);
                 return false;
@@ -443,6 +471,60 @@ namespace QuizGame.Network
         /// </summary>
         public string LastAuthErrorMessage { get; private set; }
 
+        /// <summary>
+        /// Firebase AuthError code of the most recent failed auth request (null when it did not fail with a Firebase error).
+        /// </summary>
+        public int? LastAuthErrorCode { get; private set; }
+
+        public bool LastErrorWasEmailInUse =>
+            LastAuthErrorCode == (int)Firebase.Auth.AuthError.EmailAlreadyInUse ||
+            LastAuthErrorCode == (int)Firebase.Auth.AuthError.AccountExistsWithDifferentCredentials ||
+            LastAuthErrorCode == (int)Firebase.Auth.AuthError.Failure; // Editor/desktop reports a duplicate email as a generic failure.
+
+        public bool LastErrorWasWrongCredential =>
+            LastAuthErrorCode == (int)Firebase.Auth.AuthError.WrongPassword ||
+            LastAuthErrorCode == (int)Firebase.Auth.AuthError.InvalidCredential ||
+            LastAuthErrorCode == (int)Firebase.Auth.AuthError.UserNotFound;
+
+        private const int AuthRequestTimeoutMs = 30000;
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return false;
+            email = email.Trim();
+            int at = email.IndexOf('@');
+            return at > 0 && at == email.LastIndexOf('@') && email.IndexOf('.', at) > at + 1 && !email.EndsWith(".") && !email.Contains(" ");
+        }
+
+        // Firebase requests can stall on a bad connection; fail after a fixed wait so the UI never waits forever.
+        private static async Task<T> WithTimeout<T>(Task<T> task)
+        {
+            if (await Task.WhenAny(task, Task.Delay(AuthRequestTimeoutMs)) != task)
+            {
+                _ = task.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+                throw new TimeoutException();
+            }
+            return await task;
+        }
+
+        private static async Task WithTimeout(Task task)
+        {
+            if (await Task.WhenAny(task, Task.Delay(AuthRequestTimeoutMs)) != task)
+            {
+                _ = task.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+                throw new TimeoutException();
+            }
+            await task;
+        }
+
+        private void HandleTimeout(string operation)
+        {
+            LastAuthErrorCode = null;
+            LastAuthErrorMessage = "The server is taking too long to respond. Please check your connection and try again.";
+            Debug.LogError($"[NetworkAuth] {operation} timed out after {AuthRequestTimeoutMs / 1000}s");
+            OnSignInResult?.Invoke(SignInResult.NetworkError);
+        }
+
         private static string GetPlayerMessage(int errorCode)
         {
             switch (errorCode)
@@ -471,6 +553,7 @@ namespace QuizGame.Network
 
         private void HandleFirebaseError(Firebase.FirebaseException firebaseEx)
         {
+            LastAuthErrorCode = firebaseEx.ErrorCode;
             LastAuthErrorMessage = GetPlayerMessage(firebaseEx.ErrorCode);
             switch (firebaseEx.ErrorCode)
             {

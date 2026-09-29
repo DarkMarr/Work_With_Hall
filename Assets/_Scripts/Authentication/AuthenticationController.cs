@@ -121,11 +121,13 @@ namespace QuizGame.Authentication
         private void OpenSignInUI()
         {
             var signInUI = UIManager.Instance.Replace<SignInUI>(ref currentUI);
-            signInUI.Init((email, password) =>
-            {
-                SignInAccount(email, password);
-                signInUI.Close();
-            });
+            signInUI.Init(
+                (email, password) =>
+                {
+                    SignInAccount(email, password);
+                    signInUI.Close();
+                },
+                onForgotPassword: email => OpenRecoverAccountUI(email));
         }
 
         private void OpenCreateNewAccountUI()
@@ -137,14 +139,30 @@ namespace QuizGame.Authentication
             });
         }
 
-        private void OpenRecoverAccountUI()
+        private void OpenRecoverAccountUI(string prefillEmail = null)
         {
             var recoverAccountUI = UIManager.Instance.Replace<RecoverAccountUI>(ref currentUI);
             recoverAccountUI.Init(email =>
             {
                 RecoverAccount(email);
                 recoverAccountUI.Close();
-            });
+            }, prefillEmail);
+        }
+
+        /// <summary>
+        /// Offers the password-reset path from a failure the player cannot resolve by retrying,
+        /// carrying the address they already typed so they do not have to enter it again.
+        /// </summary>
+        private void OfferPasswordReset(string title, string message, string email)
+        {
+            var popup = UIManager.Instance.Create<ConfirmPopupUI>(currentUI);
+            popup.Setup(title, message,
+                onConfirmButtonClicked: () =>
+                {
+                    popup.Close();
+                    OpenRecoverAccountUI(email);
+                },
+                onCancelButtonClicked: () => popup.Close());
         }
 
         private void OpenCreateBodyTypeUI()
@@ -224,6 +242,14 @@ namespace QuizGame.Authentication
                 Debug.LogError("[Authentication] Sign in failed. Please check your credentials.");
                 if (this == null) return;
                 OpenSignInUI();
+
+                if (NetworkAuth.Instance.LastErrorWasWrongCredential)
+                {
+                    OfferPasswordReset("Sign In",
+                        "We could not sign you in with that email and password. Do you want to reset your password?", email);
+                    return;
+                }
+
                 ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Sign in failed. Please try again.", "Sign In");
             }
         }
@@ -340,6 +366,14 @@ namespace QuizGame.Authentication
                 Debug.LogError("[Authentication] Create new account failed. Please check your credentials.");
                 // The create-account screen was closed when the request started; bring it back with the reason.
                 OpenCreateNewAccountUI();
+
+                if (NetworkAuth.Instance.LastErrorWasEmailInUse)
+                {
+                    OfferPasswordReset("Create Account",
+                        "This email is already registered. Do you want to reset its password?", email);
+                    return;
+                }
+
                 ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Account could not be created. Please try again.", "Create Account");
             }
         }
@@ -363,7 +397,8 @@ namespace QuizGame.Authentication
                     }
 
                     Debug.LogError("[Authentication] Failed to send recover email.");
-                    OpenRecoverAccountUI();
+                    OpenRecoverAccountUI(email);
+                    ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Could not send the reset email. Please try again.", "Reset Password");
                 });
 
             isSuccess = await NetworkAuth.Instance.SendPasswordResetEmail(email);

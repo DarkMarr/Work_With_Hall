@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,9 +19,13 @@ namespace QuizGame.Authentication.UI
         [SerializeField]
         private Button signInButton;
 
-        public void Init(OnSignIn signIn)
+        [SerializeField]
+        private Button forgotPasswordButton;
+
+        public void Init(OnSignIn signIn, Action<string> onForgotPassword)
         {
             signInButton.onClick.AddListener(() => signIn?.Invoke(emailInput.text, passwordInput.text));
+            forgotPasswordButton.onClick.AddListener(() => onForgotPassword?.Invoke(emailInput.text));
         }
     }
 }

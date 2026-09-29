@@ -15,8 +15,12 @@ namespace QuizGame.Authentication.UI
         [SerializeField]
         private Button submitButton;
 
-        public void Init(OnRecoverAccount onRecoverAccount)
+        public void Init(OnRecoverAccount onRecoverAccount, string prefillEmail = null)
         {
+            if (!string.IsNullOrEmpty(prefillEmail))
+            {
+                emailInput.text = prefillEmail;
+            }
             submitButton.onClick.AddListener(() => onRecoverAccount?.Invoke(emailInput.text));
         }
     }
