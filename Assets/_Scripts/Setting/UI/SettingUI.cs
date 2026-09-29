@@ -1,5 +1,6 @@
 using QuizGame.UI;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,6 +62,18 @@ namespace QuizGame.Setting.UI
             UpdateVolumeSlider(masterSlider, soundVolume);
             UpdateVolumeSlider(musicSlider, musicVolume);
             UpdateVolumeSlider(sfxSlider, sfxVolume);
+        }
+
+        /// <summary>
+        /// Fills the dropdown from the languages the project actually ships, so adding
+        /// a locale never means re-authoring the prefab.
+        /// </summary>
+        public void SetupLanguages(List<string> languageNames, int selectedIndex)
+        {
+            languageDropdown.ClearOptions();
+            languageDropdown.AddOptions(languageNames);
+            languageDropdown.SetValueWithoutNotify(selectedIndex);
+            languageDropdown.RefreshShownValue();
         }
 
         private void UpdateVolumeSlider(Slider slider, float volume)

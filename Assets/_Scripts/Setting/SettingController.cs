@@ -3,7 +3,9 @@ using QuizGame.Setting.UI;
 using QuizGame.Sound;
 using QuizGame.UI;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 
 namespace QuizGame.Setting
@@ -36,6 +38,20 @@ namespace QuizGame.Setting
             settingUI.OnCreditsButtonClicked += HandleCreditsButtonClicked;
             settingUI.OnSignOutButtonClicked += HandleSignOutButtonClicked;
             settingUI.OnBackButtonClicked += HandleBackButtonClicked;
+
+            SetupLanguageDropdown();
+        }
+
+        private void SetupLanguageDropdown()
+        {
+            var locales = LocalizationSettings.AvailableLocales.Locales;
+            var names = new List<string>(locales.Count);
+            foreach (var locale in locales)
+            {
+                var culture = locale.Identifier.CultureInfo;
+                names.Add(culture != null ? culture.NativeName : locale.Identifier.Code);
+            }
+            settingUI.SetupLanguages(names, Mathf.Max(0, locales.IndexOf(LocalizationSettings.SelectedLocale)));
         }
 
         private void HandleMasterVolumeChanged(float volume)
@@ -58,7 +74,15 @@ namespace QuizGame.Setting
 
         private void HandleLanguageChanged(int index)
         {
-            Debug.Log("[SettingController] Language changed");
+            var locales = LocalizationSettings.AvailableLocales.Locales;
+            if (index < 0 || index >= locales.Count)
+            {
+                Debug.LogError($"[SettingController] Language index {index} is out of range.");
+                return;
+            }
+
+            LocalizationSettings.SelectedLocale = locales[index];
+            Debug.Log($"[SettingController] Language changed to {locales[index].Identifier.Code}");
         }
 
         private void HandleSignOutButtonClicked()

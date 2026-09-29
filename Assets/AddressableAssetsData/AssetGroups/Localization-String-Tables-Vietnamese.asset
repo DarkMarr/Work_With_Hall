@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-String-Tables-Vietnamese
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-String-Tables-Vietnamese
+  m_GUID: 5834f3c9caa03d04baf7064e57cd127b
+  m_SerializeEntries:
+  - m_GUID: 35d9d4a360ee704429f11a2b139d9c4f
+    m_Address: Common_vi
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 480f84c021a03f74da878c422aecab19
+    m_Address: Destination_vi
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6668ada60ee11054fa5fbfafc689c996
+    m_Address: Character_vi
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7321856042b04ac48be53378cbb8ddb8
+    m_Address: Item_vi
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5674e3a0809fb74d94603ef9b15efb3
+    m_Address: Quiz_vi
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 1b1ea95cd05112447ad0a374d7da95a2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c8be54a323f5bbe4f9df1a564bf12188, type: 2}
+    - {fileID: 11400000, guid: d01f425549f0d814a8bae75cd8a7fc7d, type: 2}
