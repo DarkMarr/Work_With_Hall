@@ -52,22 +52,50 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerSlot-Left Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1129301094337605370, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2231501117742063803, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.4190001
+      value: -0.888
+      objectReference: {fileID: 0}
+    - target: {fileID: 2231501117742063803, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.335
+      objectReference: {fileID: 0}
+    - target: {fileID: 2892157606654393797, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2916671662446046788, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 4807468121540197810, guid: 0d2ba7a61ec8ee347b4282f79fe6f804, type: 3}
+      objectReference: {fileID: 4807468121540197810, guid: ce0ec23b0d51ec744bd4271d664b72cb, type: 3}
     - target: {fileID: 4444327408081690603, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.419
+      value: -0.8879999
       objectReference: {fileID: 0}
+    - target: {fileID: 4444327408081690603, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.335
+      objectReference: {fileID: 0}
+    - target: {fileID: 4766834034376507515, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_Sprite
+      value:
+      objectReference: {fileID: 8468045120746865048, guid: 26416e2fd538f8644b78dff6f34281bd, type: 3}
     - target: {fileID: 8456013285504092025, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 4807468121540197810, guid: 0d2ba7a61ec8ee347b4282f79fe6f804, type: 3}
+      objectReference: {fileID: 4807468121540197810, guid: ce0ec23b0d51ec744bd4271d664b72cb, type: 3}
+    - target: {fileID: 8596893486893065175, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9053196785117810605, guid: 2ce79efb58a58e04badfcdf39cc5592c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

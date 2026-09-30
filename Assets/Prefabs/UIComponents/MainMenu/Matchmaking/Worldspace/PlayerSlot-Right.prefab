@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3789450555677486379, guid: 3860de3024039c34e890e2b5fa99ab3e, type: 3}
+  m_Sprite: {fileID: -3789450555677486379, guid: c032849ba497455428e43f17edc3b705, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -125,6 +125,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: QuizGame.Matchmaking::MatchmakingPlayerSlot
   loadingVisual: {fileID: 9053196785117810605}
   playerVisual: {fileID: 2547719915702182493}
+  placeholderAvatar: {fileID: 0}
+  waitingText: {fileID: 0}
+  playerNameText: {fileID: 0}
+  playerRankText: {fileID: 0}
 --- !u!1 &2335586915155318030
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,7 +334,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1.05, y: 0.8430002}
+  m_AnchoredPosition: {x: 0.579, y: 1.304}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4531791414822228036
@@ -463,7 +467,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3789450555677486379, guid: 3860de3024039c34e890e2b5fa99ab3e, type: 3}
+  m_Sprite: {fileID: -3789450555677486379, guid: c032849ba497455428e43f17edc3b705, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1099,7 +1103,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5844138341211843173, guid: 9b9129ee7b9681f47a1d2fdf5d274756, type: 3}
+  m_Sprite: {fileID: 5844138341211843173, guid: 7dcb0e05d3b13e345b95d2985a63dda5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1146,7 +1150,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1.05, y: 0.8430002}
+  m_AnchoredPosition: {x: 0.579, y: 1.3040001}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &945242634447800453

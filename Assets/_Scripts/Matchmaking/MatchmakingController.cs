@@ -36,6 +36,8 @@ namespace QuizGame.Matchmaking
         private UIManager uiManager;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private Dictionary<int, IDestinationInfo> playerSelectedDestinations = new Dictionary<int, IDestinationInfo>();
+        private string localPlayerName = "Player";
+        private string localPlayerRank = "Unranked";
 
         private const int MatchStartDelayMS = 20000; // TODO: Replace with server-side delay
 
@@ -99,6 +101,12 @@ namespace QuizGame.Matchmaking
         public void InjectUIManager(UIManager uiManager)
         {
             this.uiManager = uiManager;
+        }
+
+        public void SetLocalPlayerInfo(string playerName, string rankName)
+        {
+            localPlayerName = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
+            localPlayerRank = string.IsNullOrWhiteSpace(rankName) ? "Unranked" : rankName;
         }
 
         /// <summary>
@@ -264,6 +272,7 @@ namespace QuizGame.Matchmaking
             Debug.Log("[Matchmaking] Simulating player joins...");
 
             matchmakingWorldSpaceVisual.SetPlayerAvatar(0, GetSelectedCharacterPrefab());
+            matchmakingWorldSpaceVisual.SetPlayerInfo(0, localPlayerName, localPlayerRank);
             matchmakingWorldSpaceVisual.ShowJoinedPlayer(0); // Show self as joined
             var selectedDestination = DestinationResourceManager.Instance.GetRandomResource(); // TODO: [Network] Get the selected map from player vote
             playerSelectedDestinations.Add(0, selectedDestination);
@@ -306,6 +315,14 @@ namespace QuizGame.Matchmaking
 
         private void PlayerJoinTheLobby(int playerIndex)
         {
+            MultiplayerRoster.EnsurePlaceholders(CharacterResourceManager.Instance.GetAllResourcesID());
+            var rosterIndex = playerIndex - 1;
+            var roster = MultiplayerRoster.Opponents;
+            if (rosterIndex >= 0 && rosterIndex < roster.Count)
+            {
+                var opponent = roster[rosterIndex];
+                matchmakingWorldSpaceVisual.SetPlayerInfo(playerIndex, opponent.DisplayName, opponent.RankName);
+            }
             matchmakingWorldSpaceVisual.ShowJoinedPlayer(playerIndex);
             matchmakingWorldSpaceVisual.SetPlayerAvatar(playerIndex, GetOpponentCharacterPrefab(playerIndex));
             var selectedDestination = DestinationResourceManager.Instance.GetRandomResource(); // TODO: [Network] Get the selected map from player vote

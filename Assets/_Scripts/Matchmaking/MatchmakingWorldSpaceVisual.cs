@@ -27,6 +27,16 @@ namespace QuizGame.Matchmaking
             playerSlots[playerIndex].SetAvatar(avatarPrefab);
         }
 
+        public void SetPlayerInfo(int playerIndex, string playerName, string rankName)
+        {
+            if (playerIndex < 0 || playerIndex >= playerSlots.Length)
+            {
+                Debug.LogError($"[MatchmakingWorldSpaceVisual] Invalid player index: {playerIndex}");
+                return;
+            }
+            playerSlots[playerIndex].SetPlayerInfo(playerName, rankName);
+        }
+
         public void Open()
         {
             gameObject.SetActive(true);

@@ -1,4 +1,5 @@
 using QuizGame.Character;
+using TMPro;
 using UnityEngine;
 
 namespace QuizGame.Matchmaking
@@ -20,7 +21,22 @@ namespace QuizGame.Matchmaking
         [SerializeField, Tooltip("Default character art under playerVisual. Its bounds define where and how big a real avatar is drawn.")]
         private GameObject placeholderAvatar;
 
+        [Header("Status Bubble")]
+        [SerializeField, Tooltip("Text shown while this slot is still waiting for a player.")]
+        private TMP_Text waitingText;
+
+        [SerializeField, Tooltip("Player name shown in the ready bubble.")]
+        private TMP_Text playerNameText;
+
+        [SerializeField, Tooltip("Player rank shown under the name in the ready bubble.")]
+        private TMP_Text playerRankText;
+
         private GameObject avatarInstance;
+
+        private void Awake()
+        {
+            ResolveStatusBubbleReferences();
+        }
 
         private void Start()
         {
@@ -29,8 +45,42 @@ namespace QuizGame.Matchmaking
 
         public void SetPlayerSlotState(PlayerSlotState state)
         {
-            loadingVisual.SetActive(state == PlayerSlotState.Loading);
-            playerVisual.SetActive(state == PlayerSlotState.PlayerPresent);
+            if (loadingVisual != null)
+                loadingVisual.SetActive(state == PlayerSlotState.Loading);
+            if (playerVisual != null)
+                playerVisual.SetActive(state == PlayerSlotState.PlayerPresent);
+        }
+
+        public void SetPlayerInfo(string playerName, string rankName)
+        {
+            ResolveStatusBubbleReferences();
+
+            if (playerNameText != null)
+                playerNameText.text = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
+            if (playerRankText != null)
+                playerRankText.text = string.IsNullOrWhiteSpace(rankName) ? "Unranked" : rankName;
+        }
+
+        private void ResolveStatusBubbleReferences()
+        {
+            if (waitingText == null && loadingVisual != null)
+                waitingText = loadingVisual.transform
+                    .Find("Waiting-Canvas/TextBox/Waiting-Text (TMP)")
+                    ?.GetComponent<TMP_Text>();
+
+            if (playerVisual == null) return;
+
+            if (playerNameText == null)
+                playerNameText = playerVisual.transform
+                    .Find("Ready-Canvas/TextBox/name-Text (TMP)")
+                    ?.GetComponent<TMP_Text>();
+            if (playerRankText == null)
+                playerRankText = playerVisual.transform
+                    .Find("Ready-Canvas/TextBox/rank-Text (TMP)")
+                    ?.GetComponent<TMP_Text>();
+
+            if (waitingText != null && string.IsNullOrWhiteSpace(waitingText.text))
+                waitingText.text = "Waiting...";
         }
 
         /// <summary>

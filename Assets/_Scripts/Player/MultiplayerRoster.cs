@@ -4,13 +4,16 @@ namespace QuizGame.Player
 {
     public readonly struct OpponentInfo
     {
-        public OpponentInfo(string displayName, string characterId)
+        public OpponentInfo(string displayName, string characterId, string rankName = "Unranked")
         {
             DisplayName = displayName;
             CharacterId = characterId;
+            RankName = rankName;
         }
 
         public string DisplayName { get; }
+
+        public string RankName { get; }
 
         /// <summary>Id of a CharacterInfoSO. Callers resolve it to a prefab themselves.</summary>
         public string CharacterId { get; }

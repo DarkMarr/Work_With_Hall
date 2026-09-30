@@ -77,12 +77,15 @@ namespace QuizGame.MainMenu
             if (this == null) return;
 
             profileUI = UIManager.Instance.Create<MainMenuProfileUI>();
-            profileUI.SetProfileName(profileData?.ProfileName ?? "Unknown");
-            profileUI.SetRank("Unranked");
+            var displayName = string.IsNullOrWhiteSpace(profileData?.ProfileName) ? "Player" : profileData.ProfileName;
+            const string rankName = "Unranked"; // TODO: [Network] Load the player's real rank.
+            profileUI.SetProfileName(displayName);
+            profileUI.SetRank(rankName);
             profileUI.SetEnergy(energyData?.Current ?? 0, energyData?.Max ?? 0);
             ShowMainMenu();
 
             matchmakingController.InjectUIManager(UIManager.Instance);
+            matchmakingController.SetLocalPlayerInfo(displayName, rankName);
             matchmakingController.OnExitMatchmaking += HandleMultiplayerMatchSelectionClicked;
         }
 
