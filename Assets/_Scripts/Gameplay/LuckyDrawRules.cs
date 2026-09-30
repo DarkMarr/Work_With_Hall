@@ -8,6 +8,11 @@ namespace QuizGame.Gameplay
 {
     // GAME DESIGN DOC 02: multiplayer!H21:K25, ranking point!I2:I5.
     // Integer hundredths avoid rounding the 1.25/8.75/45.25 percentages.
+    //
+    // A later sheet (1JfXVq2D..., "Roulette" tab) carries a different table: SuperRare at double
+    // these figures, Common higher, and no Grey at all in first place. Rare and Uncommon match.
+    // Confirmed 2026-09-30 that DOC 02 is the one to follow, so the difference is deliberate —
+    // please do not "correct" these numbers against that sheet without asking first.
     public static class LuckyDrawRules
     {
         private static readonly int[,] Weights = {
