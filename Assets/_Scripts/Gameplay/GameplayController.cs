@@ -488,29 +488,45 @@ namespace QuizGame.Gameplay
             var roster = MultiplayerRoster.Opponents;
             if (roster.Count < MultiplayerRoster.OpponentCount) return;
 
-            // Every score must differ: OpenMultiplayerRewards refuses to award a tied placement,
-            // which would put the draw right back out of reach. Offsets are drawn without
-            // replacement and zero is reserved for the player, so no two players can match.
-            var offsets = new List<int> { -3, -2, -1, 1, 2, 3 };
+            // Draw the placement first, then build scores around it. Perturbing the player's score
+            // by a random offset per opponent looks fairer but is not: first and fourth each need
+            // every opponent to fall the same side of the player, so they turn up about one match
+            // in twenty and the draw never gets exercised at the placements that matter most.
+            // Placement drives both the ranking points and the draw odds, so it is what to spread.
+            var targetPlace = Random.Range(1, MultiplayerRoster.OpponentCount + 2);
+
+            // Only as many opponents can sit below the player as there are distinct non-negative
+            // scores beneath their own: SetResults rejects a negative point, which would refuse the
+            // whole stand-in and drop the match back to "results pending". Someone who scored zero
+            // therefore comes last, which is simply true.
+            var below = Mathf.Min(MultiplayerRoster.OpponentCount - (targetPlace - 1), localResult.Point);
+            var above = MultiplayerRoster.OpponentCount - below;
+
+            // Every score must differ. OpenMultiplayerRewards refuses to award a tied placement,
+            // which would put the draw straight back out of reach.
             var players = new List<PlayerGameResultData>(MultiplayerRoster.OpponentCount + 1) { localResult.Copy() };
+            int nextAbove = localResult.Point, nextBelow = localResult.Point;
             for (int i = 0; i < MultiplayerRoster.OpponentCount; i++)
             {
-                var pick = Random.Range(0, offsets.Count);
-                var point = Mathf.Max(0, localResult.Point + offsets[pick]);
-                offsets.RemoveAt(pick);
+                int point;
+                if (i < above)
+                {
+                    point = nextAbove += Random.Range(1, 4);
+                }
+                else
+                {
+                    // Leave one distinct score for each opponent still to be placed below this
+                    // one, so the last of them can land on zero but never under it.
+                    var remaining = below - (i - above);
+                    var maxStep = nextBelow - (remaining - 1);
+                    nextBelow -= Random.Range(1, Mathf.Min(4, maxStep + 1));
+                    point = nextBelow;
+                }
                 players.Add(new PlayerGameResultData(roster[i].DisplayName, point)
                 {
                     UserId = "standin-" + i,
                     CharacterId = roster[i].CharacterId
                 });
-            }
-
-            // Mathf.Max can still collapse negatives onto 0 when the player scored very low, so
-            // separate any duplicates upward rather than hand back a tie.
-            var used = new HashSet<int>();
-            foreach (var player in players.OrderByDescending(p => p.Point))
-            {
-                while (!used.Add(player.Point)) player.Point++;
             }
 
             var matchId = "standin-" + System.Guid.NewGuid().ToString("N");
