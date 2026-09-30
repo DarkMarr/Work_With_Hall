@@ -71,6 +71,7 @@ namespace QuizGame.Gameplay
         private ItemWithQuantityPair pendingDraw;
         private int pendingPlace;
         private string pendingMatchId;
+        private bool pendingDrawIsPreview;
         private bool savingDraw;
         [SerializeField] private MultiplayerResultReceiver multiplayerResults;
         private Task<ProfileData> profileTask;
@@ -561,6 +562,7 @@ namespace QuizGame.Gameplay
                 return;
             }
             pendingMatchId = multiplayerResults.MatchId;
+            pendingDrawIsPreview = !multiplayerResults.IsFromServer;
             string missing = LuckyDrawRules.MissingPools(SelectedDestinationInfo);
             if (luckyDrawMaterialQuantity <= 0 || !string.IsNullOrEmpty(missing))
             {
@@ -571,15 +573,18 @@ namespace QuizGame.Gameplay
                 return;
             }
             int delta = LuckyDrawRules.RankingPoints(pendingPlace);
-            screen.SetupMatch("Place #" + pendingPlace + "  RP " + delta.ToString("+0;-0;0"),
-                "Draw your map reward. RP and item are saved together.", "Lucky Draw");
+            screen.SetupMatch(pendingDrawIsPreview ? "Preview - Place #" + pendingPlace
+                    : "Place #" + pendingPlace + "  RP " + delta.ToString("+0;-0;0"),
+                pendingDrawIsPreview ? "Practice draw only. No items or RP will be saved."
+                    : "Draw your map reward. RP and item are saved together.", "Lucky Draw");
             screen.OnNextButtonClicked += ShowLuckyDraw;
         }
 
         private void ShowLuckyDraw()
         {
             var draw = UIManager.Instance.Replace<LuckyDrawUI>(ref currentGameplayUI);
-            draw.SetupBonusMessage("Place #" + pendingPlace, LuckyDrawRules.OddsText(pendingPlace));
+            draw.SetupBonusMessage((pendingDrawIsPreview ? "Preview - Place #" : "Place #") + pendingPlace,
+                LuckyDrawRules.OddsText(pendingPlace));
             draw.OnStartDrawReward += () =>
             {
                 if (pendingDraw != null) return;
@@ -594,6 +599,14 @@ namespace QuizGame.Gameplay
         private async void SaveDraw()
         {
             if (savingDraw || pendingDraw == null) return;
+            if (pendingDrawIsPreview)
+            {
+                // Keep animation and reward presentation testable without accessing Firebase.
+                var preview = UIManager.Instance.Replace<LuckyDrawResultUI>(ref currentGameplayUI);
+                preview.Setup(pendingDraw, true);
+                preview.onAcceptButtonClicked += ReturnToMainMenu;
+                return;
+            }
             savingDraw = true;
             var proposed = new MatchRewardReceipt { ItemId = pendingDraw.GetID(), Name = pendingDraw.GetName(),
                 Type = pendingDraw.GetItemType().ToString(), Quantity = pendingDraw.GetQuantity(), Place = pendingPlace };

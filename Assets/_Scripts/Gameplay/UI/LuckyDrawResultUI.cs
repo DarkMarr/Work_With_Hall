@@ -28,7 +28,7 @@ namespace QuizGame.Gameplay
             acceptButton.onClick.AddListener(() => { acceptButton.interactable = false; onAcceptButtonClicked?.Invoke(); });
         }
 
-        public void Setup(IQuantifiableItem item)
+        public void Setup(IQuantifiableItem item, bool isPreview = false)
         {
             var background = transform.Find("BG");
             if (background != null) background.GetComponent<Image>().color = new Color(.18f, .16f, .22f, 1);
@@ -42,7 +42,8 @@ namespace QuizGame.Gameplay
             itemTierText.fontSizeMin = itemNameText.fontSizeMin = 24;
             itemTierText.fontSizeMax = itemNameText.fontSizeMax = 64;
             itemTierText.text = item.GetItemType() == ItemType.Material ? "Material" : item.GetItemTier().ToString() + " Item"; //TODO: Replace with some localization of item tier
-            itemNameText.text = item.GetName();
+            if (isPreview) itemTierText.text = "Preview - " + itemTierText.text;
+            itemNameText.text = item.GetName() + (isPreview ? "\n<size=60%>Not added to inventory</size>" : "");
             itemVisualization.Setup(item.GetSprite(), $"x{item.GetQuantity()}");
         }
 

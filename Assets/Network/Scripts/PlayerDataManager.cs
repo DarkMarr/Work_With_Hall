@@ -90,6 +90,9 @@ namespace QuizGame.Network
         /// <summary>One transaction grants an item and RP once per completed match.</summary>
         public async Task<MatchRewardReceipt> ClaimLuckyDraw(string matchId, string expectedUserId, MatchRewardReceipt proposed)
         {
+            // Defense against accidental callers bypassing the preview UI. This is not a
+            // substitute for server-side validation of real matches and their rewards.
+            if (matchId != null && matchId.StartsWith("standin-", StringComparison.OrdinalIgnoreCase)) return null;
             if (string.IsNullOrWhiteSpace(matchId) || matchId.Contains("/") || proposed == null ||
                 string.IsNullOrWhiteSpace(proposed.ItemId) || proposed.Quantity <= 0 || proposed.Place < 1 || proposed.Place > 4 ||
                 (proposed.Type != "Material" && proposed.Type != "Decoration" && proposed.Type != "Equipment")) return null;

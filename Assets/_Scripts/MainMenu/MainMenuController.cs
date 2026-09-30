@@ -45,10 +45,10 @@ namespace QuizGame.MainMenu
         [SerializeField]
         private MatchmakingController matchmakingController;
 
-        private StoreController storeController = new StoreController();
-        private MyDiaryController myDiaryController = new MyDiaryController();
-        private FuseController fuseController = new FuseController();
-        private SettingController settingController = new SettingController();
+        private StoreController storeController;
+        private MyDiaryController myDiaryController;
+        private FuseController fuseController;
+        private SettingController settingController;
 
         private MainMenuProfileUI profileUI;
         private BaseUI currentMainUI;
@@ -58,6 +58,11 @@ namespace QuizGame.MainMenu
 
         private void Awake()
         {
+            // SettingController resolves SoundManager; Unity lookups are unsafe during deserialization.
+            storeController = new StoreController();
+            myDiaryController = new MyDiaryController();
+            fuseController = new FuseController();
+            settingController = new SettingController();
             // Enable the room before sceneLoaded discovers its child PlayerSpawnPoint.
             if (roomBackground != null) roomBackground.SetActive(true);
         }

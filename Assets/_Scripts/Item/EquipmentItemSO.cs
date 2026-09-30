@@ -21,10 +21,20 @@ namespace QuizGame.Item
         [SerializeField] private ItemTier equipmentTier = ItemTier.NoTier;
         protected override ItemTier ItemTier => equipmentTier;
 
-        public override string GetName() => localizedName.GetLocalizedString();
+        public override string GetName()
+        {
+            if (localizedName != null && !localizedName.IsEmpty) return localizedName.GetLocalizedString();
+            // Generated fashion rewards have no translation keys yet. Never let an empty
+            // table reference abort reward presentation (or prevent the Accept listener binding).
+            var parts = (GetID() ?? "").Split(new[] { '_' }, 3);
+            var fallback = parts.Length == 3 && parts[0] == "Fashion" ? parts[2] : name;
+            return System.Text.RegularExpressions.Regex.Replace(fallback, "([a-z])([A-Z])", "$1 $2");
+        }
 
-        public string GetDescription() => localizedDescription.GetLocalizedString();
+        public string GetDescription() => localizedDescription == null || localizedDescription.IsEmpty
+            ? "" : localizedDescription.GetLocalizedString();
 
-        public string GetSubDescription() => localizedSubDescription.GetLocalizedString();
+        public string GetSubDescription() => localizedSubDescription == null || localizedSubDescription.IsEmpty
+            ? "" : localizedSubDescription.GetLocalizedString();
     }
 }

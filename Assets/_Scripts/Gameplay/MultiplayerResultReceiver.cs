@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QuizGame.Gameplay
 {
     // The room/network adapter supplies a complete score snapshot for the current match.
-    // No sample opponents or local estimates are substituted for missing server results.
+    // Local stand-ins are explicitly marked as previews, never as official results.
     public class MultiplayerResultReceiver : MonoBehaviour
     {
         public event Action ResultsChanged;
@@ -42,17 +42,26 @@ namespace QuizGame.Gameplay
         /// </summary>
         public bool SetStandInResults(string matchId, PlayerGameResultData[] players)
         {
-            if (IsFinal) return false;
-            BeginMatch(matchId);
-            if (!SetFinalResults(matchId, players)) return false;
+            if (IsFinal || string.IsNullOrEmpty(matchId) || !matchId.StartsWith("standin-", StringComparison.Ordinal)
+                || players == null || players.Length != 4 || !AreValidPlayers(players)) return false;
+            // Publish one complete snapshot. Calling SetFinalResults first would notify listeners
+            // while IsFromServer was still true, allowing preview scores into the reward path.
+            MatchId = matchId;
+            results = players.Select(p => p.Copy()).ToArray();
             IsFromServer = false;
+            IsFinal = true;
+            ResultsChanged?.Invoke();
             return true;
         }
 
         // Call only when the room adapter has received the final result for every participant.
         public bool SetFinalResults(string matchId, PlayerGameResultData[] players)
         {
-            if (players == null || players.Length != 4 || !SetResults(matchId, players)) return false;
+            if (IsFinal || string.IsNullOrEmpty(MatchId) || matchId != MatchId
+                || matchId.StartsWith("standin-", StringComparison.Ordinal)
+                || players == null || players.Length != 4 || !AreValidPlayers(players)) return false;
+            results = players.Select(p => p.Copy()).ToArray();
+            IsFromServer = true;
             IsFinal = true;
             ResultsChanged?.Invoke();
             return true;
@@ -61,11 +70,14 @@ namespace QuizGame.Gameplay
         public bool SetResults(string matchId, PlayerGameResultData[] players)
         {
             if (IsFinal || string.IsNullOrEmpty(MatchId) || matchId != MatchId || players == null || players.Length < 1 || players.Length > 4
-                || players.Any(p => p == null || string.IsNullOrWhiteSpace(p.UserId) || p.Point < 0)
-                || players.Select(p => p.UserId).Distinct().Count() != players.Length) return false;
+                || !AreValidPlayers(players)) return false;
             results = players.Select(p => p.Copy()).ToArray();
             ResultsChanged?.Invoke();
             return true;
         }
+
+        private static bool AreValidPlayers(PlayerGameResultData[] players) =>
+            !players.Any(p => p == null || string.IsNullOrWhiteSpace(p.UserId) || p.Point < 0)
+            && players.Select(p => p.UserId).Distinct().Count() == players.Length;
     }
 }
