@@ -452,6 +452,7 @@ namespace QuizGame.Gameplay
             openingRewards = true;
             if (CurrentGameMode == GameMode.Multiplayer)
             {
+                EnsureStandInResults();
                 OpenMultiplayerRewards();
                 return;
             }
@@ -468,6 +469,54 @@ namespace QuizGame.Gameplay
             {
                 rewardUI.SetupSinglePlayer(localResult.Point, null, "Could not save. Tap Retry.", "Retry");
                 rewardUI.OnNextButtonClicked += () => { openingRewards = false; OpenRewardUI(); };
+            }
+        }
+
+        /// <summary>
+        /// Closes the match locally when nothing has supplied a server snapshot, so the reward and
+        /// lucky draw screens are reachable. Scores for the three opponents are invented, matching
+        /// the roster the lobby and the match already showed; the local score is the real one.
+        ///
+        /// Delete this call once a room adapter calls SetFinalResults — SetStandInResults refuses
+        /// to overwrite a real snapshot, so the two cannot fight.
+        /// </summary>
+        private void EnsureStandInResults()
+        {
+            if (multiplayerResults == null || multiplayerResults.IsFinal || localResult == null) return;
+
+            MultiplayerRoster.EnsurePlaceholders(CharacterResourceManager.Instance.GetAllResourcesID());
+            var roster = MultiplayerRoster.Opponents;
+            if (roster.Count < MultiplayerRoster.OpponentCount) return;
+
+            // Every score must differ: OpenMultiplayerRewards refuses to award a tied placement,
+            // which would put the draw right back out of reach. Offsets are drawn without
+            // replacement and zero is reserved for the player, so no two players can match.
+            var offsets = new List<int> { -3, -2, -1, 1, 2, 3 };
+            var players = new List<PlayerGameResultData>(MultiplayerRoster.OpponentCount + 1) { localResult.Copy() };
+            for (int i = 0; i < MultiplayerRoster.OpponentCount; i++)
+            {
+                var pick = Random.Range(0, offsets.Count);
+                var point = Mathf.Max(0, localResult.Point + offsets[pick]);
+                offsets.RemoveAt(pick);
+                players.Add(new PlayerGameResultData(roster[i].DisplayName, point)
+                {
+                    UserId = "standin-" + i,
+                    CharacterId = roster[i].CharacterId
+                });
+            }
+
+            // Mathf.Max can still collapse negatives onto 0 when the player scored very low, so
+            // separate any duplicates upward rather than hand back a tie.
+            var used = new HashSet<int>();
+            foreach (var player in players.OrderByDescending(p => p.Point))
+            {
+                while (!used.Add(player.Point)) player.Point++;
+            }
+
+            var matchId = "standin-" + System.Guid.NewGuid().ToString("N");
+            if (!multiplayerResults.SetStandInResults(matchId, players.ToArray()))
+            {
+                Debug.LogWarning("[GameplayController] Stand-in results were refused; rewards stay pending.");
             }
         }
 

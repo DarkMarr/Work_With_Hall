@@ -11,6 +11,13 @@ namespace QuizGame.Gameplay
         public event Action ResultsChanged;
         public string MatchId { get; private set; }
         public bool IsFinal { get; private set; }
+
+        /// <summary>
+        /// False while <see cref="SetStandInResults"/> supplied the scores. Anything that reports a
+        /// placement as official — a leaderboard, a rank change the player is told about — should
+        /// check this first.
+        /// </summary>
+        public bool IsFromServer { get; private set; } = true;
         private PlayerGameResultData[] results = Array.Empty<PlayerGameResultData>();
         public PlayerGameResultData[] Results => results.Select(x => x.Copy()).ToArray();
 
@@ -19,8 +26,27 @@ namespace QuizGame.Gameplay
             if (string.IsNullOrWhiteSpace(matchId)) throw new ArgumentException("Match ID is required.");
             MatchId = matchId;
             IsFinal = false;
+            IsFromServer = true;
             results = Array.Empty<PlayerGameResultData>();
             ResultsChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Closes the match with locally composed scores, for use only while no room adapter
+        /// exists. Without it <see cref="IsFinal"/> never becomes true, every match ends on
+        /// "results pending", and the reward and lucky draw screens are unreachable.
+        ///
+        /// This is the same seam as MultiplayerRoster: when the server arrives, call
+        /// <see cref="SetFinalResults"/> from the adapter instead and delete the single call site.
+        /// Refuses to overwrite a real snapshot, so wiring the server up cannot regress into this.
+        /// </summary>
+        public bool SetStandInResults(string matchId, PlayerGameResultData[] players)
+        {
+            if (IsFinal) return false;
+            BeginMatch(matchId);
+            if (!SetFinalResults(matchId, players)) return false;
+            IsFromServer = false;
+            return true;
         }
 
         // Call only when the room adapter has received the final result for every participant.
