@@ -89,7 +89,6 @@ namespace QuizGame.Editor.Setup
         private static List<FashionItemSO> CreateOrUpdatePieces(FashionSetSO set, ref int created, ref int updated)
         {
             var results = new List<FashionItemSO>();
-            var tier = (int)ToItemTier(set.GetRarity());
 
             // Gather the art first: a body garment ends up holding its lower piece and both sleeves.
             var spritesBySlot = new Dictionary<CharacterPartType, List<Sprite>>();
@@ -123,7 +122,8 @@ namespace QuizGame.Editor.Setup
 
                 var serialized = new SerializedObject(item);
                 serialized.FindProperty("itemID").stringValue = itemId;
-                serialized.FindProperty("equipmentTier").enumValueIndex = tier;
+                serialized.FindProperty("equipmentTier").enumValueIndex =
+                    (int)ToItemTier(set.GetRarity(), entry.Key);
                 // The lower piece reads better as an icon than a sleeve does.
                 serialized.FindProperty("itemSprite").objectReferenceValue = entry.Value[0];
                 serialized.FindProperty("slot").stringValue = entry.Key.ToString();
@@ -145,13 +145,28 @@ namespace QuizGame.Editor.Setup
             return results;
         }
 
-        private static ItemTier ToItemTier(FashionRarity rarity)
+        /// <summary>
+        /// Rarity belongs to the garment, not to the PSB it was drawn in. The item list gives each
+        /// city two Rare garments — the head and the held item — and two Ultra Rare ones, the body
+        /// and the back effect, and the art keeps all four in the one Fashion_R_&lt;City&gt; file.
+        /// Reading the tier off the file name alone would mark the two Ultra Rare garments as Rare
+        /// and hand them out at eight times their intended odds.
+        ///
+        /// Source: sheet 15_KKnDD..., OUTFIT tab, rows 213007-244010.
+        /// </summary>
+        private static ItemTier ToItemTier(FashionRarity setRarity, CharacterPartType slot)
         {
-            switch (rarity)
+            if (setRarity == FashionRarity.Rare)
+            {
+                return slot == CharacterPartType.HeadDecoration || slot == CharacterPartType.Prop
+                    ? ItemTier.Rare
+                    : ItemTier.SuperRare;
+            }
+
+            switch (setRarity)
             {
                 case FashionRarity.Common: return ItemTier.Common;
                 case FashionRarity.Uncommon: return ItemTier.Uncommon;
-                case FashionRarity.Rare: return ItemTier.Rare;
                 case FashionRarity.SuperRare: return ItemTier.SuperRare;
                 default: return ItemTier.NoTier;
             }
