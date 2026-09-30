@@ -18,57 +18,6 @@ namespace QuizGame.Editor.Setup
     {
         private const string MENU_ROOT = "QuizGame/Setup/";
 
-        #region Character Assets
-
-        [MenuItem(MENU_ROOT + "Create Character SO Assets (Rabbit/Cat/Dog)")]
-        public static void CreateCharacterAssets()
-        {
-            var resourcePath = "Assets/Resources/Characters";
-            EnsureDirectoryExists(resourcePath);
-
-            foreach (var characterName in new[] { "001_Rabbit", "002_Cat", "003_Dog" })
-            {
-                var prefab = FindCharacterPrefab(characterName);
-                if (prefab == null) continue;
-
-                CreateCharacterSO(resourcePath, prefab.name, prefab);
-            }
-
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            Debug.Log("[QuizGameSetup] Character SO assets created in Resources/Characters.");
-        }
-
-        private static void CreateCharacterSO(string path, string characterName, GameObject prefab)
-        {
-            var assetPath = $"{path}/{characterName}.asset";
-            if (File.Exists(assetPath))
-            {
-                Debug.Log($"[QuizGameSetup] Character SO '{characterName}' already exists, skipping.");
-                return;
-            }
-
-            var so = ScriptableObject.CreateInstance<CharacterInfoSO>();
-            // Use SerializedObject to set private fields via reflection-free approach.
-            var serializedObj = new SerializedObject(so);
-            var characterIDProp = serializedObj.FindProperty("characterID");
-            if (characterIDProp != null)
-            {
-                characterIDProp.stringValue = characterName;
-            }
-            var prefabProp = serializedObj.FindProperty("characterPrefab");
-            if (prefabProp != null && prefab != null)
-            {
-                prefabProp.objectReferenceValue = prefab;
-            }
-            serializedObj.ApplyModifiedPropertiesWithoutUndo();
-
-            AssetDatabase.CreateAsset(so, assetPath);
-            Debug.Log($"[QuizGameSetup] Created Character SO: {assetPath}");
-        }
-
-        #endregion
-
         #region NPC Assets
 
         [MenuItem(MENU_ROOT + "Create NPC SO Assets (from existing NPC prefabs)")]
@@ -211,41 +160,6 @@ namespace QuizGame.Editor.Setup
                 }
                 AssetDatabase.CreateFolder(parent, folderName);
             }
-        }
-
-        /// <summary>
-        /// Several prefabs share a character's name (e.g. "001_Rabbit" and "001_Rabbit_base"),
-        /// but only the one carrying a CharacterSpriteMixer supports outfit mixing.
-        /// </summary>
-        private static GameObject FindCharacterPrefab(string partialName)
-        {
-            var guids = AssetDatabase.FindAssets("t:GameObject", new[] { "Assets/Prefabs/Char" });
-            GameObject fallback = null;
-
-            foreach (var guid in guids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                if (!Path.GetFileNameWithoutExtension(path).StartsWith(partialName)) continue;
-
-                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (prefab == null) continue;
-
-                if (prefab.GetComponentInChildren<CharacterSpriteMixer>(true) != null)
-                {
-                    return prefab;
-                }
-                fallback ??= prefab;
-            }
-
-            if (fallback == null)
-            {
-                Debug.LogWarning($"[QuizGameSetup] Prefab matching '{partialName}' not found in Assets/Prefabs/Char.");
-            }
-            else
-            {
-                Debug.LogWarning($"[QuizGameSetup] No CharacterSpriteMixer found on any '{partialName}' prefab. Using '{fallback.name}' — outfits will not apply until a mixer is added.");
-            }
-            return fallback;
         }
 
         #endregion
