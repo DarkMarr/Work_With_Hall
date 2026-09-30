@@ -21,7 +21,10 @@ public static class CharacterSpriteUtilities
         { CharacterPartType.ArmDecoration, "Arm_Decor" },
         { CharacterPartType.BodyDecoration, "Body_Decor" },
         { CharacterPartType.BackDecoration, "Back_Decor" },
-        { CharacterPartType.Mouth, "Mouth" }
+        { CharacterPartType.Mouth, "Mouth" },
+        { CharacterPartType.ArmDecorationLeft, "Arm_Decor_Left" },
+        { CharacterPartType.ArmDecorationRight, "Arm_Decor_Right" },
+        { CharacterPartType.Prop, "Prop" }
     };
 
     /// <summary>
@@ -72,7 +75,12 @@ public static class CharacterSpriteUtilities
         { "backdec", CharacterPartType.BackDecoration },
         { "backdecor", CharacterPartType.BackDecoration },
         { "backdecoration", CharacterPartType.BackDecoration },
-        { "mouth", CharacterPartType.Mouth }
+        { "mouth", CharacterPartType.Mouth },
+        { "armdecorleft", CharacterPartType.ArmDecorationLeft },
+        { "armdecorationleft", CharacterPartType.ArmDecorationLeft },
+        { "armdecorright", CharacterPartType.ArmDecorationRight },
+        { "armdecorationright", CharacterPartType.ArmDecorationRight },
+        { "prop", CharacterPartType.Prop }
     };
 
     public static string GetCategoryNameByPartType(CharacterPartType partType)

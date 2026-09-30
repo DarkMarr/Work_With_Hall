@@ -14,5 +14,12 @@ public enum CharacterPartType
     ArmDecoration,
     BodyDecoration,
     BackDecoration,
-    Mouth
+    Mouth,
+
+    // Appended for the fashion sets, which dress each arm separately and add a held prop.
+    // Never reorder this enum: CharacterSpriteMixerCategory serializes PartType, so Unity
+    // stores these as ordinals and inserting a value would silently re-point existing data.
+    ArmDecorationLeft,
+    ArmDecorationRight,
+    Prop
 }
