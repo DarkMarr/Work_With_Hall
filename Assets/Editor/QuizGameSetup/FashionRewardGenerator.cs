@@ -38,16 +38,16 @@ namespace QuizGame.Editor.Setup
             }
             EnsureFolder(ITEM_OUTPUT_PATH);
 
-            var itemsBySetId = new Dictionary<string, EquipmentItemSO>();
+            var piecesBySetId = new Dictionary<string, List<FashionItemSO>>();
             int created = 0, updated = 0;
             foreach (var set in sets)
             {
-                var item = CreateOrUpdateItem(set, ref created, ref updated);
-                itemsBySetId[set.GetID()] = item;
+                piecesBySetId[set.GetID()] = CreateOrUpdatePieces(set, ref created, ref updated);
             }
+            RemoveStaleWholeSetItems(piecesBySetId.Keys);
             AssetDatabase.SaveAssets();
 
-            var filled = FillDestinationPools(itemsBySetId);
+            var filled = FillDestinationPools(piecesBySetId);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
@@ -65,36 +65,43 @@ namespace QuizGame.Editor.Setup
                 .ToList();
         }
 
-        private static EquipmentItemSO CreateOrUpdateItem(FashionSetSO set, ref int created, ref int updated)
-        {
-            var path = $"{ITEM_OUTPUT_PATH}/{set.GetID()}.asset";
-            var item = AssetDatabase.LoadAssetAtPath<EquipmentItemSO>(path);
-            var isNew = item == null;
-            if (isNew)
-            {
-                item = ScriptableObject.CreateInstance<EquipmentItemSO>();
-                AssetDatabase.CreateAsset(item, path);
-            }
-
-            var serialized = new SerializedObject(item);
-            serialized.FindProperty("itemID").stringValue = set.GetID();
-            serialized.FindProperty("equipmentTier").enumValueIndex = (int)ToItemTier(set.GetRarity());
-            serialized.FindProperty("itemSprite").objectReferenceValue = PickIcon(set);
-            serialized.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(item);
-
-            if (isNew) created++; else updated++;
-            return item;
-        }
-
         /// <summary>
-        /// The body piece reads best at icon size; a set without one falls back to whatever it has.
+        /// One asset per garment, not per outfit: the drop tables award "Head of set ฤดูร้อน" as a
+        /// single reward. Ids read Fashion_C_Summer__HeadDecoration so the set is still legible.
         /// </summary>
-        private static Sprite PickIcon(FashionSetSO set)
+        private static List<FashionItemSO> CreateOrUpdatePieces(FashionSetSO set, ref int created, ref int updated)
         {
-            return set.GetPiece(CharacterPartType.BodyDecoration)
-                ?? set.GetPiece(CharacterPartType.HeadDecoration)
-                ?? set.GetPieces().Select(p => p.Sprite).FirstOrDefault(s => s != null);
+            var results = new List<FashionItemSO>();
+            var tier = (int)ToItemTier(set.GetRarity());
+
+            foreach (var piece in set.GetPieces())
+            {
+                if (piece.Sprite == null) continue;
+
+                var itemId = set.GetID() + "__" + piece.Slot;
+                var path = $"{ITEM_OUTPUT_PATH}/{itemId}.asset";
+                var item = AssetDatabase.LoadAssetAtPath<FashionItemSO>(path);
+                var isNew = item == null;
+                if (isNew)
+                {
+                    item = ScriptableObject.CreateInstance<FashionItemSO>();
+                    AssetDatabase.CreateAsset(item, path);
+                }
+
+                var serialized = new SerializedObject(item);
+                serialized.FindProperty("itemID").stringValue = itemId;
+                serialized.FindProperty("equipmentTier").enumValueIndex = tier;
+                serialized.FindProperty("itemSprite").objectReferenceValue = piece.Sprite;
+                serialized.FindProperty("pieceSprite").objectReferenceValue = piece.Sprite;
+                serialized.FindProperty("slot").stringValue = piece.Slot.ToString();
+                serialized.FindProperty("fashionSetID").stringValue = set.GetID();
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(item);
+
+                if (isNew) created++; else updated++;
+                results.Add(item);
+            }
+            return results;
         }
 
         private static ItemTier ToItemTier(FashionRarity rarity)
@@ -132,7 +139,22 @@ namespace QuizGame.Editor.Setup
         /// given to every map: the sheet calls the red ball map-unique too, but the art is four
         /// untitled sets rather than one per city, so there is nothing to key on yet.
         /// </summary>
-        private static int FillDestinationPools(Dictionary<string, EquipmentItemSO> itemsBySetId)
+        /// <summary>
+        /// Deletes the whole-outfit assets an earlier version of this generator wrote, so the pools
+        /// cannot end up holding both a set and its own garments.
+        /// </summary>
+        private static void RemoveStaleWholeSetItems(IEnumerable<string> setIds)
+        {
+            foreach (var setId in setIds.ToList())
+            {
+                var path = $"{ITEM_OUTPUT_PATH}/{setId}.asset";
+                if (AssetDatabase.LoadAssetAtPath<EquipmentItemSO>(path) == null) continue;
+                AssetDatabase.DeleteAsset(path);
+                Debug.Log($"[FashionRewards] Removed whole-set item '{setId}', replaced by its garments.");
+            }
+        }
+
+        private static int FillDestinationPools(Dictionary<string, List<FashionItemSO>> piecesBySetId)
         {
             var destinations = AssetDatabase.FindAssets("t:DestinationInfoSO", new[] { DESTINATION_PATH })
                 .Select(AssetDatabase.GUIDToAssetPath)
@@ -153,7 +175,7 @@ namespace QuizGame.Editor.Setup
                         "it keeps every Common set so its pool does not fall empty.");
                 }
 
-                foreach (var pair in itemsBySetId.OrderBy(x => x.Key))
+                foreach (var pair in piecesBySetId.OrderBy(x => x.Key))
                 {
                     if (!FashionSlots.TryParseAssetName(pair.Key, out var rarity, out var setName)) continue;
 
@@ -173,7 +195,7 @@ namespace QuizGame.Editor.Setup
                             break;
                     }
 
-                    if (belongsHere) wanted.Add(pair.Value);
+                    if (belongsHere) wanted.AddRange(pair.Value);
                 }
 
                 if (ApplyEquipmentPool(destination, wanted)) wired++;
