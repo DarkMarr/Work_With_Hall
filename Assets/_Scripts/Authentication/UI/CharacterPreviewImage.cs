@@ -14,6 +14,11 @@ namespace QuizGame.Authentication.UI
         [SerializeField, Range(0.1f, 1f)]
         private float fillRatio = 0.95f;
 
+        // Avatars share a 600px canvas at 100 PPU and a 0.5 art scale.
+        // Keep its foot-origin frame even when the PSB importer trims transparent layers.
+        [SerializeField]
+        private Vector2 minimumFrameSize = new Vector2(3f, 3f);
+
         private readonly List<Image> parts = new List<Image>();
 
         public void Show(GameObject characterPrefab)
@@ -53,6 +58,13 @@ namespace QuizGame.Authentication.UI
                 var rect = Rect.MinMaxRect(Mathf.Min(min.x, max.x), Mathf.Min(min.y, max.y), Mathf.Max(min.x, max.x), Mathf.Max(min.y, max.y));
                 rects.Add(rect);
                 total = i == 0 ? rect : Rect.MinMaxRect(Mathf.Min(total.xMin, rect.xMin), Mathf.Min(total.yMin, rect.yMin), Mathf.Max(total.xMax, rect.xMax), Mathf.Max(total.yMax, rect.yMax));
+            }
+
+            if (minimumFrameSize.x > 0f && minimumFrameSize.y > 0f)
+            {
+                total = Rect.MinMaxRect(Mathf.Min(total.xMin, -minimumFrameSize.x * 0.5f),
+                    Mathf.Min(total.yMin, 0f), Mathf.Max(total.xMax, minimumFrameSize.x * 0.5f),
+                    Mathf.Max(total.yMax, minimumFrameSize.y));
             }
 
             var area = ((RectTransform)transform).rect.size * fillRatio;
