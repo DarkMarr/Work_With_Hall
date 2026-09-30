@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 2
   slot: BodyDecoration
   fashionSetID: Fashion_UC_Cairo
-  pieceSprite: {fileID: 5665150883085213775, guid: 445cf61dca331884abc36d10eb5d9cd1, type: 3}
+  pieceSprites:
+  - {fileID: 5665150883085213775, guid: 445cf61dca331884abc36d10eb5d9cd1, type: 3}
+  - {fileID: -5018126873841536979, guid: 445cf61dca331884abc36d10eb5d9cd1, type: 3}
+  - {fileID: 2132645394140681251, guid: 445cf61dca331884abc36d10eb5d9cd1, type: 3}
   references:
     version: 2
     RefIds: []

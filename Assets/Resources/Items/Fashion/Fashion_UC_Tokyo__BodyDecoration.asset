@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 2
   slot: BodyDecoration
   fashionSetID: Fashion_UC_Tokyo
-  pieceSprite: {fileID: -1670157904425546788, guid: dec866b0514fde545ba74ef15b7eabd3, type: 3}
+  pieceSprites:
+  - {fileID: -1670157904425546788, guid: dec866b0514fde545ba74ef15b7eabd3, type: 3}
+  - {fileID: 3113473814866708961, guid: dec866b0514fde545ba74ef15b7eabd3, type: 3}
+  - {fileID: 4421000130422453282, guid: dec866b0514fde545ba74ef15b7eabd3, type: 3}
   references:
     version: 2
     RefIds: []

@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 1
   slot: BodyDecoration
   fashionSetID: Fashion_C_LeisureDays
-  pieceSprite: {fileID: 1087486129291575046, guid: e7a85cedfee649444bcaa463da393255, type: 3}
+  pieceSprites:
+  - {fileID: 1087486129291575046, guid: e7a85cedfee649444bcaa463da393255, type: 3}
+  - {fileID: 5011073459246881247, guid: e7a85cedfee649444bcaa463da393255, type: 3}
+  - {fileID: -8201911845283468989, guid: e7a85cedfee649444bcaa463da393255, type: 3}
   references:
     version: 2
     RefIds: []

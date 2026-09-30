@@ -44,7 +44,8 @@ namespace QuizGame.Editor.Setup
             {
                 piecesBySetId[set.GetID()] = CreateOrUpdatePieces(set, ref created, ref updated);
             }
-            RemoveStaleWholeSetItems(piecesBySetId.Keys);
+            RemoveItemsNotGenerated(new HashSet<string>(
+                piecesBySetId.Values.SelectMany(x => x).Select(x => x.GetID())));
             AssetDatabase.SaveAssets();
 
             var filled = FillDestinationPools(piecesBySetId);
@@ -66,6 +67,22 @@ namespace QuizGame.Editor.Setup
         }
 
         /// <summary>
+        /// The item list defines exactly four wearable slots — head, body, hand and back — so the
+        /// left and right sleeves, which the art keeps as their own layers, belong to the body
+        /// garment rather than being items of their own. Anything else is left out entirely.
+        /// </summary>
+        private static readonly Dictionary<CharacterPartType, CharacterPartType> itemSlotForPiece =
+            new Dictionary<CharacterPartType, CharacterPartType>
+            {
+                { CharacterPartType.HeadDecoration, CharacterPartType.HeadDecoration },
+                { CharacterPartType.BodyDecoration, CharacterPartType.BodyDecoration },
+                { CharacterPartType.ArmDecorationLeft, CharacterPartType.BodyDecoration },
+                { CharacterPartType.ArmDecorationRight, CharacterPartType.BodyDecoration },
+                { CharacterPartType.Prop, CharacterPartType.Prop },
+                { CharacterPartType.BackDecoration, CharacterPartType.BackDecoration }
+            };
+
+        /// <summary>
         /// One asset per garment, not per outfit: the drop tables award "Head of set ฤดูร้อน" as a
         /// single reward. Ids read Fashion_C_Summer__HeadDecoration so the set is still legible.
         /// </summary>
@@ -74,11 +91,27 @@ namespace QuizGame.Editor.Setup
             var results = new List<FashionItemSO>();
             var tier = (int)ToItemTier(set.GetRarity());
 
+            // Gather the art first: a body garment ends up holding its lower piece and both sleeves.
+            var spritesBySlot = new Dictionary<CharacterPartType, List<Sprite>>();
             foreach (var piece in set.GetPieces())
             {
                 if (piece.Sprite == null) continue;
+                if (!itemSlotForPiece.TryGetValue(piece.Slot, out var itemSlot))
+                {
+                    Debug.LogWarning($"[FashionRewards] {set.GetID()}: '{piece.Slot}' is not one of the " +
+                        "four item slots and was left out.");
+                    continue;
+                }
+                if (!spritesBySlot.TryGetValue(itemSlot, out var list))
+                {
+                    spritesBySlot[itemSlot] = list = new List<Sprite>();
+                }
+                list.Add(piece.Sprite);
+            }
 
-                var itemId = set.GetID() + "__" + piece.Slot;
+            foreach (var entry in spritesBySlot)
+            {
+                var itemId = set.GetID() + "__" + entry.Key;
                 var path = $"{ITEM_OUTPUT_PATH}/{itemId}.asset";
                 var item = AssetDatabase.LoadAssetAtPath<FashionItemSO>(path);
                 var isNew = item == null;
@@ -91,10 +124,18 @@ namespace QuizGame.Editor.Setup
                 var serialized = new SerializedObject(item);
                 serialized.FindProperty("itemID").stringValue = itemId;
                 serialized.FindProperty("equipmentTier").enumValueIndex = tier;
-                serialized.FindProperty("itemSprite").objectReferenceValue = piece.Sprite;
-                serialized.FindProperty("pieceSprite").objectReferenceValue = piece.Sprite;
-                serialized.FindProperty("slot").stringValue = piece.Slot.ToString();
+                // The lower piece reads better as an icon than a sleeve does.
+                serialized.FindProperty("itemSprite").objectReferenceValue = entry.Value[0];
+                serialized.FindProperty("slot").stringValue = entry.Key.ToString();
                 serialized.FindProperty("fashionSetID").stringValue = set.GetID();
+
+                var sprites = serialized.FindProperty("pieceSprites");
+                sprites.ClearArray();
+                for (int i = 0; i < entry.Value.Count; i++)
+                {
+                    sprites.InsertArrayElementAtIndex(i);
+                    sprites.GetArrayElementAtIndex(i).objectReferenceValue = entry.Value[i];
+                }
                 serialized.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(item);
 
@@ -140,17 +181,20 @@ namespace QuizGame.Editor.Setup
         /// untitled sets rather than one per city, so there is nothing to key on yet.
         /// </summary>
         /// <summary>
-        /// Deletes the whole-outfit assets an earlier version of this generator wrote, so the pools
-        /// cannot end up holding both a set and its own garments.
+        /// Deletes anything in the output folder this run did not produce: the whole-outfit assets
+        /// an earlier version wrote, and the separate sleeve items from when the sleeves were
+        /// mistaken for garments of their own. Without this a pool could hold a set, its garments
+        /// and its sleeves all at once.
         /// </summary>
-        private static void RemoveStaleWholeSetItems(IEnumerable<string> setIds)
+        private static void RemoveItemsNotGenerated(HashSet<string> keepIds)
         {
-            foreach (var setId in setIds.ToList())
+            foreach (var guid in AssetDatabase.FindAssets("t:EquipmentItemSO", new[] { ITEM_OUTPUT_PATH }))
             {
-                var path = $"{ITEM_OUTPUT_PATH}/{setId}.asset";
-                if (AssetDatabase.LoadAssetAtPath<EquipmentItemSO>(path) == null) continue;
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var id = Path.GetFileNameWithoutExtension(path);
+                if (keepIds.Contains(id)) continue;
                 AssetDatabase.DeleteAsset(path);
-                Debug.Log($"[FashionRewards] Removed whole-set item '{setId}', replaced by its garments.");
+                Debug.Log($"[FashionRewards] Removed '{id}': not a garment in the current item list.");
             }
         }
 

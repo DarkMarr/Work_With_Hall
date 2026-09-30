@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 3
   slot: BodyDecoration
   fashionSetID: Fashion_R_NewYork
-  pieceSprite: {fileID: 3970750718939354997, guid: ddf38ff945d144a43b5114c99abc6bce, type: 3}
+  pieceSprites:
+  - {fileID: 3970750718939354997, guid: ddf38ff945d144a43b5114c99abc6bce, type: 3}
+  - {fileID: 6610789935549235310, guid: ddf38ff945d144a43b5114c99abc6bce, type: 3}
+  - {fileID: -5381199872602165656, guid: ddf38ff945d144a43b5114c99abc6bce, type: 3}
   references:
     version: 2
     RefIds: []

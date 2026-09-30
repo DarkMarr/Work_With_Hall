@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 2
   slot: BodyDecoration
   fashionSetID: Fashion_UC_Bangkok
-  pieceSprite: {fileID: -3106140137531213806, guid: f75ec3ce5e1c0384a9b18b30685923f0, type: 3}
+  pieceSprites:
+  - {fileID: -3106140137531213806, guid: f75ec3ce5e1c0384a9b18b30685923f0, type: 3}
+  - {fileID: 1781968564177640456, guid: f75ec3ce5e1c0384a9b18b30685923f0, type: 3}
+  - {fileID: -5167424398982358722, guid: f75ec3ce5e1c0384a9b18b30685923f0, type: 3}
   references:
     version: 2
     RefIds: []

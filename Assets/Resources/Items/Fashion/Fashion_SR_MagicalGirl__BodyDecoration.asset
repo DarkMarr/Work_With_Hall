@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 4
   slot: BodyDecoration
   fashionSetID: Fashion_SR_MagicalGirl
-  pieceSprite: {fileID: 3469153823747312721, guid: 44e1e461c6ba79c4bb69bc652c391f35, type: 3}
+  pieceSprites:
+  - {fileID: 3469153823747312721, guid: 44e1e461c6ba79c4bb69bc652c391f35, type: 3}
+  - {fileID: -6970793078416080336, guid: 44e1e461c6ba79c4bb69bc652c391f35, type: 3}
+  - {fileID: -1531853593929904049, guid: 44e1e461c6ba79c4bb69bc652c391f35, type: 3}
   references:
     version: 2
     RefIds: []

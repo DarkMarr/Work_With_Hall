@@ -42,3 +42,53 @@ All 36 DROP rows have blank English/Japanese names/descriptions in the read rang
 Next: author an explicit item-ID → PSB/layer → equipment slot mapping, resolve the slot/rarity questions, then import item names/descriptions into Item localization tables and create per-piece reward assets. Validate icons and pivots before wiring inventory/MyRoom. Existing PSBs and their layer IDs must be preserved.
 
 For this audit round only, generated `EquipmentItemSO` assets with no localization reference use a readable set-name fallback (e.g. Baseball, New York). This prevents the Lucky Draw result/Accept flow from throwing; it does not claim the catalog migration is finished.
+
+## รหัสไอเทม (ตรวจ 30 ก.ย. 2026)
+
+จาก sheet `1c6CRIdE...` ซึ่งเจ้าของระบุว่าเป็น item ทั้งหมดที่มีในเวอร์ชันนี้
+
+```
+2 1 1 001
+│ │ │  └── ลำดับในกลุ่ม
+│ │ └───── rarity : 1=Common  2=Uncommon  3=Rare  4=Ultra Rare
+│ └─────── slot   : 1=Head  2=Body  3=Hand  4=Back
+└───────── หมวด   : 1=Avatar 2=Outfit 3=Decor 4=Room 5=Material 6=Ticket 7=Quiz Item
+```
+
+| หมวด | ช่วง ID | จำนวน |
+| --- | --- | --- |
+| Avatar | 112001–134002 | 16 |
+| Outfit | 211001–244010 | 86 |
+| Decor | 311001–344006 | 104 |
+| Room | 401001–404002 | 12 |
+| Material | 501001–501005 | 5 |
+| Ticket | 602001–602002 | 2 |
+| Quiz Item | 712001–732003 | 6 |
+
+ชื่อภายในเป็น `outfit_<slot>_<rarity>_<nn>` เช่น `outfit_head_c_01` = Propeller Hat
+
+### Material
+
+| ID | Name EN | ที่มา |
+| --- | --- | --- |
+| 501001 | Fine Fabric | ย่อย outfit |
+| 501002 | Blueprint | ย่อย decor |
+| 501003 | Hardwood | ดรอปจาก quiz |
+| 501004 | Shiny Crystal | ดรอปจาก quiz |
+| 501005 | Paint Bucket | ดรอปจาก quiz |
+
+คอลัมน์ `Recycle To` ของ outfit ทุกชิ้นชี้ไป `501001` ตรงกับ DOC 02 ที่ระบุว่า fabric
+ได้จากการย่อย item fashion
+
+### ข้อสรุปที่ใช้ตัดสินใจไปแล้ว
+
+**Outfit มี 4 ช่องเท่านั้น: Head / Body / Hand / Back** ค้นทั้ง sheet ไม่มีไอเทมที่เกี่ยวกับ
+แขนหรือแขนเสื้อเลยสักชิ้น เลเยอร์ `L_arm` / `R_arm` ใน PSB จึงเป็นส่วนหนึ่งของชุด Body
+ไม่ใช่ไอเทมแยก และ `Hand` ในเอกสารคือช่องเดียวกับ `Prop` ในโค้ด (DOC 02 เขียนว่า
+`arm 腕 = ของถือ`)
+
+### ยังไม่ได้ทำ
+
+ID ของ `FashionItemSO` ตอนนี้เป็นชื่อที่ generator ตั้งเอง (`Fashion_C_Summer__HeadDecoration`)
+**ยังไม่ผูกกับรหัสจริงในเอกสาร** (`211001` / `outfit_head_c_01`) ถ้าจะให้ client กับข้อมูล
+ดีไซน์อ้างอิงตัวเดียวกันได้ ต้องเคาะว่าจะใช้รหัสไหนเป็นหลักแล้วทำตารางเทียบ

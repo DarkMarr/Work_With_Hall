@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 2
   slot: BodyDecoration
   fashionSetID: Fashion_UC_NewYork
-  pieceSprite: {fileID: -5015301073588979170, guid: d7af056ed788a2d4aaf3f04e385df943, type: 3}
+  pieceSprites:
+  - {fileID: -5015301073588979170, guid: d7af056ed788a2d4aaf3f04e385df943, type: 3}
+  - {fileID: 9212410414605590888, guid: d7af056ed788a2d4aaf3f04e385df943, type: 3}
+  - {fileID: 8996918427539487536, guid: d7af056ed788a2d4aaf3f04e385df943, type: 3}
   references:
     version: 2
     RefIds: []

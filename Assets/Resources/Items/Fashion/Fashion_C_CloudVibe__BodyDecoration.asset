@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 1
   slot: BodyDecoration
   fashionSetID: Fashion_C_CloudVibe
-  pieceSprite: {fileID: -1280250814035656297, guid: 3a81c59c5324b75439cb2fd1d7bcff3d, type: 3}
+  pieceSprites:
+  - {fileID: -1280250814035656297, guid: 3a81c59c5324b75439cb2fd1d7bcff3d, type: 3}
+  - {fileID: -441469667963060515, guid: 3a81c59c5324b75439cb2fd1d7bcff3d, type: 3}
+  - {fileID: -4888857969799078366, guid: 3a81c59c5324b75439cb2fd1d7bcff3d, type: 3}
   references:
     version: 2
     RefIds: []

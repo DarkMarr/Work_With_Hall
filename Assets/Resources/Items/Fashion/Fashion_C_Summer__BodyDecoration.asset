@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 1
   slot: BodyDecoration
   fashionSetID: Fashion_C_Summer
-  pieceSprite: {fileID: -2431900187073039932, guid: 67411d3df93166e459396475923760fa, type: 3}
+  pieceSprites:
+  - {fileID: -2431900187073039932, guid: 67411d3df93166e459396475923760fa, type: 3}
+  - {fileID: -3545854689869474433, guid: 67411d3df93166e459396475923760fa, type: 3}
+  - {fileID: -1159129023145412681, guid: 67411d3df93166e459396475923760fa, type: 3}
   references:
     version: 2
     RefIds: []

@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 4
   slot: BodyDecoration
   fashionSetID: Fashion_SR_Pirate
-  pieceSprite: {fileID: -6842361403518474530, guid: a4c695d4bd1503e43a67ea722a9b44de, type: 3}
+  pieceSprites:
+  - {fileID: -6842361403518474530, guid: a4c695d4bd1503e43a67ea722a9b44de, type: 3}
+  - {fileID: 1006304840343677378, guid: a4c695d4bd1503e43a67ea722a9b44de, type: 3}
+  - {fileID: -2583083328915992224, guid: a4c695d4bd1503e43a67ea722a9b44de, type: 3}
   references:
     version: 2
     RefIds: []

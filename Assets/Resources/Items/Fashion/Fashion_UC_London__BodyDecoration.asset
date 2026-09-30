@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 2
   slot: BodyDecoration
   fashionSetID: Fashion_UC_London
-  pieceSprite: {fileID: -1929114463966782839, guid: 59281f4817609b747a9a47e0d285d76a, type: 3}
+  pieceSprites:
+  - {fileID: -1929114463966782839, guid: 59281f4817609b747a9a47e0d285d76a, type: 3}
+  - {fileID: -3150417881949547130, guid: 59281f4817609b747a9a47e0d285d76a, type: 3}
+  - {fileID: 2905394976769997328, guid: 59281f4817609b747a9a47e0d285d76a, type: 3}
   references:
     version: 2
     RefIds: []

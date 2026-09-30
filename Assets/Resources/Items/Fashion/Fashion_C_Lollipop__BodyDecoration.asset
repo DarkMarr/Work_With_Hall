@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 1
   slot: BodyDecoration
   fashionSetID: Fashion_C_Lollipop
-  pieceSprite: {fileID: 4211578189647674447, guid: ae7464bc8cbc6b345aa624869653be10, type: 3}
+  pieceSprites:
+  - {fileID: 4211578189647674447, guid: ae7464bc8cbc6b345aa624869653be10, type: 3}
+  - {fileID: 4773352797499385497, guid: ae7464bc8cbc6b345aa624869653be10, type: 3}
+  - {fileID: 447260013388112546, guid: ae7464bc8cbc6b345aa624869653be10, type: 3}
   references:
     version: 2
     RefIds: []

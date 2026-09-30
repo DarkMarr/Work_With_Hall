@@ -25,9 +25,11 @@ namespace QuizGame.Item
         [SerializeField, ReadOnly, Tooltip("Id of the FashionSetSO this garment belongs to.")]
         private string fashionSetID;
 
-        [SerializeField, Tooltip("The garment's own artwork, drawn in the shared 600x600 frame.")]
-        [ShowAssetPreview]
-        private Sprite pieceSprite;
+        [SerializeField]
+        [Tooltip("Every sprite this garment draws, in the shared 600x600 frame. Usually one, but a " +
+                 "body garment also carries its two sleeves, which the art keeps as separate layers " +
+                 "so they can sit over the character's own arms.")]
+        private Sprite[] pieceSprites = new Sprite[0];
 
         /// <summary>
         /// The slot as a name rather than a CharacterPartType, because QuizGame.Character already
@@ -44,9 +46,10 @@ namespace QuizGame.Item
         public string GetFashionSetID() => fashionSetID;
 
         /// <summary>
-        /// The sprite to put on the character. <see cref="BaseItemSO.GetSprite"/> stays the
-        /// inventory icon, which may be framed or cropped differently.
+        /// The sprites to put on the character, all of which belong to this one garment.
+        /// <see cref="BaseItemSO.GetSprite"/> stays the inventory icon, which may be framed or
+        /// cropped differently.
         /// </summary>
-        public Sprite GetPieceSprite() => pieceSprite;
+        public Sprite[] GetPieceSprites() => pieceSprites;
     }
 }

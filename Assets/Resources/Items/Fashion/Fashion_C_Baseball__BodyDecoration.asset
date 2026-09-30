@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 1
   slot: BodyDecoration
   fashionSetID: Fashion_C_Baseball
-  pieceSprite: {fileID: 7510317623967217058, guid: 3e5aa3eeaa6500b42a36fc2f1836b385, type: 3}
+  pieceSprites:
+  - {fileID: 7510317623967217058, guid: 3e5aa3eeaa6500b42a36fc2f1836b385, type: 3}
+  - {fileID: -8592834397054482106, guid: 3e5aa3eeaa6500b42a36fc2f1836b385, type: 3}
+  - {fileID: 8478243518442860581, guid: 3e5aa3eeaa6500b42a36fc2f1836b385, type: 3}
   references:
     version: 2
     RefIds: []

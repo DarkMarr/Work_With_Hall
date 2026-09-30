@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 3
   slot: BodyDecoration
   fashionSetID: Fashion_R_Paris
-  pieceSprite: {fileID: -7073901698970918116, guid: 3ded29e5c9e771a4891fbf2f10fe8752, type: 3}
+  pieceSprites:
+  - {fileID: -7073901698970918116, guid: 3ded29e5c9e771a4891fbf2f10fe8752, type: 3}
+  - {fileID: 2874857263748826721, guid: 3ded29e5c9e771a4891fbf2f10fe8752, type: 3}
+  - {fileID: 5354128627113970347, guid: 3ded29e5c9e771a4891fbf2f10fe8752, type: 3}
   references:
     version: 2
     RefIds: []

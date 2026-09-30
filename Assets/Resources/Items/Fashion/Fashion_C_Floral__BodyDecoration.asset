@@ -44,7 +44,10 @@ MonoBehaviour:
   equipmentTier: 1
   slot: BodyDecoration
   fashionSetID: Fashion_C_Floral
-  pieceSprite: {fileID: -6063462551569764991, guid: 0af7b2c010a8b4043b27916ccfdbe0af, type: 3}
+  pieceSprites:
+  - {fileID: -6063462551569764991, guid: 0af7b2c010a8b4043b27916ccfdbe0af, type: 3}
+  - {fileID: -7374143260832410984, guid: 0af7b2c010a8b4043b27916ccfdbe0af, type: 3}
+  - {fileID: 4058437122331726965, guid: 0af7b2c010a8b4043b27916ccfdbe0af, type: 3}
   references:
     version: 2
     RefIds: []
