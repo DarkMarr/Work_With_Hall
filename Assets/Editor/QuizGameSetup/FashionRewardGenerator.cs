@@ -110,8 +110,27 @@ namespace QuizGame.Editor.Setup
         }
 
         /// <summary>
-        /// City sets go only to their own city; the untitled Common and SuperRare sets go
-        /// everywhere, so that every destination ends up with all four tiers.
+        /// Which Common set each destination hands out, from the design sheet's "Map drop" tab
+        /// (spreadsheet 1JfXVq2D...). Half the maps give the summer set and half the lollipop one;
+        /// the sheet names no map for Baseball, CloudVibe, Floral or LeisureDays, so those four do
+        /// not drop from maps at all and are left out rather than guessed at.
+        /// </summary>
+        private static readonly Dictionary<string, string> commonSetByCity =
+            new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
+            {
+                { "Bangkok", "Summer" },
+                { "Tokyo", "Summer" },
+                { "Cairo", "Summer" },
+                { "NewYork", "Lollipop" },
+                { "Paris", "Lollipop" },
+                { "London", "Lollipop" }
+            };
+
+        /// <summary>
+        /// Rare and Uncommon sets are the sheet's "map unique" entries, so each goes only to the
+        /// city it is named after. Common follows <see cref="commonSetByCity"/>. SuperRare is
+        /// given to every map: the sheet calls the red ball map-unique too, but the art is four
+        /// untitled sets rather than one per city, so there is nothing to key on yet.
         /// </summary>
         private static int FillDestinationPools(Dictionary<string, EquipmentItemSO> itemsBySetId)
         {
@@ -127,14 +146,32 @@ namespace QuizGame.Editor.Setup
                 var cityName = destination.GetDestinationType().ToString();
                 var wanted = new List<EquipmentItemSO>();
 
+                commonSetByCity.TryGetValue(cityName, out var commonSet);
+                if (commonSet == null)
+                {
+                    Debug.LogWarning($"[FashionRewards] {cityName} is not in the Map drop sheet; " +
+                        "it keeps every Common set so its pool does not fall empty.");
+                }
+
                 foreach (var pair in itemsBySetId.OrderBy(x => x.Key))
                 {
                     if (!FashionSlots.TryParseAssetName(pair.Key, out var rarity, out var setName)) continue;
 
-                    bool isCitySet = rarity == FashionRarity.Rare || rarity == FashionRarity.Uncommon;
-                    bool belongsHere = isCitySet
-                        ? string.Equals(setName, cityName, System.StringComparison.OrdinalIgnoreCase)
-                        : true;
+                    bool belongsHere;
+                    switch (rarity)
+                    {
+                        case FashionRarity.Rare:
+                        case FashionRarity.Uncommon:
+                            belongsHere = string.Equals(setName, cityName, System.StringComparison.OrdinalIgnoreCase);
+                            break;
+                        case FashionRarity.Common:
+                            belongsHere = commonSet == null
+                                || string.Equals(setName, commonSet, System.StringComparison.OrdinalIgnoreCase);
+                            break;
+                        default:
+                            belongsHere = true;
+                            break;
+                    }
 
                     if (belongsHere) wanted.Add(pair.Value);
                 }
