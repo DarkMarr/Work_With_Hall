@@ -56,6 +56,11 @@ namespace QuizGame.MainMenu
         //TODO: Mock up only
         private float tilEnergyRechargeMS = 2990;
 
+        // Kept so ShowMainMenu can fill the profile strip every time it rebuilds the UI,
+        // not only on the first pass through Start.
+        private string displayName = "Player";
+        private string rankName = "Unranked";
+
         private void Awake()
         {
             // SettingController resolves SoundManager; Unity lookups are unsafe during deserialization.
@@ -77,8 +82,8 @@ namespace QuizGame.MainMenu
             if (this == null) return;
 
             profileUI = UIManager.Instance.Create<MainMenuProfileUI>();
-            var displayName = string.IsNullOrWhiteSpace(profileData?.ProfileName) ? "Player" : profileData.ProfileName;
-            const string rankName = "Unranked"; // TODO: [Network] Load the player's real rank.
+            displayName = string.IsNullOrWhiteSpace(profileData?.ProfileName) ? "Player" : profileData.ProfileName;
+            rankName = "Unranked"; // TODO: [Network] Load the player's real rank.
             profileUI.SetProfileName(displayName);
             profileUI.SetRank(rankName);
             profileUI.SetEnergy(energyData?.Current ?? 0, energyData?.Max ?? 0);
@@ -109,6 +114,7 @@ namespace QuizGame.MainMenu
             profileUI?.Show();
 
             var mainMenuUI = UIManager.Instance.Replace<MainMenuUI>(ref currentMainUI);
+            mainMenuUI.SetProfile(displayName, rankName);
             mainMenuUI.Init(
                 onMultiplayerButtonClicked: HandleMultiplayerMatchSelectionClicked,
                 onSinglePlayerButtonClicked: HandleSinglePlayerButtonClicked,

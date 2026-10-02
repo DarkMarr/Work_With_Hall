@@ -34,6 +34,30 @@ namespace QuizGame.MainMenu.UI
         [SerializeField]
         private Button settingButton;
 
+        [Header("Player profile")]
+        [SerializeField, Tooltip("PlayerProfile/Name-Text")]
+        private TMPro.TMP_Text profileNameText;
+
+        [SerializeField, Tooltip("PlayerProfile/Rank-Text")]
+        private TMPro.TMP_Text rankText;
+
+        /// <summary>
+        /// Fills in the profile strip. The prefab ships with stand-ins drawn by the Art team —
+        /// "namenamename", "Kindergarten |||" — and nothing replaced them, so the player saw a
+        /// mock-up rather than their own name.
+        /// </summary>
+        public void SetProfile(string profileName, string rankName)
+        {
+            if (profileNameText != null && !string.IsNullOrWhiteSpace(profileName))
+            {
+                profileNameText.text = profileName;
+            }
+            if (rankText != null && !string.IsNullOrWhiteSpace(rankName))
+            {
+                rankText.text = rankName;
+            }
+        }
+
         public void Init(
             Action onMultiplayerButtonClicked,
             Action onSinglePlayerButtonClicked,

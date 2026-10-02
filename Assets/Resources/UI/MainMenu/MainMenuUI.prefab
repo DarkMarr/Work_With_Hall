@@ -287,6 +287,8 @@ MonoBehaviour:
   calendarButton: {fileID: 6257733578597866097}
   notificationButton: {fileID: 8252208461691472168}
   settingButton: {fileID: 2925062900871885768}
+  profileNameText: {fileID: 7974057118093817932}
+  rankText: {fileID: 2160136531533785875}
 --- !u!114 &1140845200879358917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,11 +1398,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
+--- !u!114 &2160136531533785875 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8770232390497330274, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
+  m_PrefabInstance: {fileID: 7227229977473552241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &5527905462679766604 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2953050624207718717, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
   m_PrefabInstance: {fileID: 7227229977473552241}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7974057118093817932 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 785260124279519037, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
+  m_PrefabInstance: {fileID: 7227229977473552241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &7551693618779165709
 PrefabInstance:
   m_ObjectHideFlags: 0
