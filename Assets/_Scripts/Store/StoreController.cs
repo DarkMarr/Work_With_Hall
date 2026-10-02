@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using QuizGame.Store.UI;
 using QuizGame.UI;
 using UnityEngine;
@@ -45,11 +46,20 @@ namespace QuizGame.Store
             );
         }
 
+        /// <summary>
+        /// Avatars and outfits share one shelf. DOC 02's Shop tab lists both under the avatar
+        /// store, which is why the mock-up hub labels this button Outfit while the code has always
+        /// called it Avatar.
+        /// </summary>
         public void OpenAvatarStore()
         {
             var itemStoreUI = UIManager.Instance.Replace<ItemStoreUI>(ref currentUI);
-            var avatarProducts = AvatarStoreProductsResourceManager.Instance.GetAllResources();
-            itemStoreUI.Init(avatarProducts);
+
+            var products = new List<IInGameProductMetadata>();
+            products.AddRange(AvatarStoreProductsResourceManager.Instance.GetAllResources());
+            products.AddRange(OutfitStoreProductsResourceManager.Instance.GetAllResources());
+
+            itemStoreUI.Init(products.ToArray());
             itemStoreUI.OnClosed += OpenMainStore;
             itemStoreUI.OnPurchaseProduct += PurchaseProduct;
         }
