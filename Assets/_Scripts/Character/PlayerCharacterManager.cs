@@ -147,22 +147,28 @@ namespace QuizGame.Character
         {
             if (currentPlayer == null || currentOutfit == null) return;
 
+            // Keys are CharacterPartType names. A value is either the id of a garment asset, or —
+            // for the older mixer-driven characters — a sprite label inside that character's own
+            // SpriteLibrary. Which it is, is decided by whether a garment of that id exists, so
+            // both kinds can sit in one saved outfit and older saves keep working.
             var equippedLabels = new Dictionary<CharacterPartType, string>();
+            var garments = new List<Item.FashionItemSO>();
+
             if (currentOutfit.EquippedItems != null)
             {
                 foreach (var kvp in currentOutfit.EquippedItems)
                 {
-                    // kvp.Key = cosmetic item ID, look up the cosmetic SO to get partType and spriteLabel.
-                    // For now, we store the mapping as partType -> spriteLabel directly in the equipped items.
-                    // The key format is the CharacterPartType enum name, value is the sprite label.
-                    if (Enum.TryParse<CharacterPartType>(kvp.Key, out var partType))
-                    {
-                        equippedLabels[partType] = kvp.Value;
-                    }
+                    if (!Enum.TryParse<CharacterPartType>(kvp.Key, out var partType)) continue;
+                    if (string.IsNullOrEmpty(kvp.Value)) continue;
+
+                    var garment = Item.OutfitItemResourceManager.Instance?.GetResource(kvp.Value);
+                    if (garment != null) garments.Add(garment);
+                    else equippedLabels[partType] = kvp.Value;
                 }
             }
 
             currentPlayer.ApplyOutfit(equippedLabels);
+            currentPlayer.WearGarments(garments);
         }
 
         #region Public API

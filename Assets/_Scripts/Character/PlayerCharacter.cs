@@ -11,6 +11,7 @@ namespace QuizGame.Character
     {
         private CharacterSpriteMixer spriteMixer;
         private Dictionary<CharacterPartType, string> initialLabels;
+        private OutfitWearer outfitWearer;
 
         public CharacterSpriteMixer SpriteMixer => spriteMixer;
         public string CurrentCharacterId { get; private set; }
@@ -22,6 +23,7 @@ namespace QuizGame.Character
             {
                 spriteMixer = GetComponentInChildren<CharacterSpriteMixer>();
             }
+            outfitWearer = GetComponent<OutfitWearer>();
             CaptureInitialLabels();
         }
 
@@ -88,6 +90,23 @@ namespace QuizGame.Character
         public void ClearOutfit()
         {
             ApplyOutfit(null);
+            WearGarments(null);
+        }
+
+        /// <summary>
+        /// Puts on garments that are drawn as their own sprites, which is how every character in
+        /// the catalogue is dressed — none of them carry a SpriteLibrary for the label route above.
+        /// Passing null or an empty list undresses the character.
+        /// </summary>
+        public void WearGarments(IReadOnlyList<Item.FashionItemSO> garments)
+        {
+            if (outfitWearer == null)
+            {
+                // Nothing worn and nothing to wear: no reason to add a component.
+                if (garments == null || garments.Count == 0) return;
+                outfitWearer = gameObject.AddComponent<OutfitWearer>();
+            }
+            outfitWearer.Wear(garments);
         }
     }
 }
