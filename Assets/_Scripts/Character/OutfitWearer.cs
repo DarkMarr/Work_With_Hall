@@ -93,7 +93,7 @@ namespace QuizGame.Character
         /// Replaces whatever is currently worn with these garments. Passing an empty list undresses
         /// the character.
         /// </summary>
-        public void Wear(IReadOnlyList<FashionItemSO> garments)
+        public void Wear(IReadOnlyList<OutfitItemSO> garments)
         {
             Clear();
             if (garments == null) return;

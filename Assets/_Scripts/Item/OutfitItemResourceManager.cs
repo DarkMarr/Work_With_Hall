@@ -6,8 +6,8 @@ namespace QuizGame.Item
     /// Loads the wearable garments so a saved outfit can be turned back into sprites at runtime.
     /// The art itself sits outside Resources; these assets are what keep it in the build.
     /// </summary>
-    public class OutfitItemResourceManager : ResourceManager<OutfitItemResourceManager, FashionItemSO>
+    public class OutfitItemResourceManager : ResourceManager<OutfitItemResourceManager, OutfitItemSO>
     {
-        public override string ContentResourcePath => "Items/Fashion";
+        public override string ContentResourcePath => "Items/Outfit";
     }
 }

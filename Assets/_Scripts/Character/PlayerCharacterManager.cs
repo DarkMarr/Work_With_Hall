@@ -152,7 +152,7 @@ namespace QuizGame.Character
             // SpriteLibrary. Which it is, is decided by whether a garment of that id exists, so
             // both kinds can sit in one saved outfit and older saves keep working.
             var equippedLabels = new Dictionary<CharacterPartType, string>();
-            var garments = new List<Item.FashionItemSO>();
+            var garments = new List<Item.OutfitItemSO>();
 
             if (currentOutfit.EquippedItems != null)
             {

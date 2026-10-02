@@ -98,7 +98,7 @@ namespace QuizGame.Character
         /// the catalogue is dressed — none of them carry a SpriteLibrary for the label route above.
         /// Passing null or an empty list undresses the character.
         /// </summary>
-        public void WearGarments(IReadOnlyList<Item.FashionItemSO> garments)
+        public void WearGarments(IReadOnlyList<Item.OutfitItemSO> garments)
         {
             if (outfitWearer == null)
             {

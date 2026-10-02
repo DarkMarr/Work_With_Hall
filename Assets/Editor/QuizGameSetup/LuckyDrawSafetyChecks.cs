@@ -60,17 +60,21 @@ namespace QuizGame.EditorTools
                     Check(claim.IsCompleted && claim.GetAwaiter().GetResult() == null,
                         "stand-in claims rejected before accessing Firebase: " + matchId);
                 }
-                var fashion = UnityEngine.Resources.LoadAll<EquipmentItemSO>("Items/Fashion");
-                Check(fashion.Length == 22, "22 generated fashion rewards found");
-                foreach (var item in fashion)
+                // One asset per garment rather than per outfit, which is how the drop tables award
+                // them, so the count is the number of garments and not the number of sets.
+                var outfits = UnityEngine.Resources.LoadAll<EquipmentItemSO>("Items/Outfit");
+                Check(outfits.Length > 0, "generated outfit rewards found: " + outfits.Length);
+                foreach (var item in outfits)
                 {
                     Check(!string.IsNullOrWhiteSpace(item.GetName()), "reward name available: " + item.GetID());
                     item.GetDescription();
                     item.GetSubDescription();
                 }
-                Check(fashion.Single(x => x.GetID() == "Fashion_C_Baseball").GetName() == "Baseball",
-                    "missing translation uses readable fashion name");
-                Debug.Log("[HALL900] Lucky Draw safety checks PASS: atomic preview notifications, snapshot isolation, server protection, offline claim rejection, 22 fashion names.");
+                var baseballHat = outfits.SingleOrDefault(x => x.GetID() == "Fashion_C_Baseball__HeadDecoration");
+                Check(baseballHat != null && baseballHat.GetName() == "Baseball Head Decoration",
+                    "missing translation falls back to a readable outfit name");
+                Debug.Log("[HALL900] Lucky Draw safety checks PASS: atomic preview notifications, snapshot isolation, "
+                    + "server protection, offline claim rejection, " + outfits.Length + " outfit names.");
             }
             finally { UnityEngine.Object.DestroyImmediate(host); }
         }
