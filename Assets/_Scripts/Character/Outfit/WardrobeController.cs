@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using QuizGame.Item;
@@ -47,8 +47,14 @@ namespace QuizGame.Character.Outfit
                 foreach (var entry in inventory)
                 {
                     if (entry == null || string.IsNullOrEmpty(entry.ItemId)) continue;
-                    var garment = OutfitItemResourceManager.Instance?.GetResource(entry.ItemId);
-                    if (garment != null) garments.Add(garment);
+                    // TryGetResource rather than GetResource: most of an inventory is not
+                    // clothing, and a miss here is the normal case, not a fault.
+                    OutfitItemSO garment;
+                    var manager = OutfitItemResourceManager.Instance;
+                    if (manager != null && manager.TryGetResource(entry.ItemId, out garment))
+                    {
+                        garments.Add(garment);
+                    }
                 }
             }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using QuizGame.Utilities;
 using UnityEngine;
@@ -78,6 +78,20 @@ namespace QuizGame.Resources
             }
             Debug.LogError($"[{GetType().Name}] ID: {id} doesn't exist.");
             return null;
+        }
+
+        /// <summary>
+        /// Looks an id up without complaining when it is absent, for callers that are asking
+        /// whether this manager owns the id at all. <see cref="GetResource"/> logs an error on a
+        /// miss, which is right when the id was promised to exist and wrong when a caller is
+        /// sifting a mixed list — an inventory holds materials, currency and quiz items, so
+        /// probing it with GetResource fills the console with errors during normal play and
+        /// buries the real ones.
+        /// </summary>
+        public bool TryGetResource(string id, out TContent item)
+        {
+            item = null;
+            return !string.IsNullOrEmpty(id) && resourcesByID.TryGetValue(id, out item);
         }
 
         public string GetRandomResourceID()
