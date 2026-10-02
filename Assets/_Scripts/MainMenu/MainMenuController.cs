@@ -63,6 +63,7 @@ namespace QuizGame.MainMenu
         {
             // SettingController resolves SoundManager; Unity lookups are unsafe during deserialization.
             storeController = new StoreController();
+            storeController.OnCurrencyChanged += RefreshCurrency;
             myDiaryController = new MyDiaryController();
             fuseController = new FuseController();
             settingController = new SettingController();
@@ -267,6 +268,19 @@ namespace QuizGame.MainMenu
         {
             currentMainUI.Close();
             storeController.OpenMainStore();
+        }
+
+        /// <summary>
+        /// Re-reads the balance after a purchase. The menu caches it so the strip can be refilled
+        /// whenever the UI is rebuilt, and that cache would otherwise still hold what the player
+        /// had before they spent.
+        /// </summary>
+        private async void RefreshCurrency()
+        {
+            var inventory = await PlayerDataManager.Instance.GetInventory();
+            if (this == null) return;
+            coins = inventory?.Coins ?? 0;
+            gems = inventory?.Gems ?? 0;
         }
 
         private void HandleFuseButtonClicked()

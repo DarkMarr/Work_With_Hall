@@ -10,6 +10,9 @@ namespace QuizGame.Store
     public class StoreController
     {
         public event Action OnMainStoreBackButtonClicked;
+
+        /// <summary>Raised after a purchase succeeds, so a balance on screen can be refreshed.</summary>
+        public event Action OnCurrencyChanged;
         
         private BaseUI currentUI;
 
@@ -70,12 +73,28 @@ namespace QuizGame.Store
         }
 
         /// <summary>
-        /// Handles purchasing an in-game product: checks currency balance, deducts cost, and grants the item.
+        /// Asks before spending anything. A purchase takes currency the player earned and cannot be
+        /// undone, so a mistaken tap on a grid of look-alike tiles should not cost them a thing.
         /// </summary>
-        public async void PurchaseProduct(IInGameProductMetadata product)
+        public void PurchaseProduct(IInGameProductMetadata product)
         {
             if (product == null) return;
 
+            var item = product.GetItemProduct();
+            var itemName = item != null ? item.GetName() : product.GetID();
+            var currencyType = product.GetPurchasedCurrency().GetCurrencyType();
+
+            var confirm = UIManager.Instance.Create<ConfirmPopupUI>();
+            confirm.Setup(
+                "Trade Confirm",
+                $"Do you want to buy {itemName} with {product.GetPrice()} {currencyType}?",
+                onConfirmButtonClicked: () => { confirm.Close(); CompletePurchase(product); },
+                onCancelButtonClicked: () => confirm.Close());
+        }
+
+        /// <summary>Runs only once the player has said yes.</summary>
+        private async void CompletePurchase(IInGameProductMetadata product)
+        {
             var currencyType = product.GetPurchasedCurrency().GetCurrencyType();
             var price = product.GetPrice();
             var productId = product.GetID();
@@ -87,7 +106,13 @@ namespace QuizGame.Store
             if (!spendSuccess)
             {
                 Debug.LogWarning($"[Store] Purchase failed: not enough {currencyType} for product '{productId}'.");
-                // TODO: Show "not enough currency" popup UI
+                // Saying nothing leaves the player tapping a button that appears to do nothing.
+                var message = UIManager.Instance.Create<MessagePopupUI>();
+                message.Setup(
+                    "Not enough " + currencyType,
+                    $"You need {price} {currencyType} to buy this.",
+                    "OK",
+                    onMessageButtonClicked: () => message.Close());
                 return;
             }
 
@@ -104,7 +129,10 @@ namespace QuizGame.Store
                 Debug.Log($"[Store] Granted item '{item.GetID()}' to player.");
             }
 
-            // TODO: Refresh any open store UI to reflect updated currency balance.
+            // Tell whoever is showing a balance that it has changed. Without this the counter on
+            // screen keeps the figure from before the purchase, and the player cannot tell whether
+            // their money was taken.
+            OnCurrencyChanged?.Invoke();
         }
 
         public void OpenTopUpStore()
