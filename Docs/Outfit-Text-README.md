@@ -24,12 +24,18 @@ Key ตั้งตามกฎในชีต Localization แท็บ Rule �
 `Assets/Settings/Localization/Tables/GameItem/Item.asset` ตั้ง **`m_RemoveMissingPulledKeys: 1`**
 แปลว่าเวลา pull จากชีต Localization ระบบจะ **ลบ key ที่ไม่มีในชีตทิ้ง**
 
-ตอนนี้ key 112 ตัวนี้อยู่ในโปรเจ็กต์อย่างเดียว ยังไม่ได้อยู่ในชีต
-**ถ้า pull ก่อนเอาแถวไปแปะ ข้อความจะหายทั้งหมด**
+**✅ แปะลงชีตเรียบร้อยแล้ว 3 ต.ค.** แท็บ Item ตอนนี้มี 165 แถว (เดิม 13 + ใหม่ 152)
+ตรวจแล้วค่าตรงกับไฟล์ในโปรเจ็กต์ทุกช่องทั้ง en/ja/th ไม่มี key ซ้ำ **pull ได้ปลอดภัย**
 
-วิธีแก้คือเอาคอลัมน์ Key / en / ja / th จาก `Docs/Outfit-Text.csv`
-ไปแปะต่อท้ายแท็บ **Item** ในชีต Localization
-(`1686qsR-AxEDsmrbS4ce3OYNwNtLX5CP9Uu-lAL7clV4`) ซึ่งคอลัมน์เรียง A=Key B=en C=ja D=th พอดี
+ถ้าแก้ข้อความใน `Docs/Outfit-Text.csv` เพิ่มทีหลัง ต้องเอาขึ้นชีตด้วยทุกครั้ง
+ไม่งั้น pull รอบถัดไปจะลบส่วนที่เพิ่มทิ้ง มีเมนู `QuizGame/Setup/Push Item Text To Google Sheet`
+เตรียมไว้ให้แล้ว แต่**ยังใช้ไม่ได้** เพราะ OAuth client ใน `Google Sheets Service.asset`
+ยังไม่ให้เครื่องนี้ authorize ซึ่งเป็นเรื่องฝั่ง Google Cloud Console ไม่ใช่โค้ด
+
+> ⚠️ ยังมี key เก่าอีก 8 ตัวที่อยู่ในโปรเจ็กต์แต่ยังไม่ได้อยู่ในชีต
+> (`carry_on.*` 7 ตัว กับ `consumeable.plastic_hammer`) มีมาก่อนงานรอบนี้
+> **pull ตอนนี้จะลบ 8 ตัวนั้นทิ้ง** แถวที่แปะได้อยู่บน Drive ชื่อ
+> `Item Text — 8 key ที่ค้างในโปรเจ็กต์ ยังไม่มีในชีต`
 
 ## ความครบของข้อความ
 
