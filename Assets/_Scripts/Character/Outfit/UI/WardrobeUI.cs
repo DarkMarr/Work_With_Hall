@@ -59,6 +59,21 @@ namespace QuizGame.Character.Outfit.UI
             ShowSlot(currentSlot);
         }
 
+        /// <summary>
+        /// Shows a fixed set of garments instead of the player's inventory, so the screen can be
+        /// laid out and checked without a signed-in player behind it. Tapping still equips for
+        /// real, so this is for inspecting the screen, not for handing anyone free clothes.
+        /// </summary>
+        public void ShowPreview(IEnumerable<OutfitItemSO> garments,
+                                IReadOnlyDictionary<string, string> equipped = null)
+        {
+            if (tabTemplate != null) tabTemplate.gameObject.SetActive(false);
+            if (itemTemplate != null) itemTemplate.gameObject.SetActive(false);
+            if (tabBar != null && tabBar.childCount <= 1) BuildTabs();
+            wardrobe.LoadFrom(garments, equipped);
+            ShowSlot(currentSlot);
+        }
+
         private void BuildTabs()
         {
             if (tabBar == null || tabTemplate == null) return;
@@ -94,10 +109,13 @@ namespace QuizGame.Character.Outfit.UI
                 button.gameObject.SetActive(true);
                 button.onClick.AddListener(() => Toggle(captured));
 
-                var icon = button.GetComponentInChildren<Image>(true);
-                if (icon != null && icon.gameObject != button.gameObject && garment.GetSprite() != null)
+                // Skip the button's own Image, which is its background: GetComponentInChildren
+                // returns self first, so searching for the icon that way finds the wrong one.
+                var icon = FindIcon(button.transform);
+                if (icon != null && garment.GetSprite() != null)
                 {
                     icon.sprite = garment.GetSprite();
+                    icon.enabled = true;
                 }
                 SetLabel(button, garment.GetName());
 
@@ -145,6 +163,17 @@ namespace QuizGame.Character.Outfit.UI
                 spawned.RemoveAt(i);
                 Destroy(go);
             }
+        }
+
+        /// <summary>The Image on a child, never the one on the button itself.</summary>
+        private static Image FindIcon(Transform button)
+        {
+            for (int i = 0; i < button.childCount; i++)
+            {
+                var image = button.GetChild(i).GetComponent<Image>();
+                if (image != null) return image;
+            }
+            return null;
         }
 
         private static void SetLabel(Component root, string text)

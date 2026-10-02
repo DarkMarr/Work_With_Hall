@@ -38,24 +38,44 @@ namespace QuizGame.Character.Outfit
         /// </summary>
         public async Task Load()
         {
-            ownedBySlot.Clear();
-            foreach (var slot in Slots) ownedBySlot[slot] = new List<OutfitItemSO>();
-
             var inventory = await PlayerDataManager.Instance.GetInventoryItems();
             var profile = await PlayerDataManager.Instance.GetProfileData();
-            Equipped = profile?.EquippedItems ?? new Dictionary<string, string>();
 
-            if (inventory == null) return;
-
-            foreach (var entry in inventory)
+            var garments = new List<OutfitItemSO>();
+            if (inventory != null)
             {
-                if (entry == null || string.IsNullOrEmpty(entry.ItemId)) continue;
-                var garment = OutfitItemResourceManager.Instance?.GetResource(entry.ItemId);
-                if (garment == null) continue;
-                if (!OutfitSlots.TryReadSlot(garment.GetSlotName(), out var slot)) continue;
-                if (!ownedBySlot.TryGetValue(slot, out var list)) continue;
-                if (list.Any(x => x.GetID() == garment.GetID())) continue;
-                list.Add(garment);
+                foreach (var entry in inventory)
+                {
+                    if (entry == null || string.IsNullOrEmpty(entry.ItemId)) continue;
+                    var garment = OutfitItemResourceManager.Instance?.GetResource(entry.ItemId);
+                    if (garment != null) garments.Add(garment);
+                }
+            }
+
+            LoadFrom(garments, profile?.EquippedItems);
+        }
+
+        /// <summary>
+        /// Groups a given set of garments, separately from fetching them. Splitting the two lets
+        /// the screen be driven from a fixed list — a preview, or a check that it renders before
+        /// the player owns anything — without a signed-in player behind it.
+        /// </summary>
+        public void LoadFrom(IEnumerable<OutfitItemSO> garments, IReadOnlyDictionary<string, string> equipped)
+        {
+            ownedBySlot.Clear();
+            foreach (var slot in Slots) ownedBySlot[slot] = new List<OutfitItemSO>();
+            Equipped = equipped ?? new Dictionary<string, string>();
+
+            if (garments != null)
+            {
+                foreach (var garment in garments)
+                {
+                    if (garment == null) continue;
+                    if (!OutfitSlots.TryReadSlot(garment.GetSlotName(), out var slot)) continue;
+                    if (!ownedBySlot.TryGetValue(slot, out var list)) continue;
+                    if (list.Any(x => x.GetID() == garment.GetID())) continue;
+                    list.Add(garment);
+                }
             }
 
             // Rarest first, then by name, so the screen opens on what the player most wants to see.
