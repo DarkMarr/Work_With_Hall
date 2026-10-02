@@ -102,7 +102,7 @@ namespace QuizGame.Character
             foreach (var garment in garments)
             {
                 if (garment == null) continue;
-                if (!TryReadSlot(garment.GetSlotName(), out var slot))
+                if (!Outfit.OutfitSlots.TryReadSlot(garment.GetSlotName(), out var slot))
                 {
                     Debug.LogWarning($"[OutfitWearer] '{garment.GetID()}' has slot '{garment.GetSlotName()}', " +
                                      "which is not a known part. Skipped.", this);
@@ -121,24 +121,6 @@ namespace QuizGame.Character
             }
         }
 
-        /// <summary>
-        /// The generator writes the slot as the exact enum name, so an exact parse is tried first.
-        /// The tolerant lookup is the fallback for hand-authored assets, and its result is checked
-        /// by round-tripping the name: it returns the first enum value rather than failing, so an
-        /// unrecognised slot would otherwise come back silently as Mount.
-        /// </summary>
-        private static bool TryReadSlot(string slotName, out CharacterPartType slot)
-        {
-            slot = default;
-            if (string.IsNullOrWhiteSpace(slotName)) return false;
-            if (System.Enum.TryParse(slotName, out slot)) return true;
-
-            slot = CharacterSpriteUtilities.GetPartTypeByCategoryName(slotName);
-            var canonical = CharacterSpriteUtilities.GetCategoryNameByPartType(slot);
-            return canonical != null
-                && CharacterSpriteUtilities.NormalizeCategoryName(canonical)
-                   == CharacterSpriteUtilities.NormalizeCategoryName(slotName);
-        }
 
         /// <summary>Removes every garment this component added, leaving the character's own art.</summary>
         public void Clear()

@@ -240,22 +240,57 @@ namespace QuizGame.Character
         }
 
         /// <summary>
-        /// Unequips the cosmetic from the given part type. Saves to Firestore.
+        /// Puts on a garment from the player's inventory. Unlike <see cref="EquipCosmetic"/> this
+        /// needs no SpriteLibrary, which is why it works on the catalogue avatars: the garment is
+        /// stored by id and drawn as its own sprite.
+        ///
+        /// Anything already in that slot comes off, since a character wears one hat at a time.
+        /// </summary>
+        public async Task EquipGarment(Item.OutfitItemSO garment)
+        {
+            if (garment == null || currentPlayer == null) return;
+            if (string.IsNullOrEmpty(garment.GetSlotName()))
+            {
+                Debug.LogWarning($"[PlayerCharacterManager] Garment '{garment.GetID()}' has no slot; not equipped.");
+                return;
+            }
+
+            var slotKey = garment.GetSlotName();
+            currentOutfit.EquippedItems.TryGetValue(slotKey, out var replaced);
+            currentOutfit.EquippedItems[slotKey] = garment.GetID();
+
+            ApplyCurrentOutfit();
+
+            await PlayerDataManager.Instance.UpdateEquippedItems(currentOutfit.EquippedItems);
+            await PlayerDataManager.Instance.SetInventoryItemEquipped(garment.GetID(), true);
+            if (!string.IsNullOrEmpty(replaced) && replaced != garment.GetID())
+            {
+                await PlayerDataManager.Instance.SetInventoryItemEquipped(replaced, false);
+            }
+
+            OnOutfitChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Unequips whatever occupies the given part type. Saves to Firestore.
         /// </summary>
         public async Task UnequipPart(CharacterPartType partType)
         {
             if (currentPlayer == null) return;
 
             var partKey = partType.ToString();
-            if (currentOutfit.EquippedItems.ContainsKey(partKey))
-            {
-                currentOutfit.EquippedItems.Remove(partKey);
-            }
+            currentOutfit.EquippedItems.TryGetValue(partKey, out var removed);
+            currentOutfit.EquippedItems.Remove(partKey);
 
-            // Re-apply outfit (will reset the part to its initial label).
-            currentPlayer.ApplyOutfit(GetEquippedLabelsDictionary());
+            // Re-apply the whole outfit: the slot may have held a garment rather than a label, and
+            // only the full pass puts the drawn sprites back in step with what is equipped.
+            ApplyCurrentOutfit();
 
             await PlayerDataManager.Instance.UpdateEquippedItems(currentOutfit.EquippedItems);
+            if (!string.IsNullOrEmpty(removed))
+            {
+                await PlayerDataManager.Instance.SetInventoryItemEquipped(removed, false);
+            }
 
             OnOutfitChanged?.Invoke();
         }

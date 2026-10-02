@@ -39,6 +39,26 @@ namespace QuizGame.Character.Outfit
         public static IEnumerable<CharacterPartType> AllSlots => slotByLayerName.Values;
 
         /// <summary>
+        /// Turns a stored slot name back into a part type. The generator writes the exact enum
+        /// name, so an exact parse is tried first; the tolerant lookup is the fallback for
+        /// hand-authored assets, and its result is checked by round-tripping the name, because it
+        /// returns the first enum value rather than failing — an unrecognised slot would otherwise
+        /// come back silently as Mount.
+        /// </summary>
+        public static bool TryReadSlot(string slotName, out CharacterPartType slot)
+        {
+            slot = default;
+            if (string.IsNullOrWhiteSpace(slotName)) return false;
+            if (System.Enum.TryParse(slotName, out slot)) return true;
+
+            slot = CharacterSpriteUtilities.GetPartTypeByCategoryName(slotName);
+            var canonical = CharacterSpriteUtilities.GetCategoryNameByPartType(slot);
+            return canonical != null
+                && CharacterSpriteUtilities.NormalizeCategoryName(canonical)
+                   == CharacterSpriteUtilities.NormalizeCategoryName(slotName);
+        }
+
+        /// <summary>
         /// Reads the rarity out of a file name shaped <c>Outfit_&lt;Rarity&gt;_&lt;SetName&gt;</c>,
         /// e.g. "Outfit_SR_Pirate". False when the name does not follow the convention.
         ///
