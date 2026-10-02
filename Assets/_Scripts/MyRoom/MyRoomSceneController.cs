@@ -13,6 +13,7 @@ using QuizGame.MyRoom.MyItem;
 using QuizGame.Item;
 using QuizGame.Item.Interfaces;
 using QuizGame.Character;
+using QuizGame.Character.Outfit.UI;
 
 namespace QuizGame.MyRoom
 {
@@ -28,6 +29,9 @@ namespace QuizGame.MyRoom
         private MyItemController myItemController = new MyItemController();
 
         private BaseUI currentUI;
+
+        // Held so the Equip button can close a wardrobe it already opened.
+        private WardrobeUI wardrobeUI;
 
         private void Start()
         {
@@ -90,41 +94,33 @@ namespace QuizGame.MyRoom
             myItemController.Init(myItemModel);
         }
 
+        /// <summary>
+        /// Opens the dressing screen. It covers only the lower half, so the avatar standing in the
+        /// room stays visible and the player sees each garment on their own character as they pick
+        /// it, rather than on a preview that could drift from the real thing.
+        /// </summary>
         private void HandleEquipButtonClicked()
         {
-            // Open the character selection / cosmetic equip UI.
-            // This uses the same EquipItemSelectionUI pattern to let the player
-            // select a character and equip/unequip cosmetic items.
-            var characterManager = PlayerCharacterManager.Instance;
-            if (characterManager == null)
+            if (PlayerCharacterManager.Instance == null)
             {
-                Debug.LogWarning("[MyRoom] PlayerCharacterManager not available.");
+                Debug.LogWarning("[MyRoom] PlayerCharacterManager not available; cannot open the wardrobe.");
                 return;
             }
 
-            // For now, cycle through available characters as a simple equip flow.
-            // A full UI can be wired later using EquipItemSelectionUI with cosmetic items.
-            var allCharacters = CharacterResourceManager.Instance.GetAllResources();
-            if (allCharacters == null || allCharacters.Length == 0)
+            if (wardrobeUI != null)
             {
-                Debug.LogWarning("[MyRoom] No character SOs found.");
+                wardrobeUI.Close();
+                wardrobeUI = null;
                 return;
             }
 
-            var currentIndex = 0;
-            for (int i = 0; i < allCharacters.Length; i++)
+            wardrobeUI = UIManager.Instance.Create<WardrobeUI>();
+            wardrobeUI.Init(() =>
             {
-                if (allCharacters[i].GetID() == characterManager.SelectedCharacterId)
-                {
-                    currentIndex = i;
-                    break;
-                }
-            }
-
-            var nextIndex = (currentIndex + 1) % allCharacters.Length;
-            var nextCharacter = allCharacters[nextIndex];
-            _ = characterManager.SetSelectedCharacter(nextCharacter.GetID());
-            Debug.Log($"[MyRoom] Switched character to '{nextCharacter.GetID()}'.");
+                if (wardrobeUI == null) return;
+                wardrobeUI.Close();
+                wardrobeUI = null;
+            });
         }
 
         private void HandleTradeButtonClicked()
