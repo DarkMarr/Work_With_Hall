@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using QuizGame.Destination;
 using QuizGame.MainMenu.DailyLogin;
@@ -64,6 +64,10 @@ namespace QuizGame.MainMenu
             // SettingController resolves SoundManager; Unity lookups are unsafe during deserialization.
             storeController = new StoreController();
             storeController.OnCurrencyChanged += RefreshCurrency;
+            // Without this the Home button in the shop closes the shop onto an empty screen: the
+            // menu was closed on the way in and nothing brings it back. Every other screen routes
+            // its back button through ShowMainMenu; the shop was the one that never got wired.
+            storeController.OnMainStoreBackButtonClicked += ShowMainMenu;
             myDiaryController = new MyDiaryController();
             fuseController = new FuseController();
             settingController = new SettingController();

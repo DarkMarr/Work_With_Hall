@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using QuizGame.Store.UI;
 using QuizGame.UI;
@@ -62,6 +62,7 @@ namespace QuizGame.Store
             itemStoreUI.Init(products.ToArray());
             itemStoreUI.OnClosed += OpenMainStore;
             itemStoreUI.OnPurchaseProduct += PurchaseProduct;
+            ShowBalance(itemStoreUI);
         }
 
         public void OpenRoomStore()
@@ -71,6 +72,7 @@ namespace QuizGame.Store
             roomStoreUI.OnClosed += OpenMainStore;
             roomStoreUI.Init(allDecorationProducts);
             roomStoreUI.OnPurchaseProduct += PurchaseProduct;
+            ShowBalance(roomStoreUI);
         }
 
         public void OpenItemStore()
@@ -80,6 +82,7 @@ namespace QuizGame.Store
             itemStoreUI.Init(inGameProducts);
             itemStoreUI.OnClosed += OpenMainStore;
             itemStoreUI.OnPurchaseProduct += PurchaseProduct;
+            ShowBalance(itemStoreUI);
         }
 
         /// <summary>
@@ -142,7 +145,31 @@ namespace QuizGame.Store
             // Tell whoever is showing a balance that it has changed. Without this the counter on
             // screen keeps the figure from before the purchase, and the player cannot tell whether
             // their money was taken.
+            ShowBalance(currentUI);
             OnCurrencyChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Puts the player's real balance on a shelf's currency strip.
+        ///
+        /// The strip has had working setters all along but nothing ever called them, so every shop
+        /// screen showed the 9999999 left in the prefab at design time. A player deciding whether
+        /// they can afford something was reading a number that had nothing to do with their money.
+        /// </summary>
+        private async void ShowBalance(BaseUI ui)
+        {
+            if (ui == null) return;
+
+            var display = ui.GetComponentInChildren<GameCurrencyVisualization>(true);
+            if (display == null) return;
+
+            var inventory = await PlayerDataManager.Instance.GetInventory();
+
+            // The shelf can be closed while the balance is still in flight.
+            if (display == null) return;
+
+            display.SetCoinAmount(inventory?.Coins ?? 0);
+            display.SetGemAmount(inventory?.Gems ?? 0);
         }
 
         public void OpenTopUpStore()

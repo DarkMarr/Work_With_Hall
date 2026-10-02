@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using QuizGame.MyRoom.UI;
@@ -14,6 +14,7 @@ using QuizGame.Item;
 using QuizGame.Item.Interfaces;
 using QuizGame.Character;
 using QuizGame.Character.Outfit.UI;
+using QuizGame.Network;
 
 namespace QuizGame.MyRoom
 {
@@ -33,7 +34,7 @@ namespace QuizGame.MyRoom
         // Held so the Equip button can close a wardrobe it already opened.
         private WardrobeUI wardrobeUI;
 
-        private void Start()
+        private async void Start()
         {
             UIManager.Instance.CloseAll();
             var myRoomUI = UIManager.Instance.Replace<MyRoomUI>(ref currentUI);
@@ -48,6 +49,11 @@ namespace QuizGame.MyRoom
             );
             myRoomUI.SwitchUIStage(MyRoomUI.Stage.Normal);
             InitDecorationController();
+
+            // Last, because it waits on the network: the room is usable while the name arrives.
+            var profileData = await PlayerDataManager.Instance.GetProfileData();
+            if (this == null || myRoomUI == null) return;
+            myRoomUI.SetProfile(profileData?.ProfileName, "Unranked"); // TODO: [Network] real rank.
         }
 
         private void InitDecorationController()

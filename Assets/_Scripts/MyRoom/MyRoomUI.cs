@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TMPro;
 using QuizGame.UI;
 using UnityEngine;
@@ -48,6 +48,24 @@ namespace QuizGame.MyRoom.UI
 
         [SerializeField]
         private Button friendsButton;
+
+        /// <summary>
+        /// Fills the profile strip above the room. Both fields were wired to the prefab but nothing
+        /// ever set them, so the room showed the placeholder 'Name' and 'Rank {0}' from design time.
+        /// A blank value is ignored rather than written, so a slow profile fetch leaves the strip
+        /// as it is instead of blanking it.
+        /// </summary>
+        public void SetProfile(string profileName, string rankName)
+        {
+            if (nameText != null && !string.IsNullOrWhiteSpace(profileName))
+            {
+                nameText.text = profileName;
+            }
+            if (rankText != null && !string.IsNullOrWhiteSpace(rankName))
+            {
+                rankText.text = rankName;
+            }
+        }
 
         public void Init(
                         Action onDecorateButtonClicked,
