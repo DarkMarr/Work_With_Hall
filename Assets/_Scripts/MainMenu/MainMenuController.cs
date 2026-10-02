@@ -50,11 +50,7 @@ namespace QuizGame.MainMenu
         private FuseController fuseController;
         private SettingController settingController;
 
-        private MainMenuProfileUI profileUI;
         private BaseUI currentMainUI;
-
-        //TODO: Mock up only
-        private float tilEnergyRechargeMS = 2990;
 
         // Kept so ShowMainMenu can fill the profile strip every time it rebuilds the UI,
         // not only on the first pass through Start.
@@ -78,15 +74,8 @@ namespace QuizGame.MainMenu
 
             var profileData = await PlayerDataManager.Instance.GetProfileData();
             if (this == null) return;
-            var energyData = await PlayerDataManager.Instance.GetEnergyData();
-            if (this == null) return;
-
-            profileUI = UIManager.Instance.Create<MainMenuProfileUI>();
             displayName = string.IsNullOrWhiteSpace(profileData?.ProfileName) ? "Player" : profileData.ProfileName;
             rankName = "Unranked"; // TODO: [Network] Load the player's real rank.
-            profileUI.SetProfileName(displayName);
-            profileUI.SetRank(rankName);
-            profileUI.SetEnergy(energyData?.Current ?? 0, energyData?.Max ?? 0);
             ShowMainMenu();
 
             matchmakingController.InjectUIManager(UIManager.Instance);
@@ -96,13 +85,6 @@ namespace QuizGame.MainMenu
 
         private void Update()
         {
-            //TODO: Mock up only, we may need energy system/controller later
-            if (profileUI != null)
-            {
-                tilEnergyRechargeMS -= Time.deltaTime;
-                profileUI.SetTimer(Mathf.RoundToInt(tilEnergyRechargeMS));
-            }
-
             if (Input.GetKeyDown(KeyCode.Escape) && matchmakingController.CurrentState == MatchmakingState.Preparing)
             {
                 matchmakingController.ExitMatchMaking();
@@ -111,8 +93,6 @@ namespace QuizGame.MainMenu
 
         private void ShowMainMenu()
         {
-            profileUI?.Show();
-
             var mainMenuUI = UIManager.Instance.Replace<MainMenuUI>(ref currentMainUI);
             mainMenuUI.SetProfile(displayName, rankName);
             mainMenuUI.Init(
@@ -167,7 +147,6 @@ namespace QuizGame.MainMenu
 
         private void StartMatchmaking(MatchmakingType matchType)
         {
-            profileUI.Hide();
             var availableDestinations = DestinationResourceManager.Instance.GetAllResources();
             var availableItems = GetPlayerCarryOnItems();
             matchmakingController.OpenMatchmakingSequence(matchType, availableItems, availableDestinations, ref currentMainUI, 
@@ -279,7 +258,6 @@ namespace QuizGame.MainMenu
         private void HandleStoreButtonClicked()
         {
             currentMainUI.Close();
-            profileUI.Hide();
             storeController.OpenMainStore();
         }
 
@@ -367,7 +345,6 @@ namespace QuizGame.MainMenu
             userDailyLoginData.SetForceClaimReward(2);
 
             // UI
-            profileUI.Hide();
             var dailyLoginUI = UIManager.Instance.Replace<DailyLoginUI>(ref currentMainUI);
 
             dailyLoginUI.Init(onCloseButtonClicked: () => ShowMainMenu());
