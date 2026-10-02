@@ -41,6 +41,31 @@ namespace QuizGame.MainMenu.UI
         [SerializeField, Tooltip("PlayerProfile/Rank-Text")]
         private TMPro.TMP_Text rankText;
 
+        [SerializeField, Tooltip("PlayerProfile/Currency/Coin-Image/CoinAmount-Text")]
+        private TMPro.TMP_Text coinText;
+
+        [SerializeField, Tooltip("PlayerProfile/Currency/GemAmount-Image/GemAmount-Text")]
+        private TMPro.TMP_Text gemText;
+
+        /// <summary>
+        /// Shows what the player actually holds. Like the name, these counters shipped as drawings
+        /// — both read 8888888 — and nothing replaced them.
+        /// </summary>
+        public void SetCurrency(int coins, int gems)
+        {
+            if (coinText != null) coinText.text = Format(coins);
+            if (gemText != null) gemText.text = Format(gems);
+        }
+
+        /// <summary>
+        /// Keeps the weight tag the designer put on the placeholder, so a real number is drawn the
+        /// same as the mock-up was. Grouping separators are left off to match it too.
+        /// </summary>
+        private static string Format(int amount)
+        {
+            return "<font-weight=\"400\">" + amount.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
         /// <summary>
         /// Fills in the profile strip. The prefab ships with stand-ins drawn by the Art team —
         /// "namenamename", "Kindergarten |||" — and nothing replaced them, so the player saw a

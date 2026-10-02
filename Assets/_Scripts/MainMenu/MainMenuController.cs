@@ -56,6 +56,8 @@ namespace QuizGame.MainMenu
         // not only on the first pass through Start.
         private string displayName = "Player";
         private string rankName = "Unranked";
+        private int coins;
+        private int gems;
 
         private void Awake()
         {
@@ -74,8 +76,13 @@ namespace QuizGame.MainMenu
 
             var profileData = await PlayerDataManager.Instance.GetProfileData();
             if (this == null) return;
+            var inventory = await PlayerDataManager.Instance.GetInventory();
+            if (this == null) return;
+
             displayName = string.IsNullOrWhiteSpace(profileData?.ProfileName) ? "Player" : profileData.ProfileName;
             rankName = "Unranked"; // TODO: [Network] Load the player's real rank.
+            coins = inventory?.Coins ?? 0;
+            gems = inventory?.Gems ?? 0;
             ShowMainMenu();
 
             matchmakingController.InjectUIManager(UIManager.Instance);
@@ -95,6 +102,7 @@ namespace QuizGame.MainMenu
         {
             var mainMenuUI = UIManager.Instance.Replace<MainMenuUI>(ref currentMainUI);
             mainMenuUI.SetProfile(displayName, rankName);
+            mainMenuUI.SetCurrency(coins, gems);
             mainMenuUI.Init(
                 onMultiplayerButtonClicked: HandleMultiplayerMatchSelectionClicked,
                 onSinglePlayerButtonClicked: HandleSinglePlayerButtonClicked,

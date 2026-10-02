@@ -289,6 +289,8 @@ MonoBehaviour:
   settingButton: {fileID: 2925062900871885768}
   profileNameText: {fileID: 7974057118093817932}
   rankText: {fileID: 2160136531533785875}
+  coinText: {fileID: 9075254553180452043}
+  gemText: {fileID: 5021984473131828981}
 --- !u!114 &1140845200879358917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1409,6 +1411,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &5021984473131828981 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2449372270096894340, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
+  m_PrefabInstance: {fileID: 7227229977473552241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &5527905462679766604 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2953050624207718717, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
@@ -1417,6 +1430,17 @@ RectTransform:
 --- !u!114 &7974057118093817932 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 785260124279519037, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
+  m_PrefabInstance: {fileID: 7227229977473552241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &9075254553180452043 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1854780121623083962, guid: be0bb81aec593e146aa9238bcbc98b3f, type: 3}
   m_PrefabInstance: {fileID: 7227229977473552241}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
