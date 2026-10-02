@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using QuizGame.Item;
@@ -15,6 +15,9 @@ namespace QuizGame.Editor.Setup
     /// still provisional: the item sheet defines coin_cost and gem_cost but carries no values, so
     /// the numbers in the csv are a starting point. Changing them is editing a spreadsheet and
     /// running this menu again, with no code involved.
+    ///
+    /// What the columns mean, where the numbers came from, and the Google Drive copy the
+    /// designer edits are all written up in Docs/Outfit-Prices-README.md.
     /// </summary>
     public static class OutfitShopGenerator
     {
