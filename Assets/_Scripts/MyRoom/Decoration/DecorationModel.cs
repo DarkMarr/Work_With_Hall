@@ -98,7 +98,7 @@ namespace QuizGame.MyRoom.Decoration
             },
             {
                 ""slot_id"": ""FloorTrophy_02"",
-                ""item_id"": ""33102""
+                ""item_id"": ""33103""
             },
             {
                 ""slot_id"": ""Suitcase_01"",
