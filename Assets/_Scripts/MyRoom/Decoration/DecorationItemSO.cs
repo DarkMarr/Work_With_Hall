@@ -16,6 +16,12 @@ namespace QuizGame.MyRoom.Decoration
         private DecorationType decorationType;
 
         [SerializeField]
+        [Tooltip("The decoration as it stands in the room. BaseItemSO's sprite is the inventory " +
+                 "icon, which is framed and tinted by rarity and would look wrong on a shelf. " +
+                 "Leave this empty and the icon is used, which is what a wallpaper wants.")]
+        private Sprite roomSprite;
+
+        [SerializeField]
         private ItemTier decorationTier;
 
         [SerializeField]
@@ -37,6 +43,7 @@ namespace QuizGame.MyRoom.Decoration
         public string GetDescription() => localizedDescription.GetLocalizedString();
         public override string GetName() => localizedName.GetLocalizedString();
         public DecorationType GetDecorationType() => decorationType;
+        public Sprite GetRoomSprite() => roomSprite != null ? roomSprite : GetSprite();
         public string GetSubDescription() => localizedSubDescription.GetLocalizedString();
         public IQuantifiableItem[] GetRecycledItems() => recycledItems;
         public IQuantifiableItem[] GetCraftRequirementItems() => craftRequirementItems;

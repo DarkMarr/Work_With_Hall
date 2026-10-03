@@ -126,7 +126,7 @@ namespace QuizGame.MyRoom
                 onSelectButtonClicked: () =>
                 {
                     var selected = wallpapers[selectionUI.SelectingItemIndex];
-                    backdrop.SetWallpaper(selected.GetSprite());
+                    backdrop.SetWallpaper(selected.GetRoomSprite());
                     //TODO: [Network] Save the chosen wallpaper with the rest of the room.
                 }
             );

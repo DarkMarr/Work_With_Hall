@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: decor_floor_r_01
   m_EditorClassIdentifier: 
   itemID: 33301
-  itemSprite: {fileID: 744015515436254798, guid: e181a48c2d8f7464eb5d8b514ce01e6c, type: 3}
+  itemSprite: {fileID: 927545391130273161, guid: 918f9082ce753434889658f4365d97d0, type: 3}
   decorationType: 3
+  roomSprite: {fileID: 744015515436254798, guid: e181a48c2d8f7464eb5d8b514ce01e6c, type: 3}
   decorationTier: 3
   localizedName:
     m_TableReference:
@@ -48,7 +49,7 @@ MonoBehaviour:
     Quantity: 9
   - Item: {fileID: 11400000, guid: d2fa675a1ad5f05469b01963ea16e2e8, type: 2}
     Quantity: 10
-  fuseRequirementItems: []
+  craftRequirementItems: []
   references:
     version: 2
     RefIds: []

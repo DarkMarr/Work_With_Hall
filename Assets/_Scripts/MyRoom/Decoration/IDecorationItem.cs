@@ -7,5 +7,11 @@ namespace QuizGame.MyRoom.Decoration
     public interface IDecorationItem : IItem, IRecyclable, ICraftable, IHasDescription
     {
         DecorationType GetDecorationType();
+
+        /// <summary>
+        /// The decoration as it stands in the room, which is not the icon the bag and the pickers
+        /// show: an icon is framed and tinted by rarity, and that frame has no business on a shelf.
+        /// </summary>
+        UnityEngine.Sprite GetRoomSprite();
     }
 }

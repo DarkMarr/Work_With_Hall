@@ -15,6 +15,7 @@ MonoBehaviour:
   itemID: 33303
   itemSprite: {fileID: 5135763502710727284, guid: e2ecb10e1647f0943b4825211e06366a, type: 3}
   decorationType: 3
+  roomSprite: {fileID: 5135763502710727284, guid: e2ecb10e1647f0943b4825211e06366a, type: 3}
   decorationTier: 3
   localizedName:
     m_TableReference:
@@ -48,7 +49,7 @@ MonoBehaviour:
     Quantity: 9
   - Item: {fileID: 11400000, guid: d2fa675a1ad5f05469b01963ea16e2e8, type: 2}
     Quantity: 10
-  fuseRequirementItems: []
+  craftRequirementItems: []
   references:
     version: 2
     RefIds: []

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: decor_wall_c_01
   m_EditorClassIdentifier: 
   itemID: 31101
-  itemSprite: {fileID: 5559679507607152093, guid: 0476480c8b66b56438a0448f88ffd57d, type: 3}
+  itemSprite: {fileID: -715684934916392741, guid: c7f774423cfdd63429bc41431631322a, type: 3}
   decorationType: 1
+  roomSprite: {fileID: -5828310823589700125, guid: b47e0f73062972e4587e028937c16dfd, type: 3}
   decorationTier: 1
   localizedName:
     m_TableReference:
@@ -48,6 +49,7 @@ MonoBehaviour:
     Quantity: 9
   - Item: {fileID: 11400000, guid: d2fa675a1ad5f05469b01963ea16e2e8, type: 2}
     Quantity: 10
+  craftRequirementItems: []
   references:
     version: 2
     RefIds: []

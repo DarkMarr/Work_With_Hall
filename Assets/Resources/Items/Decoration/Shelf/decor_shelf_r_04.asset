@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: decor_shelf_r_04
   m_EditorClassIdentifier: 
   itemID: 32304
-  itemSprite: {fileID: 5559679507607152093, guid: 0476480c8b66b56438a0448f88ffd57d, type: 3}
+  itemSprite: {fileID: 5994040496217549340, guid: 63a3559bf729cb04cb55b7ff4fbc5ecf, type: 3}
   decorationType: 2
+  roomSprite: {fileID: 0}
   decorationTier: 3
   localizedName:
     m_TableReference:
@@ -48,6 +49,7 @@ MonoBehaviour:
     Quantity: 9
   - Item: {fileID: 11400000, guid: d2fa675a1ad5f05469b01963ea16e2e8, type: 2}
     Quantity: 10
+  craftRequirementItems: []
   references:
     version: 2
     RefIds: []

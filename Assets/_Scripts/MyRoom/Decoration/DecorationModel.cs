@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuizGame.Item.Interfaces;
@@ -101,8 +101,8 @@ namespace QuizGame.MyRoom.Decoration
                 ""item_id"": ""33102""
             },
             {
-                ""slot_id"": ""FloorTrophy_03"",
-                ""item_id"": ""33103""
+                ""slot_id"": ""Suitcase_01"",
+                ""item_id"": ""33201""
             }
         ]";
     }

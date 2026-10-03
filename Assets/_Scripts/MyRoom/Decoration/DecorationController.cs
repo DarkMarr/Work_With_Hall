@@ -36,7 +36,7 @@ namespace QuizGame.MyRoom.Decoration
             {
                 var slotID = slot.GetID();
                 var installedItem = model.GetItemInSlot(slotID);
-                view.SetSlotSprite(slotID, installedItem?.GetSprite());
+                view.SetSlotSprite(slotID, installedItem?.GetRoomSprite());
             }
         }
 
@@ -100,7 +100,7 @@ namespace QuizGame.MyRoom.Decoration
         {
             var slotID = slot.GetID();
             model.SetItemInSlot(slotID, item);
-            view.SetSlotSprite(slotID, item.GetSprite());
+            view.SetSlotSprite(slotID, item.GetRoomSprite());
         }
 
         private void UnequipItem(string slotID)

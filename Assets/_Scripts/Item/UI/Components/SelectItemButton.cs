@@ -54,6 +54,9 @@ namespace QuizGame.Item.UI
         public void SetSprite(Sprite itemSprite)
         {
             itemImage.sprite = itemSprite;
+            // An Image with no sprite still draws, as a white box over the empty cell. It only
+            // shows on a part-filled page, which is why it went unnoticed while every page was full.
+            itemImage.enabled = itemSprite != null;
         }
 
         public bool HasItem() => itemImage.sprite != null;
