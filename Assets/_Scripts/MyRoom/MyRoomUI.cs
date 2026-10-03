@@ -26,6 +26,15 @@ namespace QuizGame.MyRoom.UI
         [SerializeField]
         private Button decorateButton;
 
+        [Header("Decoration stage")]
+        [SerializeField]
+        [Tooltip("Leaves decoration mode without keeping the changes. The tick keeps them.")]
+        private Button decorationBackButton;
+
+        [SerializeField]
+        [Tooltip("Opens the list of wallpapers for the room itself, rather than for one slot.")]
+        private Button roomStyleButton;
+
         [Header("Stage")]
         [SerializeField]
         private GameObject normalStageGroup;
@@ -74,13 +83,17 @@ namespace QuizGame.MyRoom.UI
                         Action onItemButtonClicked,
                         Action onEquipButtonClicked,
                         Action onTradeButtonClicked,
-                        Action onFriendButtonClicked)
+                        Action onFriendButtonClicked,
+                        Action onDecorationBackButtonClicked = null,
+                        Action onRoomStyleButtonClicked = null)
         {
 
             var buttonActionPairs = new (Button button, Action action)[]
             {
                 (decorateButton, onDecorateButtonClicked),
                 (doneButton, onDoneButtonClicked),
+                (decorationBackButton, onDecorationBackButtonClicked),
+                (roomStyleButton, onRoomStyleButtonClicked),
                 (menuButton, onMenuButtonClicked),
                 (itemButton, onItemButtonClicked),
                 (equipButton, onEquipButtonClicked),

@@ -385,6 +385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 777297717}
   - component: {fileID: 777297718}
+  - component: {fileID: 777297719}
   m_Layer: 0
   m_Name: Backdrop
   m_TagString: Untagged
@@ -465,6 +466,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &777297719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777297716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9eb572502e1ea4f87e81496d315a16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: QuizGame.MyRoom::QuizGame.MyRoom.RoomBackdrop
+  viewCamera: {fileID: 277686145}
+  widthOverscan: 1.1
 --- !u!1001 &1021968107
 PrefabInstance:
   m_ObjectHideFlags: 0

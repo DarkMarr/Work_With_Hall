@@ -306,6 +306,41 @@ OUTFIT ขาดชื่อ 2 แถว (Common Head กับ Uncommon Head)
 สัดส่วน OUTFIT ที่กรอกไว้คือ Common 8 · Uncommon 8 · Rare 8 · Ultra Rare 4 = 7 ชุด
 มากกว่า 3 ชุดที่ชีตราคาระบุว่าเป็น Craft จึงต้องเคาะด้วยว่ายึดฉบับไหน
 
+## 🔴 16. ห้อง — Art วาดช่องวางของ 8 ช่อง ในเกมมี 3
+
+ไฟล์ `Art/UI/room decor/pv_position_name.png` คือแผนผังที่ Art วาดไว้ ระบุช่องวางของในห้อง
+**8 ช่อง** พร้อมชื่อกำกับทุกช่อง
+
+| ชื่อในแผนผัง | ตำแหน่ง | กรอบที่ใช้ |
+| --- | --- | --- |
+| small decor 1 | ชั้นวางบน | `decor_frame_big` |
+| small decor 2 | ชั้นวางล่าง | `decor_frame_big` |
+| Landscape | หน้าต่าง | `decor_frame_window` |
+| small decor 3 | บนโต๊ะ ซ้าย | `decor_frame_small` |
+| small decor 4 | บนโต๊ะ ขวา | `decor_frame_small` |
+| big decor 1 | พื้น ซ้าย | `decor_frame_big` |
+| big decor 2 | พื้น กลาง | `decor_frame_big` |
+| suitcase | พื้น ขวา | `decor_frame_big` |
+
+ใน `MyRoom.unity` ตอนนี้มี `DecorationSlot` แค่ **3 ช่อง** และไม่มีช่องไหนใช้ชื่อตามแผนผัง
+
+### ที่ต้องเคาะ
+
+1. ช่องทั้ง 8 นี้ตรงกับ `DecorationType` ตัวไหน — โค้ดมีแค่ `Room` / `WallTrophy` / `ShelfTrophy` /
+   `FloorTrophy` แต่แผนผังเรียก small decor / big decor / Landscape / suitcase
+   (เรื่องเดียวกับข้อ 1 ในข้อ 15 — จะใช้คำว่า Decor หรือ Trophy)
+2. `suitcase` เป็นช่องวางของจริง หรือเป็นของตกแต่งที่วางในช่อง `big decor` (ซ้ำกับข้อ 9)
+
+### ข้อมูลที่แก้ไปแล้ว ไม่ต้องตอบ แต่บอกให้ทราบ
+
+- วอลเปเปอร์ห้อง 16 ไฟล์ใน `Resources/Items/Decoration/Room/` ตั้ง `decorationType` เป็น
+  `ShelfTrophy` ไว้ ทั้งที่เป็นภาพห้องเต็มจอ 1260x2048 — แก้เป็น `Room` แล้ว
+  ปุ่มเปลี่ยนวอลเปเปอร์ในหน้า decor จึงใช้งานได้
+- วอลเปเปอร์ 20 แบบ มีภาพจริงแค่ **3 แบบ** (`room_c_01`, `room_r_01`, `room_uc_01`)
+  อีก 17 แบบยังชี้ไปที่ `CarryOnItems_Mockup` — ฝาก น้าหมู เติม
+
+---
+
 ---
 
 ## ที่ปิดไปแล้ว ไม่ต้องตอบ

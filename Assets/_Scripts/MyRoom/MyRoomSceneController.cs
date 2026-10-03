@@ -12,6 +12,7 @@ using QuizGame.Player;
 using QuizGame.MyRoom.MyItem;
 using QuizGame.Item;
 using QuizGame.Item.Interfaces;
+using QuizGame.Item.UI;
 using QuizGame.Character;
 using QuizGame.Character.Outfit.UI;
 using QuizGame.Network;
@@ -41,12 +42,14 @@ namespace QuizGame.MyRoom
             var myRoomUI = UIManager.Instance.Replace<MyRoomUI>(ref currentUI);
             myRoomUI.Init(
                 onDecorateButtonClicked: () => SwitchMyRoomUIToDecorationState(myRoomUI),
-                onDoneButtonClicked: () => SwitchMyRoomUIToNormalState(myRoomUI),
+                onDoneButtonClicked: () => LeaveDecorationState(myRoomUI, keepChanges: true),
                 onMenuButtonClicked: HandleMenuButtonClicked,
                 onItemButtonClicked: HandleItemButtonClicked,
                 onEquipButtonClicked: HandleEquipButtonClicked,
                 onTradeButtonClicked: HandleTradeButtonClicked,
-                onFriendButtonClicked: HandleFriendButtonClicked
+                onFriendButtonClicked: HandleFriendButtonClicked,
+                onDecorationBackButtonClicked: () => LeaveDecorationState(myRoomUI, keepChanges: false),
+                onRoomStyleButtonClicked: HandleRoomStyleButtonClicked
             );
             myRoomUI.SwitchUIStage(MyRoomUI.Stage.Normal);
             InitDecorationController();
@@ -74,13 +77,60 @@ namespace QuizGame.MyRoom
             myRoomUI.SwitchUIStage(MyRoomUI.Stage.Decoration);
         }
 
-        private void SwitchMyRoomUIToNormalState(MyRoomUI myRoomUI)
+        /// <summary>
+        /// Closes decoration mode. The tick keeps what was arranged; the back arrow walks away from
+        /// it. Both leave the mode, which is why they share this.
+        /// </summary>
+        private void LeaveDecorationState(MyRoomUI myRoomUI, bool keepChanges)
         {
             decorationController.SetAsDecorateMode(false);
             myRoomUI.SwitchUIStage(MyRoomUI.Stage.Normal);
 
+            if (!keepChanges)
+            {
+                // TODO: [Network] Re-read the saved arrangement so the back arrow really undoes the
+                // session's changes. Until there is somewhere to read it back from, it only closes.
+                Debug.Log("[MyRoom] Left decoration mode without saving.");
+                return;
+            }
+
             var myRoomDataJson = decorationController.GetDecorationDatasAsJson();
             Debug.Log("Save data to json: " + myRoomDataJson); //TODO: [Network] Save data to database
+        }
+
+        /// <summary>
+        /// Opens the wallpapers. The room itself is a decoration like any other, it just has no slot
+        /// standing in the room to tap, so it gets its own button in the decoration bar.
+        /// </summary>
+        private void HandleRoomStyleButtonClicked()
+        {
+            var wallpapers = DecorationItemResourceManager.Instance.GetDecorationByType(DecorationType.Room);
+            if (wallpapers == null || wallpapers.Length == 0)
+            {
+                Debug.LogWarning("[MyRoom] No room wallpapers to choose from.");
+                return;
+            }
+
+            var backdrop = FindFirstObjectByType<RoomBackdrop>();
+            if (backdrop == null)
+            {
+                Debug.LogWarning("[MyRoom] No RoomBackdrop in the scene; nothing to hang a wallpaper on.");
+                return;
+            }
+
+            var selectionUI = UIManager.Instance.Create<EquipItemSelectionUI>();
+            selectionUI.Init(
+                defaultSelectingItemIndex: -1,
+                selectionTitle: "Room",
+                itemSprites: wallpapers,
+                onSelectButtonClicked: () =>
+                {
+                    var selected = wallpapers[selectionUI.SelectingItemIndex];
+                    backdrop.SetWallpaper(selected.GetSprite());
+                    //TODO: [Network] Save the chosen wallpaper with the rest of the room.
+                }
+            );
+            selectionUI.VisualizeEquipText();
         }
 
         private void HandleMenuButtonClicked()
