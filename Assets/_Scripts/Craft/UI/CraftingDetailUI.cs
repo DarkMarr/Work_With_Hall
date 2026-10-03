@@ -11,9 +11,9 @@ namespace QuizGame.Craft.UI
 {
     public class CraftingDetailUI : BaseUI
     {
-        public event Action<IDecorationItem> OnPreviewButtonClicked;
+        public event Action<ICraftableItem> OnPreviewButtonClicked;
 
-        public event Action<IDecorationItem> OnCraftButtonClicked;
+        public event Action<ICraftableItem> OnCraftButtonClicked;
 
         [SerializeField]
         private Button previewButton;
@@ -33,21 +33,21 @@ namespace QuizGame.Craft.UI
         [SerializeField]
         private Transform requirementContainer;
 
-        private IDecorationItem currentDecorationItem;
+        private ICraftableItem currentCraftItem;
 
         private void Start()
         {
-            previewButton.onClick.AddListener(() => OnPreviewButtonClicked?.Invoke(currentDecorationItem));
-            craftButton.onClick.AddListener(() => OnCraftButtonClicked?.Invoke(currentDecorationItem));
+            previewButton.onClick.AddListener(() => OnPreviewButtonClicked?.Invoke(currentCraftItem));
+            craftButton.onClick.AddListener(() => OnCraftButtonClicked?.Invoke(currentCraftItem));
         }
 
-        public void Setup(IDecorationItem decorationItem)
+        public void Setup(ICraftableItem craftItem)
         {
             Clear();
-            currentDecorationItem = decorationItem;
-            itemIcon.sprite = decorationItem.GetSprite();
-            nameLabel.text = decorationItem.GetName();
-            SetupRequirement(decorationItem);
+            currentCraftItem = craftItem;
+            itemIcon.sprite = craftItem.GetSprite();
+            nameLabel.text = craftItem.GetName();
+            SetupRequirement(craftItem);
         }
 
         public void Clear()
@@ -61,9 +61,9 @@ namespace QuizGame.Craft.UI
             }
         }
 
-        private void SetupRequirement(IDecorationItem decorationItem)
+        private void SetupRequirement(ICraftableItem craftItem)
         {
-            var craftRequirements = decorationItem.GetCraftRequirementItems().Cast<IQuantifiableItem>();
+            var craftRequirements = craftItem.GetCraftRequirementItems().Cast<IQuantifiableItem>();
 
             foreach (var requirementItem in craftRequirements)
             {

@@ -1,6 +1,7 @@
-using NaughtyAttributes;
+﻿using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
+using QuizGame.Item.Interfaces;
 
 namespace QuizGame.Item
 {
@@ -15,8 +16,15 @@ namespace QuizGame.Item
     /// <c>DestinationItemReward.equipmentReward</c> array without widening that type.
     /// </summary>
     [CreateAssetMenu(fileName = "newFashionItem", menuName = "QuizGame/Item/Fashion Piece", order = 2)]
-    public class OutfitItemSO : EquipmentItemSO
+    public class OutfitItemSO : EquipmentItemSO, ICraftableItem
     {
+        [Header("Craft")]
+        [SerializeField]
+        [Tooltip("What it costs to make. The item sheet prices garments by rarity and slot rather " +
+                 "than one by one, so every Common head piece costs the same. Empty means the " +
+                 "bench does not offer it.")]
+        private ItemSOWithQuantityPair[] craftRequirementItems = new ItemSOWithQuantityPair[0];
+
         [Header("Fashion")]
         [SerializeField]
         [Tooltip("Body slot, spelled as a CharacterPartType name — HeadDecoration, BodyDecoration, " +
@@ -53,5 +61,9 @@ namespace QuizGame.Item
         /// cropped differently.
         /// </summary>
         public Sprite[] GetPieceSprites() => pieceSprites;
+
+        public IQuantifiableItem[] GetCraftRequirementItems() => craftRequirementItems;
+
+        public IItem GetCraftResult() => this;
     }
 }

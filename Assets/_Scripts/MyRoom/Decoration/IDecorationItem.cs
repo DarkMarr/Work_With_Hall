@@ -4,7 +4,7 @@ using QuizGame.Material;
 
 namespace QuizGame.MyRoom.Decoration
 {
-    public interface IDecorationItem : IItem, IRecyclable, ICraftable, IHasDescription
+    public interface IDecorationItem : ICraftableItem, IRecyclable
     {
         DecorationType GetDecorationType();
 

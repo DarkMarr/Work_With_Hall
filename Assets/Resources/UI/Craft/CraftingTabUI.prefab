@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &6451422104934855314
 GameObject:
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29c58f8d1285a478cb3e2cd8d619d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fusingTitle: {fileID: 7376645669528937244}
+  craftingTitle: {fileID: 7376645669528937244}
   closeButton: {fileID: 2088964237836034218}
 --- !u!1 &8631934472914454704
 GameObject:
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Fusing Tab
+  m_text: Crafting
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}
   m_sharedMaterial: {fileID: 6614865720866182117, guid: 5fff98f559bf06d4abec350a96d2c67d, type: 2}

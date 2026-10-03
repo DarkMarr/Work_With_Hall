@@ -52,9 +52,9 @@ namespace QuizGame.Craft
             craftingTabUI.OnCloseButtonClicked += () => HandleBackButtonClicked();
 
             var craftDetailUI = UIManager.Instance.Create<CraftingDetailUI>(parentUI: craftingTabUI);
-            craftDetailUI.OnPreviewButtonClicked += decorationItem => HandlePreviewButtonClicked(decorationItem);
+            craftDetailUI.OnPreviewButtonClicked += craftItem => HandlePreviewButtonClicked(craftItem);
             craftDetailUI.OnCraftButtonClicked += craftingItem => HandleCraftButtonClicked(craftingItem, playerModel);
-            craftingTabUI.OnSelectedCraftItem += decorationItem => HandleOnSelectedCraftItem(ref craftDetailUI, decorationItem);
+            craftingTabUI.OnSelectedCraftItem += craftItem => HandleOnSelectedCraftItem(ref craftDetailUI, craftItem);
 
             craftingTabUI.Init(tabModel);
         }
@@ -65,20 +65,20 @@ namespace QuizGame.Craft
             Setup(currentModelList, playerModel);
         }
 
-        private void HandleOnSelectedCraftItem(ref CraftingDetailUI craftDetailUI, IDecorationItem decorationItem)
+        private void HandleOnSelectedCraftItem(ref CraftingDetailUI craftDetailUI, ICraftableItem craftItem)
         {
-            craftDetailUI.Setup(decorationItem);
+            craftDetailUI.Setup(craftItem);
         }
 
-        private void HandlePreviewButtonClicked(IDecorationItem decorationItem)
+        private void HandlePreviewButtonClicked(ICraftableItem craftItem)
         {
             Debug.Log("[CraftController] Preview button clicked.");
             var previewUI = UIManager.Instance.Create<CraftingPreviewUI>();
             previewUI.OnCloseButtonClicked += () => previewUI.Close();
-            previewUI.Init(decorationItem);
+            previewUI.Init(craftItem);
         }
 
-        private void HandleCraftButtonClicked(IDecorationItem craftingItem, CraftingPlayerModel playerModel)
+        private void HandleCraftButtonClicked(ICraftableItem craftingItem, CraftingPlayerModel playerModel)
         {
             var craftResult = craftingItem.GetCraftResult();
             var craftRequirements = craftingItem.GetCraftRequirementItems().ToList();

@@ -1,6 +1,5 @@
 ﻿using QuizGame.Item.Interfaces;
 using QuizGame.Item.UI;
-using QuizGame.MyRoom.Decoration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace QuizGame.Craft.UI
 {
     public class CraftingItemSelectionUI : BaseItemSelectionUI<IItem>
     {
-        public event Action<IDecorationItem> OnToggleTabLoaded;
+        public event Action<ICraftableItem> OnToggleTabLoaded;
 
         [SerializeField]
         private ToggleTab togglePrefab;
@@ -20,12 +19,12 @@ namespace QuizGame.Craft.UI
         private ToggleGroup itemSelectToggleGroup;
 
         private CraftTabModel currentTabModel;
-        private Dictionary<ToggleTab, DecorationType> decorationTypeByToggleTab;
+        private Dictionary<ToggleTab, CraftTabModel.Category> categoryByToggleTab;
 
         public void Setup(CraftTabModel tabModel)
         {
             currentTabModel = tabModel;
-            decorationTypeByToggleTab = new Dictionary<ToggleTab, DecorationType>();
+            categoryByToggleTab = new Dictionary<ToggleTab, CraftTabModel.Category>();
 
             var toggleTabs = CreateToggles(
                 togglePrefab: togglePrefab,
@@ -41,17 +40,14 @@ namespace QuizGame.Craft.UI
         private List<ToggleTab> CreateToggles(ToggleTab togglePrefab, CraftTabModel model, ToggleGroup toggleGroup, Transform container)
         {
             var toggleTabs = new List<ToggleTab>();
-            var types = model.GetDecorationTypes();
 
-            foreach (var type in types)
+            foreach (var category in model.GetCategories())
             {
                 var toggleTab = Instantiate(togglePrefab, container).GetComponent<ToggleTab>();
-                decorationTypeByToggleTab.Add(toggleTab, type);
+                categoryByToggleTab.Add(toggleTab, category);
                 toggleTabs.Add(toggleTab);
 
-                toggleTab.Init(
-                    name: model.GetDecorationLabelName(type),
-                    group: toggleGroup);
+                toggleTab.Init(name: category.Label, group: toggleGroup);
             }
 
             return toggleTabs;
@@ -60,7 +56,7 @@ namespace QuizGame.Craft.UI
         private void UpdateItems()
         {
             RefreshUI();
-            foreach (var toggleTab in decorationTypeByToggleTab)
+            foreach (var toggleTab in categoryByToggleTab)
             {
                 toggleTab.Key.Toggle.onValueChanged.AddListener(isOn =>
                 {
@@ -80,20 +76,21 @@ namespace QuizGame.Craft.UI
 
         private void HandleToggleChanged(ToggleTab toggleTab)
         {
-            var decorationItem = currentTabModel.GetDecorationByType(decorationTypeByToggleTab[toggleTab]);
-            var craftableItems = decorationItem.Where(item => item.GetCraftRequirementItems().Count() > 0).ToList();
-            ShowItems(craftableItems);
-            OnToggleTabLoaded.Invoke(craftableItems.First());
-        }
+            var craftableItems = categoryByToggleTab[toggleTab].GetItems()
+                .Where(item => item.GetCraftRequirementItems().Length > 0)
+                .ToList();
 
-        private void ShowItems(List<IDecorationItem> items)
-        {
-            if (items == null || items.Count() == 0)
+            // A category with no recipes yet is a real state, not a fault: the item sheet prices
+            // things ahead of the assets existing. Showing it empty beats throwing on First().
+            if (craftableItems.Count == 0)
             {
-                Debug.LogWarning("No items to show.");
+                Debug.Log($"[Craft] Nothing with a recipe under \"{categoryByToggleTab[toggleTab].Label}\" yet.");
+                base.Setup(0, new IItem[0]);
                 return;
             }
-            base.Setup(0, items.ToArray());
+
+            base.Setup(0, craftableItems.ToArray());
+            OnToggleTabLoaded.Invoke(craftableItems.First());
         }
     }
 }

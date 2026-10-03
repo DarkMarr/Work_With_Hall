@@ -30,6 +30,7 @@ namespace QuizGame.EditorTools
     {
         private const string DecorCsv = "Docs/Decor-Items.csv";
         private const string RoomCsv = "Docs/Room-Items.csv";
+        private const string CraftCsv = "Docs/Craft-List.csv";
         private const string DecorFolder = "Assets/Resources/Items/Decoration";
         private const string IconFolder = "Assets/Art/UI/ITEM/DECOR";
         private const string TextCsvOut = "Docs/Decoration-Text.csv";
@@ -270,6 +271,119 @@ namespace QuizGame.EditorTools
             var full = Path.Combine(Directory.GetParent(Application.dataPath).FullName, TextCsvOut);
             File.WriteAllText(full, text.ToString(), new UTF8Encoding(true));
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// Fills in what each garment costs to make, from the craft list's OUTFIT section.
+        ///
+        /// That section prices by rarity and slot, not item by item — every Common head piece costs
+        /// the same — so the ID column being empty, which has blocked the decoration recipes, does
+        /// not block these. The rows name a garment, and the names match what the outfit assets
+        /// already say, so a row finds its item without needing an id at all.
+        /// </summary>
+        [MenuItem("QuizGame/Items/Import outfit craft recipes")]
+        public static void ImportOutfitRecipes()
+        {
+            var materials = new Dictionary<string, BaseItemSO>();
+            foreach (var column in new[] { "Fine Fabric", "Blueprint", "Hardwood", "Shiny Crystal", "Paint Bucket" })
+            {
+                materials[column] = null;
+            }
+            materials["Fine Fabric"] = LoadMaterial("50001");
+            materials["Blueprint"] = LoadMaterial("50002");
+            materials["Hardwood"] = LoadMaterial("50003");
+            materials["Shiny Crystal"] = LoadMaterial("50004");
+            materials["Paint Bucket"] = LoadMaterial("50005");
+
+            // Matched on the English table rather than GetName(), which answers in whichever locale
+            // the editor happens to be set to and so found nothing at all the first time.
+            var english = AssetDatabase.LoadAssetAtPath<StringTable>(
+                "Assets/Settings/Localization/Tables/GameItem/Item_en.asset");
+            if (english == null)
+            {
+                Debug.LogError("[OutfitRecipes] Item_en string table not found.");
+                return;
+            }
+
+            var garmentsByName = new Dictionary<string, OutfitItemSO>(StringComparer.OrdinalIgnoreCase);
+            foreach (var guid in AssetDatabase.FindAssets("t:ScriptableObject", new[] { "Assets/Resources/Items/Outfit" }))
+            {
+                var garment = AssetDatabase.LoadAssetAtPath<OutfitItemSO>(AssetDatabase.GUIDToAssetPath(guid));
+                if (garment == null) continue;
+
+                var keyId = new SerializedObject(garment)
+                    .FindProperty("localizedName.m_TableEntryReference.m_KeyId").longValue;
+                var entry = keyId == 0 ? null : english.GetEntry(keyId);
+                var englishName = entry == null ? null : entry.LocalizedValue;
+                if (!string.IsNullOrEmpty(englishName)) garmentsByName[englishName] = garment;
+            }
+
+            var rows = ParseCsv(File.ReadAllText(
+                Path.Combine(Directory.GetParent(Application.dataPath).FullName, CraftCsv), Encoding.UTF8));
+
+            var section = string.Empty;
+            var priced = 0;
+            var unmatched = new List<string>();
+
+            foreach (var row in rows)
+            {
+                if (row.Count == 0) continue;
+                var first = row[0].Trim();
+                if (first == "ROOM" || first == "DECOR" || first == "OUTFIT") section = first;
+                if (section != "OUTFIT" || row.Count <= 10) continue;
+
+                var englishName = row[5].Trim();
+                if (string.IsNullOrEmpty(englishName)) continue;   // two rows have no name yet
+
+                OutfitItemSO garment;
+                if (!garmentsByName.TryGetValue(englishName, out garment)) { unmatched.Add(englishName); continue; }
+
+                var recipe = new List<ItemSOWithQuantityPair>();
+                AddMaterial(recipe, materials["Fine Fabric"], row[6]);
+                AddMaterial(recipe, materials["Blueprint"], row[7]);
+                AddMaterial(recipe, materials["Hardwood"], row[8]);
+                AddMaterial(recipe, materials["Shiny Crystal"], row[9]);
+                AddMaterial(recipe, materials["Paint Bucket"], row[10]);
+
+                var serialized = new SerializedObject(garment);
+                var requirements = serialized.FindProperty("craftRequirementItems");
+                requirements.arraySize = recipe.Count;
+                for (var i = 0; i < recipe.Count; i++)
+                {
+                    var element = requirements.GetArrayElementAtIndex(i);
+                    element.FindPropertyRelative("Item").objectReferenceValue = recipe[i].Item;
+                    element.FindPropertyRelative("Quantity").intValue = recipe[i].Quantity;
+                }
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(garment);
+                priced++;
+            }
+
+            AssetDatabase.SaveAssets();
+            var report = $"[OutfitRecipes] priced {priced} garments.";
+            if (unmatched.Count > 0) report += " No garment named: " + string.Join(", ", unmatched);
+            Debug.Log(report);
+        }
+
+        private static BaseItemSO LoadMaterial(string id)
+        {
+            foreach (var guid in AssetDatabase.FindAssets("t:ScriptableObject", new[] { "Assets/Resources" }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!path.Contains("/Material")) continue;
+                var item = AssetDatabase.LoadAssetAtPath<BaseItemSO>(path);
+                if (item != null && item.GetID() == id) return item;
+            }
+            Debug.LogError($"[OutfitRecipes] No material with id {id}.");
+            return null;
+        }
+
+        /// <summary>A dash means this recipe does not use that material at all.</summary>
+        private static void AddMaterial(List<ItemSOWithQuantityPair> recipe, BaseItemSO material, string cell)
+        {
+            int quantity;
+            if (material == null || !int.TryParse((cell ?? string.Empty).Trim(), out quantity) || quantity <= 0) return;
+            recipe.Add(new ItemSOWithQuantityPair { Item = material, Quantity = quantity });
         }
 
         private static string Field(Dictionary<string, string> row, string column)

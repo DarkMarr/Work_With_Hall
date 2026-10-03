@@ -1,4 +1,4 @@
-﻿using QuizGame.MyRoom.Decoration;
+﻿using QuizGame.Item.Interfaces;
 using QuizGame.UI;
 using System;
 using UnityEngine;
@@ -21,9 +21,9 @@ namespace QuizGame.Craft.UI
             closeButton.onClick.AddListener(() => OnCloseButtonClicked?.Invoke());
         }
 
-        public void Init(IDecorationItem decorationItem)
+        public void Init(ICraftableItem craftItem)
         {
-            itemIcon.sprite = decorationItem.GetSprite();
+            itemIcon.sprite = craftItem.GetSprite();
         }
     }
 }

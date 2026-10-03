@@ -1,4 +1,4 @@
-﻿using QuizGame.MyRoom.Decoration;
+﻿using QuizGame.Item.Interfaces;
 using QuizGame.UI;
 using System;
 using TMPro;
@@ -11,7 +11,7 @@ namespace QuizGame.Craft.UI
     {
         public event Action OnCloseButtonClicked;
 
-        public event Action<IDecorationItem> OnSelectedCraftItem;
+        public event Action<ICraftableItem> OnSelectedCraftItem;
 
         [SerializeField]
         private TextMeshProUGUI craftingTitle;
@@ -30,8 +30,8 @@ namespace QuizGame.Craft.UI
 
             var craftItemSelection = UIManager.Instance.Create<CraftingItemSelectionUI>();
             this.AddChild(craftItemSelection);
-            craftItemSelection.OnSelectItem += (button, item) => OnSelectedCraftItem.Invoke((IDecorationItem)item);
-            craftItemSelection.OnToggleTabLoaded += decorationList => OnSelectedCraftItem.Invoke(decorationList);
+            craftItemSelection.OnSelectItem += (button, item) => OnSelectedCraftItem.Invoke((ICraftableItem)item);
+            craftItemSelection.OnToggleTabLoaded += craftable => OnSelectedCraftItem.Invoke(craftable);
             craftItemSelection.Setup(tabModel);
         }
     }
