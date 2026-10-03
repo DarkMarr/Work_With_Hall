@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuizGame.Item.UI;
@@ -193,7 +193,8 @@ namespace QuizGame.MyRoom.Trade
                             "Insufficient Material!",
                             "This order requires 1 material.\nPlease play the game to get more materials!",
                             "Okay",
-                            popUI.Close
+                            popUI.Close,
+                            tone: PopupTone.Alert
                         );
                     }
                 }

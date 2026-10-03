@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using QuizGame.MyRoom.FriendList.UI;
 using QuizGame.UI;
 using UnityEngine;
@@ -79,7 +79,8 @@ namespace QuizGame.MyRoom.FriendList
                     description: $"UID: {uid}",
                     buttonMessage: localization.BackLocalized.GetLocalizedString(),
                     onMessageButtonClicked: popup.Close,
-                    onCloseButtonClicked: popup.Close);
+                    onCloseButtonClicked: popup.Close,
+                    tone: PopupTone.Alert);
             }
         }
 

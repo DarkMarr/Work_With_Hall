@@ -125,7 +125,8 @@ namespace QuizGame.Store
                     "Not enough " + currencyType,
                     $"You need {price} {currencyType} to buy this.",
                     "OK",
-                    onMessageButtonClicked: () => message.Close());
+                    onMessageButtonClicked: () => message.Close(),
+                    tone: PopupTone.Alert);
                 return;
             }
 

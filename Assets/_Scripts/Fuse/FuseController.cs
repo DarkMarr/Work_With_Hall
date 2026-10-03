@@ -1,4 +1,4 @@
-using QuizGame.Fuse.UI;
+﻿using QuizGame.Fuse.UI;
 using QuizGame.Item.Interfaces;
 using QuizGame.MyRoom.Decoration;
 using QuizGame.Scene;
@@ -92,7 +92,7 @@ namespace QuizGame.Fuse
             if (!fuseable)
             {
                 var popup = UIManager.Instance.Create<MessagePopupUI>();
-                popup.Setup("Failed to fuse", "You do not have enough materials.", "OK", () => popup.Close());
+                popup.Setup("Failed to fuse", "You do not have enough materials.", "OK", () => popup.Close(), tone: PopupTone.Alert);
                 Debug.LogWarning($"[FuseController] Missing materials: {string.Join(", ", missingMaterials.Select(m => m.ToString()))}");
                 return;
             }

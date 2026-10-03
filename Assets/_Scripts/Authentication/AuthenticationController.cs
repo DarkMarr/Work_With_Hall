@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -332,10 +332,12 @@ namespace QuizGame.Authentication
             return await task;
         }
 
-        private void ShowProfileMessage(string message, string title = "Profile")
+        /// <param name="tone">Red by default: all but one of these messages report that something
+        /// the player asked for did not happen.</param>
+        private void ShowProfileMessage(string message, string title = "Profile", PopupTone tone = PopupTone.Alert)
         {
             var popup = UIManager.Instance.Create<MessagePopupUI>(currentUI);
-            popup.Setup(title, message, "OK", () => popup.Close());
+            popup.Setup(title, message, "OK", () => popup.Close(), tone: tone);
         }
 
         public async void CreateProfileBodyType(int bodyTypeID)
@@ -404,7 +406,7 @@ namespace QuizGame.Authentication
                 if (!success)
                     ShowProfileMessage(NetworkAuth.Instance.LastAuthErrorMessage ?? "Could not send the reset email. Please try again.", "Reset Password");
                 else if (FirebaseConnection.IsUsingEmulator)
-                    ShowProfileMessage("Local test mode: the reset link is available in the Firebase Auth Emulator. No email is sent to your inbox in this mode.", "Reset Password");
+                    ShowProfileMessage("Local test mode: the reset link is available in the Firebase Auth Emulator. No email is sent to your inbox in this mode.", "Reset Password", PopupTone.Notice);
                 else
                     UIManager.Instance.Replace<RecoverSubmittedUI>(ref currentUI)
                         .Init(onBack: OpenLoginOrRegisterUI);
