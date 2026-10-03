@@ -63,18 +63,46 @@ namespace QuizGame.MyRoom.Decoration
                 .Select(d => Array.FindIndex(itemList, i => i == d.GetDecorationItem()))
                 .Where(idx => idx >= 0).ToArray();
 
+        /// <summary>
+        /// Every slot standing in the room has to appear here. <see cref="SetItemInSlot"/> only
+        /// writes to ids it already knows, so a slot missing from this list can be tapped and
+        /// decorated and nothing will happen.
+        ///
+        /// The eight ids match the slots Art named in pv_position_name.png: four on the shelf and
+        /// table, one in the window, three on the floor.
+        /// </summary>
         public static string GetDataInSlotTempDataJson() => @"[
             {
                 ""slot_id"": ""ShelfTrophy_01"",
-                ""item_id"": ""TestDecoration8""
+                ""item_id"": """"
             },
             {
                 ""slot_id"": ""ShelfTrophy_02"",
-                ""item_id"": ""TestDecoration8""
+                ""item_id"": """"
             },
             {
                 ""slot_id"": ""ShelfTrophy_03"",
-                ""item_id"": ""33201""
+                ""item_id"": """"
+            },
+            {
+                ""slot_id"": ""ShelfTrophy_04"",
+                ""item_id"": """"
+            },
+            {
+                ""slot_id"": ""WallTrophy_01"",
+                ""item_id"": """"
+            },
+            {
+                ""slot_id"": ""FloorTrophy_01"",
+                ""item_id"": ""33101""
+            },
+            {
+                ""slot_id"": ""FloorTrophy_02"",
+                ""item_id"": ""33102""
+            },
+            {
+                ""slot_id"": ""FloorTrophy_03"",
+                ""item_id"": ""33103""
             }
         ]";
     }

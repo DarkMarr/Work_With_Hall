@@ -306,7 +306,7 @@ OUTFIT ขาดชื่อ 2 แถว (Common Head กับ Uncommon Head)
 สัดส่วน OUTFIT ที่กรอกไว้คือ Common 8 · Uncommon 8 · Rare 8 · Ultra Rare 4 = 7 ชุด
 มากกว่า 3 ชุดที่ชีตราคาระบุว่าเป็น Craft จึงต้องเคาะด้วยว่ายึดฉบับไหน
 
-## 🔴 16. ห้อง — Art วาดช่องวางของ 8 ช่อง ในเกมมี 3
+## 🟡 16. ห้อง — วางช่องครบ 8 ช่องแล้ว แต่ประเภทของช่องยังเป็นการเดา
 
 ไฟล์ `Art/UI/room decor/pv_position_name.png` คือแผนผังที่ Art วาดไว้ ระบุช่องวางของในห้อง
 **8 ช่อง** พร้อมชื่อกำกับทุกช่อง
@@ -322,11 +322,30 @@ OUTFIT ขาดชื่อ 2 แถว (Common Head กับ Uncommon Head)
 | big decor 2 | พื้น กลาง | `decor_frame_big` |
 | suitcase | พื้น ขวา | `decor_frame_big` |
 
-ใน `MyRoom.unity` ตอนนี้มี `DecorationSlot` แค่ **3 ช่อง** และไม่มีช่องไหนใช้ชื่อตามแผนผัง
+ใน `MyRoom.unity` วางครบ **8 ช่อง** แล้วตามแผนผัง ชื่อ GameObject ใช้ชื่อเดียวกับที่ Art เขียนไว้
+เพื่อให้ไล่กลับไปหาแผนผังได้
+
+### ⚠️ ประเภทของแต่ละช่อง — ผมเดาไว้ ต้องให้ยืนยัน
+
+โค้ดมี `DecorationType` แค่ 4 ตัว แต่แผนผังเรียกชื่ออีกแบบ ผมจับคู่ตามว่าของวางอยู่บนอะไร:
+
+| ชื่อในแผนผัง | Slot ID ที่ตั้งไว้ | `DecorationType` ที่เดา | เหตุผล |
+| --- | --- | --- | --- |
+| small decor 1 | `ShelfTrophy_01` | ShelfTrophy | วางในชั้น |
+| small decor 2 | `ShelfTrophy_02` | ShelfTrophy | วางในชั้น |
+| small decor 3 | `ShelfTrophy_03` | ShelfTrophy | วางบนหน้าตู้ |
+| small decor 4 | `ShelfTrophy_04` | ShelfTrophy | วางบนหน้าตู้ |
+| Landscape | `WallTrophy_01` | WallTrophy | อยู่ที่หน้าต่าง บนผนัง |
+| big decor 1 | `FloorTrophy_01` | FloorTrophy | วางพื้น |
+| big decor 2 | `FloorTrophy_02` | FloorTrophy | วางพื้น |
+| suitcase | `FloorTrophy_03` | FloorTrophy | วางพื้น |
+
+**ถ้าเคาะมาไม่ตรงกับนี้ แก้ได้ที่ `DecorationSlot` ในซีน ฟิลด์ `decorationType` กับ `SlotID`**
+และต้องแก้ `DecorationModel.GetDataInSlotTempDataJson` ให้ชื่อ slot ตรงกันด้วย ไม่งั้นวางของไม่ติด
 
 ### ที่ต้องเคาะ
 
-1. ช่องทั้ง 8 นี้ตรงกับ `DecorationType` ตัวไหน — โค้ดมีแค่ `Room` / `WallTrophy` / `ShelfTrophy` /
+1. ตารางด้านบนถูกหรือไม่ — ช่องทั้ง 8 ตรงกับ `DecorationType` ตัวไหน — โค้ดมีแค่ `Room` / `WallTrophy` / `ShelfTrophy` /
    `FloorTrophy` แต่แผนผังเรียก small decor / big decor / Landscape / suitcase
    (เรื่องเดียวกับข้อ 1 ในข้อ 15 — จะใช้คำว่า Decor หรือ Trophy)
 2. `suitcase` เป็นช่องวางของจริง หรือเป็นของตกแต่งที่วางในช่อง `big decor` (ซ้ำกับข้อ 9)
