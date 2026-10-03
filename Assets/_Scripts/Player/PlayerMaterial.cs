@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using QuizGame.Material;
+using QuizGame.Utilities;
 using UnityEngine;
 
 namespace QuizGame.Player
@@ -14,6 +15,21 @@ namespace QuizGame.Player
         {
             this.material = material;
             this.quantity = quantity;
+        }
+
+        /// <summary>
+        /// TestInventory: every material in the game, in a quantity no recipe can exhaust. Stands in
+        /// for the player's real material purse until the server holds one.
+        /// </summary>
+        public static List<PlayerMaterial> AllMaterialsForTesting()
+        {
+            var allMaterials = MaterialResourceManager.Instance.GetAllResources();
+            var playerMaterials = new List<PlayerMaterial>(allMaterials.Length);
+            foreach (var material in allMaterials)
+            {
+                playerMaterials.Add(new PlayerMaterial(material, TestInventory.MaterialStock));
+            }
+            return playerMaterials;
         }
 
         public static List<PlayerMaterial> FromJson(string json)

@@ -22,6 +22,7 @@ using QuizGame.Craft;
 using QuizGame.Gameplay.QuizManagement;
 using QuizGame.Gameplay;
 using QuizGame.Item;
+using QuizGame.Utilities;
 
 namespace QuizGame.MainMenu
 {
@@ -177,11 +178,13 @@ namespace QuizGame.MainMenu
 
         public ItemWithQuantityPair[] GetPlayerCarryOnItems()
         {
+            // TestInventory: every carry-on item in the game, in a fixed quantity. A random one read
+            // differently on every visit, which made it impossible to tell a spend from a reroll.
             var allItems = CarryOnItemResourceManager.Instance.GetAllResources(); // TODO: [Network] Replace with actual data
             var ItemWithQuantityPairs = new ItemWithQuantityPair[allItems.Length];
             for (int i = 0; i < allItems.Length; i++)
             {
-                var itemAmount = Random.Range(1, 256); // TODO: [Network] Use actual quantity
+                var itemAmount = TestInventory.UnlockEverything ? TestInventory.CarryOnStock : 0;
                 ItemWithQuantityPairs[i] = new ItemWithQuantityPair(allItems[i], itemAmount);
             }
             return ItemWithQuantityPairs;
@@ -291,9 +294,12 @@ namespace QuizGame.MainMenu
         {
             Debug.Log("[MainMenu] Craft button clicked");
 
-            // TODO: Replace with real data from database  
-            // Temp data - PlayerMaterial
-            var playerMaterials = PlayerMaterial.FromJson(PlayerMaterial.GetMaterialsDataTempDataJson());
+            // TODO: Replace with real data from database
+            // TestInventory: the hand-written temp purse holds five materials, one of them empty, so
+            // most recipes could not be tried at all. Stock everything instead while testing.
+            var playerMaterials = TestInventory.UnlockEverything
+                ? PlayerMaterial.AllMaterialsForTesting()
+                : PlayerMaterial.FromJson(PlayerMaterial.GetMaterialsDataTempDataJson());
             var playerModel = new CraftingPlayerModel(playerMaterials: playerMaterials);
             craftController.Setup(craftTabModelList: CraftTabModel.CraftTabList, playerModel: playerModel);
         }

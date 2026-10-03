@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using QuizGame.Item;
 using QuizGame.Network;
+using QuizGame.Utilities;
 using UnityEngine;
 
 namespace QuizGame.Character.Outfit
@@ -38,8 +39,18 @@ namespace QuizGame.Character.Outfit
         /// </summary>
         public async Task Load()
         {
-            var inventory = await PlayerDataManager.Instance.GetInventoryItems();
             var profile = await PlayerDataManager.Instance.GetProfileData();
+
+            // TestInventory: there is no server inventory to read yet, so the wardrobe offers every
+            // garment in the game. Delete this branch when the real one can be trusted.
+            if (TestInventory.UnlockEverything)
+            {
+                var allGarments = OutfitItemResourceManager.Instance;
+                LoadFrom(allGarments != null ? allGarments.GetAllResources() : null, profile?.EquippedItems);
+                return;
+            }
+
+            var inventory = await PlayerDataManager.Instance.GetInventoryItems();
 
             var garments = new List<OutfitItemSO>();
             if (inventory != null)

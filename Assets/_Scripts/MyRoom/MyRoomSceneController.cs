@@ -15,6 +15,7 @@ using QuizGame.Item.Interfaces;
 using QuizGame.Character;
 using QuizGame.Character.Outfit.UI;
 using QuizGame.Network;
+using QuizGame.Utilities;
 
 namespace QuizGame.MyRoom
 {
@@ -59,7 +60,8 @@ namespace QuizGame.MyRoom
         private void InitDecorationController()
         {
             var playerDecorationSlots = DecorationSlotInfo.FromJson(DecorationModel.GetDataInSlotTempDataJson()); //TODO: [Network] Load installing decoration info from server
-            var playerAvailableDecoration = DecorationItemResourceManager.Instance.GetDecorationAllTypes() //TODO: [Network] Load all player decoration in inventory 
+            // TestInventory: every decoration in the game is offered, not only the ones owned.
+            var playerAvailableDecoration = DecorationItemResourceManager.Instance.GetDecorationAllTypes() //TODO: [Network] Load all player decoration in inventory
                 .ToDictionary(pair => pair.Key, pair => pair.Value.Cast<IDecorationItem>()
                 .ToArray());
             var decorationModel = new DecorationModel(playerAvailableDecoration, playerDecorationSlots);
@@ -88,6 +90,7 @@ namespace QuizGame.MyRoom
 
         private void HandleItemButtonClicked()
         {
+            // TestInventory: the bag shows the whole catalogue in each tab, not what the player owns.
             // TODO: [Network] Load all player trophy items/decoration from server
             var tropyItems = DecorationItemResourceManager.Instance.GetAllResources().Cast<IItem>().ToList();
             // TODO: [Network] Load all player equipment items from server
@@ -132,7 +135,10 @@ namespace QuizGame.MyRoom
         private void HandleTradeButtonClicked()
         {
             var tradePanelInfos = TradeSlotInfo.FromJson(TradeModel.GetTradeSlotDataTempDataJson());
-            var playerMaterials = PlayerMaterial.FromJson(TradeModel.GetMaterialsDataTempDataJson());
+            // TestInventory: a full purse, so every trade on the board can actually be attempted.
+            var playerMaterials = TestInventory.UnlockEverything
+                ? PlayerMaterial.AllMaterialsForTesting()
+                : PlayerMaterial.FromJson(TradeModel.GetMaterialsDataTempDataJson());
             var tradeModel = new TradeModel(tradePanelInfos, playerMaterials.Cast<IQuantifiableMaterial>().ToList());
             tradeController.Init(tradeModel);
         }
