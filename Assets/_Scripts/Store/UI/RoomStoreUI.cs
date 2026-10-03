@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuizGame.Item.UI;
@@ -51,9 +51,14 @@ namespace QuizGame.Store.UI
 
         private IInGameProductMetadata selectingProduct;
         private List<IInGameProductMetadata> roomItems = new List<IInGameProductMetadata>();
-        private List<IInGameProductMetadata> shelfItems = new List<IInGameProductMetadata>();
-        private List<IInGameProductMetadata> floorItems = new List<IInGameProductMetadata>();
-        private List<IInGameProductMetadata> wallItems = new List<IInGameProductMetadata>();
+        private List<IInGameProductMetadata> smallItems = new List<IInGameProductMetadata>();
+        private List<IInGameProductMetadata> bigItems = new List<IInGameProductMetadata>();
+        private List<IInGameProductMetadata> windowItems = new List<IInGameProductMetadata>();
+
+        // Collected but not shown: the toggles below come from the prefab, and it has no suitcase
+        // tab yet. Without this they would fall through to the unknown-category warning instead.
+        // TODO: [Art] Add a Suitcase toggle to the room store, then show these.
+        private List<IInGameProductMetadata> suitcaseItems = new List<IInGameProductMetadata>();
 
         protected virtual void Start()
         {
@@ -92,14 +97,17 @@ namespace QuizGame.Store.UI
                     case DecorationType.Room:
                         roomItems.Add(item);
                         break;
-                    case DecorationType.ShelfTrophy:
-                        shelfItems.Add(item);
+                    case DecorationType.Small:
+                        smallItems.Add(item);
                         break;
-                    case DecorationType.FloorTrophy:
-                        floorItems.Add(item);
+                    case DecorationType.Big:
+                        bigItems.Add(item);
                         break;
-                    case DecorationType.WallTrophy:
-                        wallItems.Add(item);
+                    case DecorationType.Window:
+                        windowItems.Add(item);
+                        break;
+                    case DecorationType.Suitcase:
+                        suitcaseItems.Add(item);
                         break;
                     default:
                         Debug.LogWarning($"Unknown category for item: {item.GetName()}");
@@ -145,13 +153,13 @@ namespace QuizGame.Store.UI
                     ShowProducts(roomItems);
                     break;
                 case "Shelf":
-                    ShowProducts(shelfItems);
+                    ShowProducts(smallItems);
                     break;
                 case "Floor":
-                    ShowProducts(floorItems);
+                    ShowProducts(bigItems);
                     break;
                 case "Wall":
-                    ShowProducts(wallItems);
+                    ShowProducts(windowItems);
                     break;
                 default:
                     Debug.LogWarning($"Decoration unknown toggle: {currentActiveDecorationToggle.name}");

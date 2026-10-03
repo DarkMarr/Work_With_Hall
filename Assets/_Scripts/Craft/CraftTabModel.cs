@@ -59,19 +59,23 @@ namespace QuizGame.Craft
                 }
             ),
 
+            // The item sheet names four kinds of decoration, by the space they take up rather than
+            // the furniture they sit on. Suitcase is one of them, so it belongs on this tab too.
             new CraftTabModel(
-                tabName: "Trophy",
+                tabName: "Decor",
                 labelName: new string[]
                 {
-                    "Shelf",
-                    "Floor",
-                    "Wall"
+                    "Small",
+                    "Big",
+                    "Window",
+                    "Suitcase"
                 },
                 decorationTypes: new DecorationType[]
                 {
-                    DecorationType.ShelfTrophy,
-                    DecorationType.FloorTrophy,
-                    DecorationType.WallTrophy
+                    DecorationType.Small,
+                    DecorationType.Big,
+                    DecorationType.Window,
+                    DecorationType.Suitcase
                 }
             )
         };

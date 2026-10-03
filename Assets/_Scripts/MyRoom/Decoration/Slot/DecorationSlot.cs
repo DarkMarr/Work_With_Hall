@@ -115,7 +115,7 @@ namespace QuizGame.MyRoom.Decoration
         ///
         /// Placing it is not the same as centring it. Most decorations rest on something — a shelf,
         /// a table top, the floor — so they stand on the bottom of their frame and grow upwards,
-        /// which is also where their pivot usually is. Something hung on the wall has no surface
+        /// which is also where their pivot usually is. Something seen through the window has no surface
         /// under it, so it sits in the middle of its frame instead.
         /// </summary>
         private void FitDecoration()
@@ -131,7 +131,7 @@ namespace QuizGame.MyRoom.Decoration
             // Worked from the sprite rather than the renderer's bounds, which are only right once
             // the renderer has been drawn at the new scale.
             var offsetX = -drawnBounds.center.x * fit;
-            var offsetY = decorationType == DecorationType.WallTrophy
+            var offsetY = decorationType == DecorationType.Window
                 ? -drawnBounds.center.y * fit
                 : -slotSize.y * 0.5f - drawnBounds.min.y * fit;
 

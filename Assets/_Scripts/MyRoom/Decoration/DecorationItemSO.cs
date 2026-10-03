@@ -17,8 +17,8 @@ namespace QuizGame.MyRoom.Decoration
 
         [SerializeField]
         [Tooltip("The decoration as it stands in the room. BaseItemSO's sprite is the inventory " +
-                 "icon, which is framed and tinted by rarity and would look wrong on a shelf. " +
-                 "Leave this empty and the icon is used, which is what a wallpaper wants.")]
+                 "icon, which is framed and tinted by rarity and has no business on a shelf, so " +
+                 "a decoration with nothing here simply is not drawn in the room.")]
         private Sprite roomSprite;
 
         [SerializeField]
@@ -43,7 +43,12 @@ namespace QuizGame.MyRoom.Decoration
         public string GetDescription() => localizedDescription.GetLocalizedString();
         public override string GetName() => localizedName.GetLocalizedString();
         public DecorationType GetDecorationType() => decorationType;
-        public Sprite GetRoomSprite() => roomSprite != null ? roomSprite : GetSprite();
+        /// <summary>
+        /// Null until the decoration has been drawn for the room. The icon is deliberately not used
+        /// as a stand-in: it carries a rarity frame, and a framed picture standing on the floor
+        /// reads as a finished thing that is wrong rather than as art that is missing.
+        /// </summary>
+        public Sprite GetRoomSprite() => roomSprite;
         public string GetSubDescription() => localizedSubDescription.GetLocalizedString();
         public IQuantifiableItem[] GetRecycledItems() => recycledItems;
         public IQuantifiableItem[] GetCraftRequirementItems() => craftRequirementItems;

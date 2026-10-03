@@ -71,38 +71,47 @@ namespace QuizGame.MyRoom.Decoration
         /// The eight ids match the slots Art named in pv_position_name.png: four on the shelf and
         /// table, one in the window, three on the floor.
         /// </summary>
+        /// <summary>
+        /// Every slot standing in the room has to appear here. <see cref="SetItemInSlot"/> only
+        /// writes to ids it already knows, so a slot missing from this list can be tapped and
+        /// decorated and nothing will happen.
+        ///
+        /// The eight ids match the slots Art named in pv_position_name.png. What starts in them is
+        /// what the item sheet marks STARTER, which is one window view and one suitcase; the rest
+        /// of the room is for the player to fill.
+        /// </summary>
         public static string GetDataInSlotTempDataJson() => @"[
             {
-                ""slot_id"": ""ShelfTrophy_01"",
+                ""slot_id"": ""Small_01"",
                 ""item_id"": """"
             },
             {
-                ""slot_id"": ""ShelfTrophy_02"",
+                ""slot_id"": ""Small_02"",
                 ""item_id"": """"
             },
             {
-                ""slot_id"": ""ShelfTrophy_03"",
+                ""slot_id"": ""Small_03"",
                 ""item_id"": """"
             },
             {
-                ""slot_id"": ""ShelfTrophy_04"",
+                ""slot_id"": ""Small_04"",
                 ""item_id"": """"
             },
             {
-                ""slot_id"": ""WallTrophy_01"",
+                ""slot_id"": ""Window_01"",
+                ""item_id"": ""311001""
+            },
+            {
+                ""slot_id"": ""Big_01"",
                 ""item_id"": """"
             },
             {
-                ""slot_id"": ""FloorTrophy_01"",
-                ""item_id"": ""33101""
-            },
-            {
-                ""slot_id"": ""FloorTrophy_02"",
-                ""item_id"": ""33103""
+                ""slot_id"": ""Big_02"",
+                ""item_id"": """"
             },
             {
                 ""slot_id"": ""Suitcase_01"",
-                ""item_id"": ""33201""
+                ""item_id"": ""341001""
             }
         ]";
     }
