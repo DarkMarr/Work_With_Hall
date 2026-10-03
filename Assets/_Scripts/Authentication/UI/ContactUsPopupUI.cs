@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,13 +9,39 @@ using QuizGame.UI;
 
 namespace QuizGame.Authentication.UI
 {
+    /// <summary>
+    /// The support form, reachable from the title screen and the sign-in screen.
+    ///
+    /// This used to assemble itself in code, every rectangle and colour spelled out in BuildUI.
+    /// That left it the one popup the artists could not touch: the message box sprites live
+    /// outside Resources, so nothing running at runtime could reach them. It is a prefab now,
+    /// like every other popup, and the look lives where the look belongs.
+    /// </summary>
     public class ContactUsPopupUI : BaseUI
     {
         private const string SupportEmail = "waquizsupport@gmail.com";
         private const int MaxMessageLength = 1000;
+        private const string PrefabPath = "UI/PopupUI/ContactUsPopupUI";
 
+        [SerializeField]
         private TMP_InputField messageInput;
 
+        [SerializeField]
+        private TextMeshProUGUI counterText;
+
+        [SerializeField]
+        private Button sendMailButton;
+
+        [SerializeField]
+        private Button deleteAccountButton;
+
+        [SerializeField]
+        private Button closeButton;
+
+        /// <summary>
+        /// Shows the form under <paramref name="parent"/>, reusing the one already there rather
+        /// than stacking a second copy — the two screens that open this both keep theirs around.
+        /// </summary>
         public static ContactUsPopupUI Open(Transform parent)
         {
             var existing = parent.GetComponentInChildren<ContactUsPopupUI>(true);
@@ -25,61 +51,35 @@ namespace QuizGame.Authentication.UI
                 return existing;
             }
 
-            var popupObject = new GameObject("ContactUsPopup", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(ContactUsPopupUI));
-            popupObject.transform.SetParent(parent, false);
+            // UnityEngine.Resources spelled out: the project has its own QuizGame.Resources
+            // namespace, and an unqualified Resources here resolves to that one.
+            var prefab = UnityEngine.Resources.Load<ContactUsPopupUI>(PrefabPath);
+            if (prefab == null)
+            {
+                Debug.LogError($"[ContactUs] Prefab not found at Resources/{PrefabPath}.");
+                return null;
+            }
 
-            var popup = popupObject.GetComponent<ContactUsPopupUI>();
-            popup.BuildUI();
+            var popup = Instantiate(prefab, parent, false);
+            popup.name = "ContactUsPopup";
             popup.Show();
             return popup;
         }
 
-        private void BuildUI()
+        protected override void Awake()
         {
-            var rect = GetComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
+            base.Awake();
 
-            var overlay = GetComponent<Image>();
-            overlay.color = new Color(0f, 0f, 0f, 0.65f);
-            overlay.raycastTarget = true;
+            if (messageInput != null)
+            {
+                messageInput.characterLimit = MaxMessageLength;
+                messageInput.onValueChanged.AddListener(UpdateCharacterCounter);
+                UpdateCharacterCounter(messageInput.text);
+            }
 
-            var panel = CreatePanel("Panel", transform, new Vector2(900f, 700f), Vector2.zero, new Color(0.96f, 0.96f, 0.96f, 1f));
-
-            CreateText("Title", panel.transform, "Contact Us", new Vector2(0f, 265f), new Vector2(760f, 70f), 46f, TextAlignmentOptions.Center);
-            CreateText("Instruction", panel.transform, "Tell us how we can help. Maximum 1000 characters.", new Vector2(0f, 205f), new Vector2(760f, 60f), 26f, TextAlignmentOptions.Center);
-
-            var inputObject = new GameObject("MessageInput", typeof(RectTransform), typeof(Image), typeof(TMP_InputField));
-            var inputRect = inputObject.GetComponent<RectTransform>();
-            inputRect.SetParent(panel.transform, false);
-            inputRect.anchorMin = new Vector2(0.5f, 0.5f);
-            inputRect.anchorMax = new Vector2(0.5f, 0.5f);
-            inputRect.pivot = new Vector2(0.5f, 0.5f);
-            inputRect.anchoredPosition = new Vector2(0f, 50f);
-            inputRect.sizeDelta = new Vector2(760f, 250f);
-
-            inputObject.GetComponent<Image>().color = Color.white;
-            messageInput = inputObject.GetComponent<TMP_InputField>();
-            messageInput.characterLimit = MaxMessageLength;
-            messageInput.lineType = TMP_InputField.LineType.MultiLineNewline;
-            messageInput.richText = false;
-            messageInput.textComponent = CreateInputText(inputRect, "Text");
-            messageInput.placeholder = CreatePlaceholder(inputRect, "Placeholder", "Write your message here...");
-
-            CreateText("Counter", panel.transform, "0 / 1000", new Vector2(315f, -90f), new Vector2(120f, 40f), 20f, TextAlignmentOptions.Right);
-
-            var sendButton = CreateButton("SendMailButton", panel.transform, "Send Mail", new Vector2(-190f, -180f), new Vector2(320f, 90f));
-            sendButton.onClick.AddListener(SendMail);
-
-            var deleteButton = CreateButton("DeleteAccountButton", panel.transform, "Delete Account", new Vector2(190f, -180f), new Vector2(320f, 90f));
-            deleteButton.onClick.AddListener(ConfirmDeleteAccount);
-
-            var closeButton = CreateButton("CloseButton", panel.transform, "Close", new Vector2(0f, -285f), new Vector2(320f, 75f));
-            closeButton.onClick.AddListener(ClosePopup);
-
-            messageInput.onValueChanged.AddListener(UpdateCharacterCounter);
+            sendMailButton?.onClick.AddListener(SendMail);
+            deleteAccountButton?.onClick.AddListener(ConfirmDeleteAccount);
+            closeButton?.onClick.AddListener(ClosePopup);
         }
 
         private void SendMail()
@@ -124,103 +124,21 @@ namespace QuizGame.Authentication.UI
                         Debug.LogError("[ContactUs] Account deletion failed. Firebase may require recent authentication.");
                     }
                 },
-                onCancelButtonClicked: () => confirmPopup.Close()
+                onCancelButtonClicked: () => confirmPopup.Close(),
+                // Deleting the account cannot be taken back, so the header says so before the text does.
+                tone: PopupTone.Alert
             );
         }
 
         private void UpdateCharacterCounter(string value)
         {
-            var counter = transform.Find("Panel/Counter")?.GetComponent<TextMeshProUGUI>();
-            if (counter != null)
-            {
-                counter.text = $"{value.Length} / {MaxMessageLength}";
-            }
+            if (counterText == null) return;
+            counterText.text = $"{(value ?? string.Empty).Length} / {MaxMessageLength}";
         }
 
         private void ClosePopup()
         {
             Close();
-        }
-
-        private static GameObject CreatePanel(string name, Transform parent, Vector2 size, Vector2 position, Color backgroundColor)
-        {
-            var panelObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            var rect = panelObject.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = position;
-            rect.sizeDelta = size;
-            panelObject.GetComponent<Image>().color = backgroundColor;
-            return panelObject;
-        }
-
-        private static TextMeshProUGUI CreateText(string name, Transform parent, string value, Vector2 position, Vector2 size, float fontSize, TextAlignmentOptions alignment)
-        {
-            var textObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            var rect = textObject.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = position;
-            rect.sizeDelta = size;
-
-            var text = textObject.GetComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
-            text.text = value;
-            text.fontSize = fontSize;
-            text.alignment = alignment;
-            text.color = Color.black;
-            text.raycastTarget = false;
-            return text;
-        }
-
-        private static TextMeshProUGUI CreateInputText(RectTransform inputRect, string name)
-        {
-            var text = CreateText(name, inputRect, string.Empty, Vector2.zero, Vector2.zero, 30f, TextAlignmentOptions.TopLeft);
-            text.rectTransform.anchorMin = Vector2.zero;
-            text.rectTransform.anchorMax = Vector2.one;
-            text.rectTransform.offsetMin = new Vector2(20f, 15f);
-            text.rectTransform.offsetMax = new Vector2(-20f, -15f);
-            text.enableWordWrapping = true;
-            return text;
-        }
-
-        private static TextMeshProUGUI CreatePlaceholder(RectTransform inputRect, string name, string value)
-        {
-            var placeholder = CreateText(name, inputRect, value, Vector2.zero, Vector2.zero, 28f, TextAlignmentOptions.TopLeft);
-            placeholder.rectTransform.anchorMin = Vector2.zero;
-            placeholder.rectTransform.anchorMax = Vector2.one;
-            placeholder.rectTransform.offsetMin = new Vector2(20f, 15f);
-            placeholder.rectTransform.offsetMax = new Vector2(-20f, -15f);
-            placeholder.fontStyle = FontStyles.Italic;
-            placeholder.color = new Color(0.45f, 0.45f, 0.45f, 1f);
-            placeholder.enableWordWrapping = true;
-            return placeholder;
-        }
-
-        private static Button CreateButton(string name, Transform parent, string label, Vector2 position, Vector2 size)
-        {
-            var buttonObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
-            var rect = buttonObject.GetComponent<RectTransform>();
-            rect.SetParent(parent, false);
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = position;
-            rect.sizeDelta = size;
-
-            buttonObject.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.9f);
-            var button = buttonObject.GetComponent<Button>();
-            var labelText = CreateText("Label", buttonObject.transform, label, Vector2.zero, Vector2.zero, 30f, TextAlignmentOptions.Center);
-            labelText.rectTransform.anchorMin = Vector2.zero;
-            labelText.rectTransform.anchorMax = Vector2.one;
-            labelText.rectTransform.offsetMin = Vector2.zero;
-            labelText.rectTransform.offsetMax = Vector2.zero;
-            labelText.color = Color.white;
-            return button;
         }
     }
 }
