@@ -7,19 +7,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
-    public class FusingDetailUI : BaseUI
+    public class CraftingDetailUI : BaseUI
     {
         public event Action<IDecorationItem> OnPreviewButtonClicked;
 
-        public event Action<IDecorationItem> OnFuseButtonClicked;
+        public event Action<IDecorationItem> OnCraftButtonClicked;
 
         [SerializeField]
         private Button previewButton;
 
         [SerializeField]
-        private Button fuseButton;
+        private Button craftButton;
 
         [SerializeField]
         private Image itemIcon;
@@ -38,7 +38,7 @@ namespace QuizGame.Fuse.UI
         private void Start()
         {
             previewButton.onClick.AddListener(() => OnPreviewButtonClicked?.Invoke(currentDecorationItem));
-            fuseButton.onClick.AddListener(() => OnFuseButtonClicked?.Invoke(currentDecorationItem));
+            craftButton.onClick.AddListener(() => OnCraftButtonClicked?.Invoke(currentDecorationItem));
         }
 
         public void Setup(IDecorationItem decorationItem)
@@ -63,9 +63,9 @@ namespace QuizGame.Fuse.UI
 
         private void SetupRequirement(IDecorationItem decorationItem)
         {
-            var fuseRequirements = decorationItem.GetFuseRequirementItems().Cast<IQuantifiableItem>();
+            var craftRequirements = decorationItem.GetCraftRequirementItems().Cast<IQuantifiableItem>();
 
-            foreach (var requirementItem in fuseRequirements)
+            foreach (var requirementItem in craftRequirements)
             {
                 var materialSlot = Instantiate(materialSlotPrefab, requirementContainer).GetComponent<RequirementSlot>();
                 materialSlot.Setup(itemData: requirementItem);

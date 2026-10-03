@@ -1,12 +1,12 @@
-using QuizGame.MyRoom.Decoration;
+﻿using QuizGame.MyRoom.Decoration;
 using QuizGame.UI;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
-    public class FusingPreviewUI : BaseUI
+    public class CraftingPreviewUI : BaseUI
     {
         public event Action OnCloseButtonClicked;
 

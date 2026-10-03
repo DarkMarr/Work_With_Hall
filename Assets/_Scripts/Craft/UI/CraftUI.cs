@@ -1,17 +1,17 @@
-using QuizGame.UI;
+﻿using QuizGame.UI;
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
-    public class FuseUI : BaseUI
+    public class CraftUI : BaseUI
     {
         public event Action OnBackButtonClicked;
 
-        public event Action<FuseTabModel> OnTabButtonClicked;
+        public event Action<CraftTabModel> OnTabButtonClicked;
 
         [SerializeField]
         private Button backButton;
@@ -27,9 +27,9 @@ namespace QuizGame.Fuse.UI
             backButton.onClick.AddListener(() => OnBackButtonClicked.Invoke());
         }
 
-        public void Init(List<FuseTabModel> fuseTabModelList)
+        public void Init(List<CraftTabModel> craftTabModelList)
         {
-            foreach (var tabModel in fuseTabModelList)
+            foreach (var tabModel in craftTabModelList)
             {
                 var tabButton = Instantiate(tabButtonPref, tabContainer);
                 var label = tabButton.GetComponentInChildren<TextMeshProUGUI>();

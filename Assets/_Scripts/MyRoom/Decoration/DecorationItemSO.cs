@@ -1,6 +1,7 @@
-using QuizGame.Item;
+﻿using QuizGame.Item;
 using QuizGame.Item.Interfaces;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Localization;
 
 namespace QuizGame.MyRoom.Decoration
@@ -30,14 +31,15 @@ namespace QuizGame.MyRoom.Decoration
         private ItemSOWithQuantityPair[] recycledItems;
 
         [SerializeField]
-        private ItemSOWithQuantityPair[] fuseRequirementItems;
+        [FormerlySerializedAs("fuseRequirementItems")]
+        private ItemSOWithQuantityPair[] craftRequirementItems;
 
         public string GetDescription() => localizedDescription.GetLocalizedString();
         public override string GetName() => localizedName.GetLocalizedString();
         public DecorationType GetDecorationType() => decorationType;
         public string GetSubDescription() => localizedSubDescription.GetLocalizedString();
         public IQuantifiableItem[] GetRecycledItems() => recycledItems;
-        public IQuantifiableItem[] GetFuseRequirementItems() => fuseRequirementItems;
-        public IItem GetFuseResult() => this;
+        public IQuantifiableItem[] GetCraftRequirementItems() => craftRequirementItems;
+        public IItem GetCraftResult() => this;
     }
 }

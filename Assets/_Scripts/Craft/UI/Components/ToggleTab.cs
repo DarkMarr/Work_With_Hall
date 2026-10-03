@@ -1,8 +1,8 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
     public class ToggleTab : MonoBehaviour
     {

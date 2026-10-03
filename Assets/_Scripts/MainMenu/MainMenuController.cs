@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 using QuizGame.Item.Interfaces;
 using QuizGame.MainMenu.Leaderboard;
 using QuizGame.MyDiary;
-using QuizGame.Fuse;
+using QuizGame.Craft;
 using QuizGame.Gameplay.QuizManagement;
 using QuizGame.Gameplay;
 using QuizGame.Item;
@@ -47,7 +47,7 @@ namespace QuizGame.MainMenu
 
         private StoreController storeController;
         private MyDiaryController myDiaryController;
-        private FuseController fuseController;
+        private CraftController craftController;
         private SettingController settingController;
 
         private BaseUI currentMainUI;
@@ -69,7 +69,7 @@ namespace QuizGame.MainMenu
             // its back button through ShowMainMenu; the shop was the one that never got wired.
             storeController.OnMainStoreBackButtonClicked += ShowMainMenu;
             myDiaryController = new MyDiaryController();
-            fuseController = new FuseController();
+            craftController = new CraftController();
             settingController = new SettingController();
             // Enable the room before sceneLoaded discovers its child PlayerSpawnPoint.
             if (roomBackground != null) roomBackground.SetActive(true);
@@ -113,7 +113,7 @@ namespace QuizGame.MainMenu
                 onSinglePlayerButtonClicked: HandleSinglePlayerButtonClicked,
                 onMyRoomButtonClicked: HandleMyRoomButtonClicked,
                 onStoreButtonClicked: HandleStoreButtonClicked,
-                onFuseButtonClicked: HandleFuseButtonClicked,
+                onCraftButtonClicked: HandleCraftButtonClicked,
                 onMyDiaryButtonClicked: HandleMyDiaryButtonClicked,
                 onCalendarButtonClicked: HandleCalendarButtonClicked,
                 onNotificationButtonClicked: HandleNotificationButtonClicked,
@@ -287,15 +287,15 @@ namespace QuizGame.MainMenu
             gems = inventory?.Gems ?? 0;
         }
 
-        private void HandleFuseButtonClicked()
+        private void HandleCraftButtonClicked()
         {
-            Debug.Log("[MainMenu] Fuse button clicked");
+            Debug.Log("[MainMenu] Craft button clicked");
 
             // TODO: Replace with real data from database  
             // Temp data - PlayerMaterial
             var playerMaterials = PlayerMaterial.FromJson(PlayerMaterial.GetMaterialsDataTempDataJson());
-            var playerModel = new FusingPlayerModel(playerMaterials: playerMaterials);
-            fuseController.Setup(fuseTabModelList: FuseTabModel.FuseTabList, playerModel: playerModel);
+            var playerModel = new CraftingPlayerModel(playerMaterials: playerMaterials);
+            craftController.Setup(craftTabModelList: CraftTabModel.CraftTabList, playerModel: playerModel);
         }
 
         private void HandleMyDiaryButtonClicked()

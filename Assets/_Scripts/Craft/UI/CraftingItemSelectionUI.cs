@@ -1,4 +1,4 @@
-using QuizGame.Item.Interfaces;
+﻿using QuizGame.Item.Interfaces;
 using QuizGame.Item.UI;
 using QuizGame.MyRoom.Decoration;
 using System;
@@ -7,9 +7,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
-    public class FusingItemSelectionUI : BaseItemSelectionUI<IItem>
+    public class CraftingItemSelectionUI : BaseItemSelectionUI<IItem>
     {
         public event Action<IDecorationItem> OnToggleTabLoaded;
 
@@ -19,10 +19,10 @@ namespace QuizGame.Fuse.UI
         [SerializeField]
         private ToggleGroup itemSelectToggleGroup;
 
-        private FuseTabModel currentTabModel;
+        private CraftTabModel currentTabModel;
         private Dictionary<ToggleTab, DecorationType> decorationTypeByToggleTab;
 
-        public void Setup(FuseTabModel tabModel)
+        public void Setup(CraftTabModel tabModel)
         {
             currentTabModel = tabModel;
             decorationTypeByToggleTab = new Dictionary<ToggleTab, DecorationType>();
@@ -38,7 +38,7 @@ namespace QuizGame.Fuse.UI
             UpdateItems();
         }
 
-        private List<ToggleTab> CreateToggles(ToggleTab togglePrefab, FuseTabModel model, ToggleGroup toggleGroup, Transform container)
+        private List<ToggleTab> CreateToggles(ToggleTab togglePrefab, CraftTabModel model, ToggleGroup toggleGroup, Transform container)
         {
             var toggleTabs = new List<ToggleTab>();
             var types = model.GetDecorationTypes();
@@ -81,9 +81,9 @@ namespace QuizGame.Fuse.UI
         private void HandleToggleChanged(ToggleTab toggleTab)
         {
             var decorationItem = currentTabModel.GetDecorationByType(decorationTypeByToggleTab[toggleTab]);
-            var fuseableItems = decorationItem.Where(item => item.GetFuseRequirementItems().Count() > 0).ToList();
-            ShowItems(fuseableItems);
-            OnToggleTabLoaded.Invoke(fuseableItems.First());
+            var craftableItems = decorationItem.Where(item => item.GetCraftRequirementItems().Count() > 0).ToList();
+            ShowItems(craftableItems);
+            OnToggleTabLoaded.Invoke(craftableItems.First());
         }
 
         private void ShowItems(List<IDecorationItem> items)

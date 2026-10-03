@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using QuizGame.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace QuizGame.MainMenu.UI
@@ -20,7 +21,8 @@ namespace QuizGame.MainMenu.UI
         private Button storeButton;
 
         [SerializeField]
-        private Button fuseButton;
+        [FormerlySerializedAs("fuseButton")]
+        private Button craftButton;
 
         [SerializeField]
         private Button myDiaryButton;
@@ -88,7 +90,7 @@ namespace QuizGame.MainMenu.UI
             Action onSinglePlayerButtonClicked,
             Action onMyRoomButtonClicked,
             Action onStoreButtonClicked,
-            Action onFuseButtonClicked,
+            Action onCraftButtonClicked,
             Action onMyDiaryButtonClicked,
             Action onCalendarButtonClicked,
             Action onNotificationButtonClicked,
@@ -98,7 +100,7 @@ namespace QuizGame.MainMenu.UI
             singlePlayerButton.onClick.AddListener(() => onSinglePlayerButtonClicked?.Invoke());
             myRoomButton.onClick.AddListener(() => onMyRoomButtonClicked?.Invoke());
             storeButton.onClick.AddListener(() => onStoreButtonClicked?.Invoke());
-            fuseButton.onClick.AddListener(() => onFuseButtonClicked?.Invoke());
+            craftButton.onClick.AddListener(() => onCraftButtonClicked?.Invoke());
             myDiaryButton.onClick.AddListener(() => onMyDiaryButtonClicked?.Invoke());
             calendarButton.onClick.AddListener(() => onCalendarButtonClicked?.Invoke());
             notificationButton.onClick.AddListener(() => onNotificationButtonClicked?.Invoke());

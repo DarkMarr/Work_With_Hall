@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &276150730716263600
 GameObject:
@@ -521,7 +521,7 @@ GameObject:
   - component: {fileID: 138333726876899681}
   - component: {fileID: 6564715934475640641}
   m_Layer: 5
-  m_Name: FusingDetailUI
+  m_Name: CraftingDetailUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   previewButton: {fileID: 2095540772333822342}
-  fuseButton: {fileID: 5501689432137354159}
+  craftButton: {fileID: 5501689432137354159}
   itemIcon: {fileID: 2664873145613822430}
   nameLabel: {fileID: 3222114940695122241}
   materialSlotPrefab: {fileID: 7126435832008718365, guid: d61fd4f4e9f475a429151c5157a9b581, type: 3}
@@ -803,7 +803,7 @@ GameObject:
   - component: {fileID: 5501689432137354159}
   - component: {fileID: 3409603711129478341}
   m_Layer: 5
-  m_Name: Fuse-Button
+  m_Name: Craft-Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

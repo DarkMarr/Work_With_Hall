@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using QuizGame.Item.Interfaces;
 using QuizGame.Material;
 using QuizGame.Player;
@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QuizGame.Fuse
+namespace QuizGame.Craft
 {
-    public class FusingPlayerModel
+    public class CraftingPlayerModel
     {
         private Dictionary<string, IQuantifiableMaterial> playerMaterialByID = new Dictionary<string, IQuantifiableMaterial>();
 
-        public FusingPlayerModel(List<PlayerMaterial> playerMaterials)
+        public CraftingPlayerModel(List<PlayerMaterial> playerMaterials)
         {
             foreach (var material in playerMaterials)
             {
@@ -31,13 +31,13 @@ namespace QuizGame.Fuse
         public string GetAllMaterialsAsJson() =>
             JsonConvert.SerializeObject(GetAllMaterials(), Formatting.Indented);
 
-        public bool IsFuseAble(IFuseable fusingItem, out List<IQuantifiableItem> missingPlayerMaterials)
+        public bool IsCraftAble(ICraftable craftingItem, out List<IQuantifiableItem> missingPlayerMaterials)
         {
-            var fuseRequirements = fusingItem.GetFuseRequirementItems().ToList();
-            var playerRequirementMaterials = GetFuseRequirementInPlayer(fuseRequirements);
+            var craftRequirements = craftingItem.GetCraftRequirementItems().ToList();
+            var playerRequirementMaterials = GetCraftRequirementInPlayer(craftRequirements);
             var missingRequirementMaterials = new List<IQuantifiableItem>();
 
-            var fuseable = true;
+            var craftable = true;
             missingPlayerMaterials = missingRequirementMaterials;
 
             // Check if player has all required materials and quantities
@@ -45,28 +45,28 @@ namespace QuizGame.Fuse
             {
                 if (playerRequirementMaterials[i] == null)
                 {
-                    Debug.LogWarning($"[FuseController] Player does not have required material: {fuseRequirements[i].ToString()}");
-                    missingRequirementMaterials.Add(fuseRequirements[i]);
-                    fuseable = false;
+                    Debug.LogWarning($"[CraftController] Player does not have required material: {craftRequirements[i].ToString()}");
+                    missingRequirementMaterials.Add(craftRequirements[i]);
+                    craftable = false;
                     break;
                 }
-                else if (playerRequirementMaterials[i].GetQuantity() < fuseRequirements[i].GetQuantity())
+                else if (playerRequirementMaterials[i].GetQuantity() < craftRequirements[i].GetQuantity())
                 {
-                    Debug.LogWarning($"[FuseController] Not enough quantity for material: {fuseRequirements[i].ToString()}");
-                    missingRequirementMaterials.Add(fuseRequirements[i]);
-                    fuseable = false;
+                    Debug.LogWarning($"[CraftController] Not enough quantity for material: {craftRequirements[i].ToString()}");
+                    missingRequirementMaterials.Add(craftRequirements[i]);
+                    craftable = false;
                     break;
                 }
             }
 
-            return fuseable;
+            return craftable;
         }
 
-        private List<IQuantifiableMaterial> GetFuseRequirementInPlayer(List<IQuantifiableItem> fuseRequirements)
+        private List<IQuantifiableMaterial> GetCraftRequirementInPlayer(List<IQuantifiableItem> craftRequirements)
         {
             var playerRequirementMaterials = new List<IQuantifiableMaterial>();
 
-            foreach (var requirement in fuseRequirements)
+            foreach (var requirement in craftRequirements)
             {
                 var material = playerMaterialByID.GetValueOrDefault(requirement.GetID());
                 if (material == null || material.GetQuantity() < requirement.GetQuantity())

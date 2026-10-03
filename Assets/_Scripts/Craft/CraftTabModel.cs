@@ -1,18 +1,18 @@
-using QuizGame.MyRoom.Decoration;
+﻿using QuizGame.MyRoom.Decoration;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QuizGame.Fuse
+namespace QuizGame.Craft
 {
-    public class FuseTabModel
+    public class CraftTabModel
     {
         private string tabName;
         private DecorationType[] decorationTypes;
         private Dictionary<DecorationType, string> decorationLabelNameByID;
         private Dictionary<DecorationType, List<DecorationItemSO>> decorationByID;
 
-        public FuseTabModel(string tabName, string[] labelName, DecorationType[] decorationTypes)
+        public CraftTabModel(string tabName, string[] labelName, DecorationType[] decorationTypes)
         {
             this.tabName = tabName;
             this.decorationTypes = decorationTypes;
@@ -37,7 +37,7 @@ namespace QuizGame.Fuse
                 var decorations = DecorationItemResourceManager.Instance.GetDecorationByType(decorationTypes[i]);
                 if (decorations == null)
                 {
-                    Debug.LogWarning($"[FuseTabModel] No decoration type of {decorationTypes[i].ToString()}");
+                    Debug.LogWarning($"[CraftTabModel] No decoration type of {decorationTypes[i].ToString()}");
                 }
 
                 decorationLabelNameByID.Add(decorationTypes[i], labelName[i]);
@@ -45,9 +45,9 @@ namespace QuizGame.Fuse
             }
         }
 
-        public static List<FuseTabModel> FuseTabList = new List<FuseTabModel>()
+        public static List<CraftTabModel> CraftTabList = new List<CraftTabModel>()
         {
-            new FuseTabModel(
+            new CraftTabModel(
                 tabName: "Room",
                 labelName: new string[]
                 {
@@ -59,7 +59,7 @@ namespace QuizGame.Fuse
                 }
             ),
 
-            new FuseTabModel(
+            new CraftTabModel(
                 tabName: "Trophy",
                 labelName: new string[]
                 {

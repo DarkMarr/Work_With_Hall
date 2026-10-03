@@ -1,10 +1,10 @@
-using QuizGame.Item.Interfaces;
+﻿using QuizGame.Item.Interfaces;
 using QuizGame.Material;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
     public class RequirementSlot : MonoBehaviour
     {

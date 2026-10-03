@@ -1,9 +1,9 @@
-using QuizGame.UI;
+﻿using QuizGame.UI;
 using UnityEngine;
 
-namespace QuizGame.Fuse.UI
+namespace QuizGame.Craft.UI
 {
-    public class FuseProfileUI : BaseUI
+    public class CraftProfileUI : BaseUI
     {
         [SerializeField]
         private Transform materialContainer;
@@ -11,7 +11,7 @@ namespace QuizGame.Fuse.UI
         [SerializeField]
         private RequirementSlot materialSlotPref;
 
-        public void Setup(FusingPlayerModel playerModel)
+        public void Setup(CraftingPlayerModel playerModel)
         {
             Clear();
             foreach (var data in playerModel.GetMaterials())
