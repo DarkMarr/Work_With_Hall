@@ -7,7 +7,9 @@ using System.Text;
 using QuizGame.Item;
 using QuizGame.MyRoom.Decoration;
 using UnityEditor;
+using UnityEditor.Localization;
 using UnityEngine;
+using UnityEngine.Localization.Tables;
 
 namespace QuizGame.EditorTools
 {
@@ -30,6 +32,23 @@ namespace QuizGame.EditorTools
         private const string RoomCsv = "Docs/Room-Items.csv";
         private const string DecorFolder = "Assets/Resources/Items/Decoration";
         private const string IconFolder = "Assets/Art/UI/ITEM/DECOR";
+        private const string TextCsvOut = "Docs/Decoration-Text.csv";
+
+        /// <summary>The Item string table collection, as a LocalizedString stores a reference to it.</summary>
+        private const string ItemTableReference = "GUID:ed13262006708df4fa4aa50d09b40b1c";
+
+        /// <summary>
+        /// The sub-description shows what kind of decoration it is, which is the one piece of text
+        /// the sheet does not spell out per item because the Type column already says it.
+        /// </summary>
+        private static readonly Dictionary<DecorationType, long> TypeLabelKey = new Dictionary<DecorationType, long>
+        {
+            { DecorationType.Room, 21822891311857664L },
+            { DecorationType.Window, 170781847283818497L },
+            { DecorationType.Small, 170781847116046336L },
+            { DecorationType.Big, 170781847283818496L },
+            { DecorationType.Suitcase, 170766645997854720L },
+        };
 
         private static readonly Dictionary<string, ItemTier> TierByRarity = new Dictionary<string, ItemTier>(StringComparer.OrdinalIgnoreCase)
         {
@@ -131,6 +150,126 @@ namespace QuizGame.EditorTools
 
             if (!string.IsNullOrEmpty(englishName)) asset.name = id;
             return true;
+        }
+
+        [MenuItem("QuizGame/Items/Import decoration names and descriptions")]
+        public static void ImportText()
+        {
+            var collection = LocalizationEditorSettings.GetStringTableCollection("Item");
+            if (collection == null)
+            {
+                Debug.LogError("[DecorationText] No string table collection named Item.");
+                return;
+            }
+
+            var shared = collection.SharedData;
+            var exported = new List<string[]>();
+            var missingText = new List<string>();
+            var notFound = new List<string>();
+            var wired = 0;
+
+            foreach (var source in new[] { DecorCsv, RoomCsv })
+            {
+                foreach (var row in ReadCsv(source))
+                {
+                    var id = Field(row, "ID");
+                    if (string.IsNullOrEmpty(id)) id = Field(row, "column0");
+                    if (string.IsNullOrEmpty(id)) continue;
+
+                    var asset = FindDecoration(id);
+                    if (asset == null) { notFound.Add(id); continue; }
+
+                    var english = Field(row, "EN name");
+                    if (string.IsNullOrEmpty(english)) { missingText.Add(id); continue; }
+
+                    var nameKey = WriteEntry(collection, shared, $"decoration.{id}.name",
+                        english, Field(row, "JP name"), Field(row, "Name"), exported);
+                    var descriptionKey = WriteEntry(collection, shared, $"decoration.{id}.description",
+                        Field(row, "Description EN"), Field(row, "Description JP"), Field(row, "Description TH"), exported);
+
+                    var serialized = new SerializedObject(asset);
+                    Bind(serialized, "localizedName", nameKey);
+                    Bind(serialized, "localizedDescription", descriptionKey);
+
+                    long typeKey;
+                    if (TypeLabelKey.TryGetValue(asset.GetDecorationType(), out typeKey))
+                    {
+                        Bind(serialized, "localizedSubDescription", typeKey);
+                    }
+                    serialized.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(asset);
+                    wired++;
+                }
+            }
+
+            EditorUtility.SetDirty(shared);
+            foreach (var table in collection.StringTables) EditorUtility.SetDirty(table);
+            AssetDatabase.SaveAssets();
+
+            WriteCsv(exported);
+
+            var report = new StringBuilder();
+            report.AppendLine($"[DecorationText] wired {wired} decorations, wrote {exported.Count} rows to {TextCsvOut}.");
+            report.AppendLine("  Paste them into the Localization sheet's Item tab before anyone pulls, or they will be deleted.");
+            if (missingText.Count > 0) report.AppendLine("  no name in the sheet: " + string.Join(", ", missingText));
+            if (notFound.Count > 0) report.AppendLine("  no asset for id: " + string.Join(", ", notFound));
+            Debug.Log(report.ToString());
+        }
+
+        /// <summary>Adds or updates one key in all three pulled locales, and records it for the CSV.</summary>
+        private static long WriteEntry(StringTableCollection collection, SharedTableData shared,
+            string key, string english, string japanese, string thai, List<string[]> exported)
+        {
+            var entry = shared.GetEntry(key) ?? shared.AddKey(key);
+
+            foreach (var table in collection.StringTables)
+            {
+                var code = table.LocaleIdentifier.Code;
+                string value;
+                if (code.StartsWith("ja")) value = japanese;
+                else if (code.StartsWith("th")) value = thai;
+                else value = english;   // English is also what the untranslated locales fall back to.
+                if (!string.IsNullOrEmpty(value)) table.AddEntry(entry.Id, value);
+            }
+
+            exported.Add(new[] { key, english, japanese, thai });
+            return entry.Id;
+        }
+
+        /// <summary>Points a LocalizedString field at a key in the Item collection.</summary>
+        private static void Bind(SerializedObject serialized, string field, long keyId)
+        {
+            serialized.FindProperty($"{field}.m_TableReference.m_TableCollectionName").stringValue = ItemTableReference;
+            serialized.FindProperty($"{field}.m_TableEntryReference.m_KeyId").longValue = keyId;
+            serialized.FindProperty($"{field}.m_TableEntryReference.m_Key").stringValue = string.Empty;
+        }
+
+        private static DecorationItemSO FindDecoration(string id)
+        {
+            foreach (DecorationType type in Enum.GetValues(typeof(DecorationType)))
+            {
+                var asset = AssetDatabase.LoadAssetAtPath<DecorationItemSO>($"{DecorFolder}/{type}/{id}.asset");
+                if (asset != null) return asset;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Writes the rows in the column order the Localization sheet pulls: key, English, Japanese,
+        /// Thai. Descriptions carry commas and quotes, so every field is quoted.
+        /// </summary>
+        private static void WriteCsv(List<string[]> rows)
+        {
+            var text = new StringBuilder();
+            text.AppendLine("Key,English(en),Japanese(ja),Thai(th)");
+            foreach (var row in rows)
+            {
+                text.AppendLine(string.Join(",", row.Select(cell => "\"" + (cell ?? string.Empty).Replace("\"", "\"\"") + "\"")));
+            }
+
+            var full = Path.Combine(Directory.GetParent(Application.dataPath).FullName, TextCsvOut);
+            File.WriteAllText(full, text.ToString(), new UTF8Encoding(true));
+            AssetDatabase.Refresh();
         }
 
         private static string Field(Dictionary<string, string> row, string column)
