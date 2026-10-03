@@ -244,10 +244,10 @@ RectTransform:
   - {fileID: 2240510769006972653}
   m_Father: {fileID: 9039255797692664442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -304}
-  m_SizeDelta: {x: 150, y: 50}
+  m_SizeDelta: {x: 120, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1951404693770652316
 CanvasRenderer:
@@ -584,6 +584,8 @@ GameObject:
   - component: {fileID: 9039255797692664442}
   - component: {fileID: 9173271549349395388}
   - component: {fileID: 2664601590886152266}
+  - component: {fileID: 8247942678031393573}
+  - component: {fileID: 7348494592649310517}
   m_Layer: 5
   m_Name: DailyRewardSlotUI
   m_TagString: Untagged
@@ -611,7 +613,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 260, y: 354}
+  m_SizeDelta: {x: 200, y: 288}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9173271549349395388
 MonoBehaviour:
@@ -631,7 +633,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
-  m_Spacing: 6
+  m_Spacing: 5
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -658,6 +660,44 @@ MonoBehaviour:
   lockedIconImage: {fileID: 8442134427627527539}
   claimAmountText: {fileID: 5183739032510678874}
   claimButton: {fileID: 4746377370636517643}
+--- !u!222 &8247942678031393573
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6912800301456429181}
+  m_CullTransparentMesh: 1
+--- !u!114 &7348494592649310517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6912800301456429181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 6747037706311858237, guid: 7ef98abab4f2f8b43b1737c71ec08d40, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8028607120279371087
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,11 +731,11 @@ RectTransform:
   - {fileID: 4251051215075346773}
   m_Father: {fileID: 9039255797692664442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 220, y: 56}
-  m_Pivot: {x: 0.5, y: 1}
+  m_SizeDelta: {x: 180, y: 46}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4003591619216345318
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -847,11 +887,11 @@ RectTransform:
   - {fileID: 5517267486684866353}
   m_Father: {fileID: 9039255797692664442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -64}
-  m_SizeDelta: {x: 240, y: 230}
-  m_Pivot: {x: 0.5, y: 1}
+  m_SizeDelta: {x: 190, y: 190}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8137385634401759013
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -880,7 +920,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6747037706311858237, guid: 7ef98abab4f2f8b43b1737c71ec08d40, type: 3}
+  m_Sprite: {fileID: -2771561712543178091, guid: 0919dd461258550469e4f6604f747f39, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
